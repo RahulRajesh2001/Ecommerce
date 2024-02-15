@@ -135,7 +135,7 @@ const ProductDetailsPage = () => {
             {/*buttons section*/}
             <div className='mt-5 flex justify-around items-center'>
               <CounterButton />
-              <FilledButton />
+              <FilledButton value="ADD TO CART" w="230px"/>
               <OutlineButton />
             </div>
 
