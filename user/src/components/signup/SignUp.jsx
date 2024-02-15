@@ -2,6 +2,7 @@ import React from 'react'
 import FilledButton from '../../components/buttons/filledbutton/FilledButton'
 import Google from '../../assets/Google.png'
 
+
 const SignUp = () => {
   return (
     <div>

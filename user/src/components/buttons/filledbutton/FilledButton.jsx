@@ -17,6 +17,12 @@ const FilledButton = ({ value, w }) => {
       {value === 'SIGN UP' && (
         <IoMdArrowForward className='text-[#ffff] text-[15px]' />
       )}
+      {value === 'VERIFY ME' && (
+        <IoMdArrowForward className='text-[#ffff] text-[15px]' />
+      )}
+      {value === 'RESET PASSWORD' && (
+        <IoMdArrowForward className='text-[#ffff] text-[15px]' />
+      )}
     </div>
   )
 }
