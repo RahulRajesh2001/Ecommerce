@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RiFacebookCircleFill } from 'react-icons/ri'
 import { FaYoutube } from 'react-icons/fa'
 import { AiFillInstagram } from 'react-icons/ai'
@@ -9,13 +9,29 @@ import { IoIosSearch } from 'react-icons/io'
 import { FiShoppingCart } from 'react-icons/fi'
 import { CiHeart } from 'react-icons/ci'
 import { IoPersonOutline } from 'react-icons/io5'
+import SignInModal from '../modals/signInModal/SignInModal'
 
 const Navbar = () => {
+
+  const [isHovered,setIsHovered]=useState(false)
+  
+  console.log("hehehe",isHovered)
+
+
+  const handleMouseEnter=()=>{
+    setIsHovered(true);
+  }
+
+  const handleMouseLeave=()=>{
+    setIsHovered(false)
+  }
+
   return (
     <>
       <div>
         {/*top*/}
-        <div className=' '>
+        <div className=''>
+          
           <div className='bg-[#1B6392] w-[100%] h-[30px] border-b-[1px] border-[#77878F] flex justify-around items-center '>
             {/*left*/}
             <div className='text-[#ffff] text-[12px]'>
@@ -36,6 +52,7 @@ const Navbar = () => {
               <div className='flex justify-center items-center gap-1 text-[#ffff]'>
                 <div className='text-[12px]'>Eng </div>
                 <MdKeyboardArrowDown className='text-[#ffff]' />
+                
               </div>
             </div>
           </div>
@@ -63,7 +80,7 @@ const Navbar = () => {
           <div className='flex gap-5 justify-items-center items-center'>
             <FiShoppingCart className='text-[#ffff] text-[15px] hover:cursor-pointer' />
             <CiHeart className='text-[#ffff] text-[20px] hover:cursor-pointer' />
-            <IoPersonOutline className='text-[#ffff] text-[16px] hover:cursor-pointer' />
+            <IoPersonOutline className='text-[#ffff] text-[16px] hover:cursor-pointer' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}/>
           </div>
         </div>
       </div>
