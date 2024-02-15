@@ -11,6 +11,7 @@ import FilledButton from '../../components/buttons/filledbutton/FilledButton'
 import OutlineButton from '../../components/buttons/oulineButton/OutlineButton'
 import { IoMdHeartEmpty } from 'react-icons/io'
 import { MdOutlineCompareArrows } from 'react-icons/md'
+import ProductDetail from '../../components/productdeatil/ProductDetail'
 
 const ProductDetailsPage = () => {
   return (
@@ -18,7 +19,7 @@ const ProductDetailsPage = () => {
       <OfferBar />
       <Navbar />
       <BottomBar />
-      <div className=' h-screen'>
+      <div className=' h-[850px]'>
         {/*upperside*/}
         <div className='flex justify-center gap-8'>
           {/*leftside*/}
@@ -154,6 +155,9 @@ const ProductDetailsPage = () => {
           </div>
         </div>
         {/*bottomside*/}
+        <div className='flex justify-center'>
+        <ProductDetail/>
+        </div>
       </div>
 
       <Footer />
