@@ -10,9 +10,11 @@ import FeaturedProducts from '../../components/featuredproducts/FeaturedProducts
 const HomePage = () => {
   return (
     <div className='flex flex-col '>
-      <OfferBar />
-      <Navbar />
-      <BottomBar />
+      <div className='vvsm:hidden md:block'>
+      <OfferBar/>
+      </div>
+     <Navbar />
+       <BottomBar />
       <div className='w-[100%] flex justify-center items-center'>
         <HomeCarosel />
       </div>

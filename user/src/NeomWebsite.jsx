@@ -10,7 +10,7 @@ import ErrorPage from './pages/errorpage/ErrorPage'
 const NeomWebsite = () => {
   return (
     <>
-      <ErrorPage/>
+      <HomePage/>
     </>
   )
 }

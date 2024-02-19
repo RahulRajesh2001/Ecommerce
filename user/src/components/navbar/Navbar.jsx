@@ -32,9 +32,9 @@ const Navbar = () => {
         {/*top*/}
         <div className=''>
           
-          <div className='bg-[#1B6392] w-[100%] h-[30px] border-b-[1px] border-[#77878F] flex justify-around items-center '>
+          <div className='bg-[#1B6392] w-[100%] h-[30px] border-b-[1px] border-[#77878F] flex vvsm:justify-end md:justify-evenly items-center '>
             {/*left*/}
-            <div className='text-[#ffff] text-[12px]'>
+            <div className='text-[#ffff] text-[12px] vvsm:hidden md:block '>
               welcome to NEOM online eCommerce store
             </div>
             {/*right*/}
@@ -72,12 +72,12 @@ const Navbar = () => {
             <input
               type='text'
               placeholder='search for anything....'
-              className='outline-none rounded-sm w-[450px] placeholder:text-[#77878F] placeholder:text-[12px]  px-5   h-[30px]'
+              className='outline-none rounded-sm vvsm:w-[150px] sm:w-[300px] md:w-[450px] placeholder:text-[#77878F] placeholder:text-[12px]  px-5   h-[30px]'
             />
-            <IoIosSearch className='absolute top-[7px] right-[10px] hover:cursor-pointer' />
+            <IoIosSearch className='vvsm:hidden sm:block absolute top-[7px] right-[10px] hover:cursor-pointer' />
           </div>
           {/*bottom_right*/}
-          <div className='flex gap-5 justify-items-center items-center'>
+          <div className='flex vvsm:gap-2 sm:gap-5 justify-items-center items-center'>
             <FiShoppingCart className='text-[#ffff] text-[15px] hover:cursor-pointer' />
             <CiHeart className='text-[#ffff] text-[20px] hover:cursor-pointer' />
             <IoPersonOutline className='text-[#ffff] text-[16px] hover:cursor-pointer' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}/>
