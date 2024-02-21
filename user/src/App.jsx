@@ -2,7 +2,11 @@ import React from 'react'
 import NeomWebsite from './NeomWebsite'
 
 const App = () => {
-  return <NeomWebsite />
+  return(
+    <>
+    <NeomWebsite />
+    </>
+  ) 
 }
 
 export default App

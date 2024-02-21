@@ -10,12 +10,12 @@ import { FiShoppingCart } from 'react-icons/fi'
 import { CiHeart } from 'react-icons/ci'
 import { IoPersonOutline } from 'react-icons/io5'
 import SignInModal from '../modals/signInModal/SignInModal'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
 
   const [isHovered,setIsHovered]=useState(false)
   
-  console.log("hehehe",isHovered)
 
 
   const handleMouseEnter=()=>{
@@ -80,7 +80,10 @@ const Navbar = () => {
           <div className='flex vvsm:gap-2 sm:gap-5 justify-items-center items-center'>
             <FiShoppingCart className='text-[#ffff] text-[15px] hover:cursor-pointer' />
             <CiHeart className='text-[#ffff] text-[20px] hover:cursor-pointer' />
+            <Link to='/loginSignup'>
             <IoPersonOutline className='text-[#ffff] text-[16px] hover:cursor-pointer' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}/>
+            </Link>
+            
           </div>
         </div>
       </div>

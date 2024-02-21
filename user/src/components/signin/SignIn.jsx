@@ -1,8 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FilledButton from '../../components/buttons/filledbutton/FilledButton'
 import Google from '../../assets/Google.png'
+import axios from 'axios';
+import {baseUrl} from '../../../baseUrl.js'
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
+  const navigate=useNavigate()
+  const [email,setEmail]=useState('rahulrjev@gmail.com');
+  const [password,setPassword]=useState("12345")
+
+  const user={
+    email,
+    password
+  }
+
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    try{
+      axios.post(`${baseUrl}/api/v1/login`,user).then((response)=>{
+        console.log(response)
+        navigate('/')
+        alert(response.data.message)
+      })
+    }catch(error){
+      console.log(error)
+      navigate('/loginSignup')
+    }
+  }
+
   return (
     <div>
       {/*signinbody*/}
@@ -10,7 +36,7 @@ const SignIn = () => {
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Email Address</div>
-          <input type='email' className='border outline-none  h-[35px]' />
+          <input type='email' className='border outline-none  h-[35px]' onChange={(e)=>setEmail(e.target.value)}/>
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
@@ -20,10 +46,10 @@ const SignIn = () => {
               Forget Password
             </div>
           </div>
-          <input type='password' className='border outline-none  h-[35px]' />
+          <input type='password' className='border outline-none  h-[35px]' onChange={(e)=>setPassword(e.target.value)}/>
         </div>
-        <div className='mt-2'>
-          <FilledButton value='SIGN IN' w='100%' />
+        <div className='mt-2' onClick={handleSubmit}>
+          <FilledButton value='SIGN IN' w='100%'/>
         </div>
 
         <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>

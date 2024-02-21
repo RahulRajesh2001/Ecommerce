@@ -1,5 +1,6 @@
 import User from '../model/userModel.js'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 export const login = async (req, res) => {
   try {
@@ -14,7 +15,13 @@ export const login = async (req, res) => {
     if (!isPasswordMatch) {
       res.status(401).json({ message: 'Invalid password' });
     }
-    res.status(200).json({ message: 'Login successfull', user });
+
+    //token generation
+    const id=user._id;
+    const token=jwt.sign({id},process.env.JWT_SECRET,{expiresIn:'6d'})
+    console.log("this is token",token)
+
+    res.status(200).json({ message: 'Login successfull', user,token });
   } catch (err) {
     console.log('Error when login...!', err);
     res.status(500).json({ message: 'Internal server error' });
@@ -23,16 +30,16 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
   try {
-    const { email, password, confirmPassword, name } = req.body;
+    const { email,  password, confirmPassword, name } = req.body;
 
     //checking user is already login
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.status(400).json({ message: 'User already exists..!' });
+      return res.status(400).json({ message: 'User already exists..!' });
     }
-
+    
     if (password !== confirmPassword) {
-      res.status(500).json({ message: 'Your password are not matching..!' });
+      return res.status(500).json({ message: 'Your passwords do not match..!' });
     }
 
     //password hashing

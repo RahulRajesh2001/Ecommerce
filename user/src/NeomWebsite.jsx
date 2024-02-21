@@ -1,17 +1,15 @@
 import React from 'react'
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import HomePage from './pages/homepage/HomePage'
-import ShopPage from './pages/shopPage/ShopPage'
-import ProductDetailsPage from './pages/productDetailsPage/ProductDetailsPage'
 import LoginSignupPage from './pages/loginsignupPage/LoginSignupPage'
-import EmailVerificationPage from './pages/emailverification/EmailVerificationPage'
-import ResetPasswordPage from './pages/resetpasswordPage/ResetPasswordPage'
-import ErrorPage from './pages/errorpage/ErrorPage'
-
 const NeomWebsite = () => {
   return (
-    <>
-      <HomePage/>
-    </>
+    <BrowserRouter>
+    <Routes>
+    <Route path='/' element={<HomePage/>}/>
+    <Route path='/loginSignup' element={<LoginSignupPage/>}/>
+    </Routes>
+    </BrowserRouter>
   )
 }
 
