@@ -1,7 +1,11 @@
 import User from '../model/userModel.js'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import otpGenerator from 'otp-generator'
+import OTP from '../model/otpModel.js'
 
+// api/v1/login
+//Post
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -28,9 +32,12 @@ export const login = async (req, res) => {
   }
 }
 
-export const register = async (req, res) => {
+// api/v1/register
+//Post
+
+export const register = async (req, res) => { 
   try {
-    const { email,  password, confirmPassword, name } = req.body;
+    const { email,  password, confirmPassword, name,otp } = req.body;
 
     //checking user is already login
     const existingUser = await User.findOne({ email });
@@ -40,6 +47,15 @@ export const register = async (req, res) => {
     
     if (password !== confirmPassword) {
       return res.status(500).json({ message: 'Your passwords do not match..!' });
+    }
+
+    //sending otp to email
+    const response=await OTP.find({email}).sort({createdAt:-1}).limit(1);
+    if(response.length===0 || otp !== response[0].otp){
+      return res.status(400).json({
+        success:false,
+        message:"The OTP is not valid"
+      })
     }
 
     //password hashing
@@ -60,4 +76,42 @@ export const register = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
   }
+}
+
+// api/v1/send-otp
+//Post
+
+export const sendOTP=async(req,res)=>{
+      try{
+        const {email}=req.body;
+        //check for existing user
+        const checkUserPresent=await User.findOne({email});
+        //if User found with provided email
+        if(checkUserPresent){
+          return res.status(401).json({success:false,message:"User is already registered"});
+        }
+
+      let otp=otpGenerator.generate(6,{
+        upperCaseAlphabets:false,
+        lowerCaseAlphabets:false,
+        specialChars:false
+      })
+      let result=await OTP.findOne({otp:otp});
+      while(result){
+        otp=otpGenerator.generate(6,{
+          upperCaseAlphabets:false
+        });
+        result=await OTP.findOne({otp:otp})
+      }
+      const otpPayload={email,otp};
+      const otpBody=await OTP.create(otpPayload)
+      res.status(200).json({
+        success:true,
+        message:"OTP send successfully",
+        otp
+      })
+      }catch(err){
+        console.log(err.message)
+        return res.status(500).json({success:false,err:err.message})
+      }
 }
