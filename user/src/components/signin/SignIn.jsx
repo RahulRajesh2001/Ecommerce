@@ -4,9 +4,13 @@ import Google from '../../assets/Google.png'
 import axios from 'axios';
 import {baseUrl} from '../../../baseUrl.js'
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {setUser} from '../../../redux/reducers/userSlice.js'
+
 
 const SignIn = () => {
   const navigate=useNavigate()
+  const dispatch=useDispatch()
   const [email,setEmail]=useState('rahulrjev@gmail.com');
   const [password,setPassword]=useState("12345")
 
@@ -20,7 +24,9 @@ const SignIn = () => {
     try{
       axios.post(`${baseUrl}/api/v1/login`,user).then((response)=>{
         console.log(response)
+        dispatch(setUser(response.data))
         navigate('/')
+
         alert(response.data.message)
       })
     }catch(error){
