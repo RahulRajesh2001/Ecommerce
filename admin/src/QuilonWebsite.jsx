@@ -1,14 +1,16 @@
 import React from 'react'
-import LoginPage from './pages/LoginPage'
-import Navbar from './components/navbar/Navbar'
-import SideBar from './components/sidebar/SideBar'
 import Dashboard from './pages/dashboard/Dashboard'
+import ProductListingPage from './pages/productlistingpage/ProductListingPage';
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+
 
 const QuilonWebsite = () => {
   return (
-    <>
-  <Dashboard/>
-    </>
+    <BrowserRouter>
+    <Routes>
+    <Route path='/' element={<ProductListingPage/>}/>
+    </Routes>
+    </BrowserRouter>
   )
 }
 
