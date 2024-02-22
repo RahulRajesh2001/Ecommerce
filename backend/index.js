@@ -12,8 +12,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 import userRouters from '../backend/routes/userRoutes.js'
+import adminRouters from '../backend/routes/adminRoutes.js'
 
 app.use('/api/v1',userRouters)
+app.use('/api/v1/admin',adminRouters)
 
 
 app.listen(3000, () => {
