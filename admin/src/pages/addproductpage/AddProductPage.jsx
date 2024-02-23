@@ -5,16 +5,29 @@ import { FaRegPlusSquare } from 'react-icons/fa'
 import FileInput from '../../components/imagecrop/FileInput.jsx'
 import ImageCropper from '../../components/imagecrop/ImageCropper.jsx'
 import { ImCross } from 'react-icons/im'
+import axios from 'axios'
+import { baseUrl } from '../../../baseURL.js'
 
 const AddProductPage = () => {
   // Initialize imgArray and setImgArray to update its state
   const [imgArray, setImgArray] = useState([])
   // Initialize other state variables
-  const [image, setImage] = useState('heheh')
+  const [image, setImage] = useState('')
   const [currentPage, setCurrentPage] = useState('choose-img')
   const [imgAfterCrop, setImgAfterCrop] = useState('')
 
-  console.log(imgArray)
+  //specification state
+  const [specName, setSpecName] = useState('')
+  const [specValue, setSpecValue] = useState('')
+  const [specs, setSpecs] = useState([])
+
+  // Function to add specifications
+  function addSpecs() {
+    const newSpec = { specName: specName, specValue: specValue }
+    setSpecs([...specs, newSpec])
+    setSpecName('')
+    setSpecValue('')
+  }
 
   // Callback function when an image is selected
   const onImageSelected = (selectedImage) => {
@@ -68,6 +81,61 @@ const AddProductPage = () => {
     imgArr.splice(index, 1)
     setImgArray(imgArr)
   }
+  //form submission
+  const [name, setName] = useState('')
+  const [brand, setBrand] = useState('')
+  const [category, setCategory] = useState('')
+  const [description, setDescription] = useState('')
+  const [productVarient, setProductVarient] = useState('')
+  const [color, setColor] = useState('')
+  const [stock, setStock] = useState(0)
+  const [regularPrice, setRegularPrice] = useState(0)
+  const [salePrice, setSalePrice] = useState(0)
+  const [id, setId] = useState('')
+
+  const handleSubmit = async () => {
+    try {
+      const product = {
+        name,
+        brand,
+        category,
+        description,
+      }
+
+      console.log('this is id', id)
+      const productVarientdetails = {
+        id,
+        productVarient,
+        color,
+        stock,
+        regularPrice,
+        salePrice,
+        specification: specs,
+        images: imgArray,
+      }
+
+      await axios
+        .post(`${baseUrl}/api/v1/admin/addProduct`, product)
+        .then((response) => {
+          setId(response.data.id)
+          if (response.status == 201) {
+            axios
+              .post(
+                `${baseUrl}/api/v1/admin/addProductVarient`,
+                productVarientdetails
+              )
+              .then((res) => {
+                console.log('product vari', res)
+              })
+          } else {
+            alert('Error occured when product details')
+          }
+        })
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
+  }
 
   return (
     <div className='flex bg-[#F5F5F9] '>
@@ -89,6 +157,7 @@ const AddProductPage = () => {
                 <input
                   type='text'
                   className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
               <div className='flex'>
@@ -100,6 +169,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setBrand(e.target.value)}
                   />
                 </div>
                 {/*input box */}
@@ -110,6 +180,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setCategory(e.target.value)}
                   />
                 </div>
               </div>
@@ -121,6 +192,7 @@ const AddProductPage = () => {
                 <input
                   type='text'
                   className='outline-none w-[80%] h-[100px] rounded-md border border-[#566A7F]'
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 
@@ -134,6 +206,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setProductVarient(e.target.value)}
                   />
                 </div>
                 {/*input box */}
@@ -144,6 +217,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setColor(e.target.value)}
                   />
                 </div>
               </div>
@@ -157,6 +231,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setStock(e.target.value)}
                   />
                 </div>
                 {/*input box */}
@@ -167,6 +242,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setRegularPrice(e.target.value)}
                   />
                 </div>
               </div>
@@ -180,6 +256,7 @@ const AddProductPage = () => {
                   <input
                     type='text'
                     className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                    onChange={(e) => setSalePrice(e.target.value)}
                   />
                 </div>
                 {/*BUTTON*/}
@@ -187,7 +264,10 @@ const AddProductPage = () => {
                   <button className='bg-[#EBEEF0] w-[48%] h-[50px] rounded-lg text-[#566A7F]'>
                     Discard
                   </button>
-                  <button className=' w-[48%] h-[50px] rounded-lg bg-[#696CFF] text-[#ffff]'>
+                  <button
+                    className=' w-[48%] h-[50px] rounded-lg bg-[#696CFF] text-[#ffff]'
+                    onClick={handleSubmit}
+                  >
                     Publish
                   </button>
                 </div>
@@ -240,10 +320,53 @@ const AddProductPage = () => {
             </div>
             {/*specification section */}
             <div className='bg-[#FFFFFF] w-[100%] h-[48%] rounded-md flex flex-col gap-2 mt-3 '>
-              <div className='font-Playfair mt-3 ml-5'>Add Specification</div>
+              <div className='font-Playfair mt-3 ml-5 '>Add Specification</div>
               <button className='ml-5'>
                 <FaRegPlusSquare className='text-[40px]' />
               </button>
+              <div className=' bg-red-300 w-[100%] h-full flex flex-col justify-center items-center'>
+                <div className='bg-green-300 h-full  w-[100%] overflow-auto justify-center items-center mb-1'>
+                  {specs.map((value) => (
+                    <div className='flex justify-start ml-3 items-center gap-5  '>
+                      <div className='flex'>{value.specName}</div>
+                      <div className='flex'>{value.specValue}</div>
+                    </div>
+                  ))}
+                </div>
+                {/*two boxes */}
+                <div className='flex w-[100%] justify-center items-center '>
+                  {/*input box */}
+                  <div className='w-[44%]'>
+                    <div className='font-Josefin text-[14px] text-[#566A7F]'>
+                      Specification
+                    </div>
+                    <input
+                      type='text'
+                      className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                      onChange={(e) => setSpecName(e.target.value)}
+                      value={specName}
+                    />
+                  </div>
+                  {/*input box */}
+                  <div className='w-[44%]'>
+                    <div className='font-Josefin text-[14px] text-[#566A7F]'>
+                      Value
+                    </div>
+                    <input
+                      type='text'
+                      className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
+                      onChange={(e) => setSpecValue(e.target.value)}
+                      value={specValue}
+                    />
+                  </div>
+                  <button
+                    className='w-[40px] h-[20x] bg-[#696CFF] text-[#ffff] text-[14px] rounded-md mt-4 mr-1'
+                    onClick={addSpecs}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

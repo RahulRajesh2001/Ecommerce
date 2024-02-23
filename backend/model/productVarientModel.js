@@ -11,9 +11,9 @@ const productVariantSchema = new Schema({
         type: String,
         required: true
     },
-    images:{
-        type:[String]
-    },
+    // images:{
+    //     type:[String]
+    // },
     stock:{
         type:Number,
         default: 0,
@@ -26,16 +26,14 @@ const productVariantSchema = new Schema({
     },
     varientName:{
         type:String,
-        required:true
     },
     salePrice:{
         type:Number,
         default: 0,
         min: 0
     },
-    specificationId: {
-        type: mongoose.Schema.Types.ObjectId, 
-        required: true
+    specification: {
+        type:Array
     },
 });
 
