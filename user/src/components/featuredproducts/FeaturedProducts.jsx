@@ -4,6 +4,7 @@ import ShopCard from '../../components/shopcard/ShopCard'
 import feature_banner1 from '../../assets/feature_banner1.png'
 import feature_banner2 from '../../assets/feature_banner2.png'
 
+
 const FeaturedProducts = () => {
   return (
     <div>
@@ -22,13 +23,7 @@ const FeaturedProducts = () => {
           <div className='font-bold'>Featured Products</div>
           <div className='flex flex-wrap w-[800px]'>
             <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
+  
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import Footer from '../../components/footer/Footer'
 import CategoryBar from '../../components/categorybar/CategoryBar'
 import FeaturedProducts from '../../components/featuredproducts/FeaturedProducts'
 
+
 const HomePage = () => {
   return (
     <div className='flex flex-col '>

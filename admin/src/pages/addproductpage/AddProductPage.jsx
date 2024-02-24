@@ -20,6 +20,7 @@ const AddProductPage = () => {
   const [specName, setSpecName] = useState('')
   const [specValue, setSpecValue] = useState('')
   const [specs, setSpecs] = useState([])
+  console.log("skdsofskf",specs)
 
   // Function to add specifications
   function addSpecs() {
@@ -135,6 +136,11 @@ const AddProductPage = () => {
       console.log(err)
       throw err
     }
+  }
+
+  //handleRemoveSpecs
+  function handleRemoveSpec(index){
+
   }
 
   return (
@@ -321,15 +327,19 @@ const AddProductPage = () => {
             {/*specification section */}
             <div className='bg-[#FFFFFF] w-[100%] h-[48%] rounded-md flex flex-col gap-2 mt-3 '>
               <div className='font-Playfair mt-3 ml-5 '>Add Specification</div>
-              <button className='ml-5'>
-                <FaRegPlusSquare className='text-[40px]' />
-              </button>
-              <div className=' bg-red-300 w-[100%] h-full flex flex-col justify-center items-center'>
-                <div className='bg-green-300 h-full  w-[100%] overflow-auto justify-center items-center mb-1'>
-                  {specs.map((value) => (
-                    <div className='flex justify-start ml-3 items-center gap-5  '>
-                      <div className='flex'>{value.specName}</div>
-                      <div className='flex'>{value.specValue}</div>
+              <div className='w-[100%] h-full flex flex-col justify-center items-center mb-3'>
+                <div className='h-full  w-[100%] overflow-auto justify-center items-center '>
+                  <div className='flex justify-evenly'>
+                    <div className='font-Playfair font-bold text-[13px]'>Specification Name</div>
+                    <div className='font-Playfair font-bold text-[13px]'>Specification Value</div>
+                  </div>
+                  {specs.map((value,index) => (
+                    <div className='flex justify-evenly ml-3 items-center mt-1 '>
+                      <div className='flex font-Josefin font-bold'>{value.specName}</div>
+                      <div className='flex font-Josefin font-bold'>{value.specValue}</div>
+                      <button onClick={()=>handleRemoveSpec(index)}>
+                      <ImCross className='right-2 top-2 text-[#000000] text-[12px]' />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -360,8 +370,9 @@ const AddProductPage = () => {
                     />
                   </div>
                   <button
-                    className='w-[40px] h-[20x] bg-[#696CFF] text-[#ffff] text-[14px] rounded-md mt-4 mr-1'
+                    className='w-[40px] h-[20x] bg-[#696CFF] text-[#ffff] text-[14px] rounded-md mt-4 mr-2'
                     onClick={addSpecs}
+
                   >
                     Add
                   </button>

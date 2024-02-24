@@ -115,3 +115,24 @@ export const sendOTP=async(req,res)=>{
         return res.status(500).json({success:false,err:err.message})
       }
 }
+
+// GET
+// api/v1/admin/getUsers
+// --- admin
+
+export const getAllUsers=async(req,res)=>{
+
+  try{
+    const users=await User.find()
+
+    if(!users){
+      return res.status(500).json({message:"There is no Users..!"})
+    }
+
+    res.status(201).json({message:"Successfull..!",users})
+
+  }catch(err){
+    console.log(err)
+    throw err
+  }
+}

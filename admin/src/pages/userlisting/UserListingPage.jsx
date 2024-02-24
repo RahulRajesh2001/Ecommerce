@@ -1,65 +1,70 @@
-import React, { useState } from 'react'
-import Navbar from '../../components/navbar/Navbar'
+import React, { useEffect, useState } from 'react'
 import SideBar from '../../components/sidebar/SideBar'
+import Navbar from '../../components/navbar/Navbar'
 import 'bootstrap/dist/css/bootstrap.css'
-import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { baseUrl } from '../../../baseURL'
 
-const ProductListingPage = () => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const recordPerPage = 8
-  const firstIndex = (currentPage - 1) * recordPerPage
-  const lastIndex = currentPage * recordPerPage
-  const product = [
-    {
-      id: 12345,
-      image:
-        'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/24750e81-85ed-4b0e-8cd8-becf0cd97b2f/air-jordan-1-mid-shoes-7cdjgS.png',
-      name: 'Shoe',
-      category: 'Footwear',
-      stock: 7,
-      price: 250,
-      qty: 5,
-    },
-  ]
-  const records = product.slice(firstIndex, lastIndex)
-  const npage = Math.ceil(product.length / recordPerPage)
-  const numbers = [...Array(npage + 1).keys()].slice(1)
-
-  function nextPage() {
-    if (currentPage !== npage) {
-      setCurrentPage(currentPage + 1)
+const UserListingPage = () => {
+    const [currentPage, setCurrentPage] = useState(1)
+    const recordPerPage = 8
+    const firstIndex = (currentPage - 1) * recordPerPage
+    const lastIndex = currentPage * recordPerPage
+    const product = [
+      {
+        id: 12345,
+        image:
+          'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/24750e81-85ed-4b0e-8cd8-becf0cd97b2f/air-jordan-1-mid-shoes-7cdjgS.png',
+        name: 'Shoe',
+        category: 'Footwear',
+        stock: 7,
+        price: 250,
+        qty: 5,
+      },
+    ]
+    const records = product.slice(firstIndex, lastIndex)
+    const npage = Math.ceil(product.length / recordPerPage)
+    const numbers = [...Array(npage + 1).keys()].slice(1)
+  
+    function nextPage() {
+      if (currentPage !== npage) {
+        setCurrentPage(currentPage + 1)
+      }
     }
-  }
-
-  function changeCurrentPage(n) {
-    setCurrentPage(n)
-  }
-
-  function prePage() {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1)
+  
+    function changeCurrentPage(n) {
+      setCurrentPage(n)
     }
-  }
+  
+    function prePage() {
+      if (currentPage !== 1) {
+        setCurrentPage(currentPage - 1)
+      }
+    }
+const [users,setUsers]=useState([])
 
+useEffect(()=>{
+    axios.get(`${baseUrl}/api/v1/admin/getUsers`).then((res)=>{
+            setUsers(res.data)
+    }).catch((err)=>{
+        console.log(err)
+    })
+},[])
+  
   return (
     <div className='flex bg-[#F5F5F9] '>
-      <SideBar />
-      
-      <div className='w-[100%] flex flex-col items-center'>
-        <Navbar />
-        <div className='w-[98%] h-full rounded-lg flex flex-col'>
-            <div className='flex justify-end mr-20  w-[100%] mb-2 '>
-              <Link to="/add-product">
-              <div className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair'>ADD PRODUCT</div>
-              </Link>
-            </div>
+        <SideBar/>
+        <div className='w-[100%] flex flex-col items-center'>
+            <Navbar/> 
+            <div className='w-[98%] h-full rounded-lg flex justify-evenly'>
+            <div className='w-[98%] h-full rounded-lg'>
           <table className='table'>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>IMG</th>
-                <th>PRODUCT</th>
-                <th>CATEGORY</th>
+                <th>PRO-IMG</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
                 <th>STOCK</th>
                 <th>PRICE</th>
                 <th>QTY</th>
@@ -113,9 +118,13 @@ const ProductListingPage = () => {
             </ul>
           </nav>
         </div>
-      </div>
+
+
+            </div>
+        </div>
+
     </div>
   )
 }
 
-export default ProductListingPage
+export default UserListingPage

@@ -4,16 +4,17 @@ const { Schema } = mongoose;
 
 const productVariantSchema = new Schema({
     productId: {
-        type: mongoose.Schema.Types.ObjectId, 
-        required: true
-    },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
     color: {
         type: String,
         required: true
     },
-    // images:{
-    //     type:[String]
-    // },
+    images:{
+        type:Array,
+    },
     stock:{
         type:Number,
         default: 0,
