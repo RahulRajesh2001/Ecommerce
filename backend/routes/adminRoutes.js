@@ -1,5 +1,5 @@
 import express from 'express'
-import { DeleteCategory, addCategory, addProduct, addProductVariant, getAllCategories, getAllProducts } from '../controllers/productControllers.js'
+import { DeleteCategory, EditCategory, addCategory, addProduct, addProductVariant, getAllCategories, getAllProducts } from '../controllers/productControllers.js'
 import { AdminLogin, BlockUnblockUser, getAllUsers } from '../controllers/userControllers.js'
 const router=express.Router()
 
@@ -13,5 +13,6 @@ router.get('/blockUnblock',BlockUnblockUser);
 router.post('/add-category',addCategory)
 router.get('/categories',getAllCategories);
 router.get('/deleteCategory',DeleteCategory)
+router.put('/editCategory/:id',EditCategory)
 
 export default router

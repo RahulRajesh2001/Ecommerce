@@ -113,7 +113,11 @@ export const addCategory = async (req, res) => {
       description,
     })
     const savedCategory = await category.save()
-    res.status(200).json({ message: 'Category saved', savedCategory })
+    if(!savedCategory){
+      return res.status(400).json({message:"error"})
+    }
+    const categories=await CATEGORY.find()
+    res.status(200).json({ message: 'Category saved', categories})
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Internal Server error...!' })
@@ -148,6 +152,31 @@ export const DeleteCategory = async (req, res) => {
     const categories=await CATEGORY.find()
     console.log(categories)
     res.status(200).json({ success: true, categories })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ success: false, error: err.message })
+  }
+}
+
+// PUT
+// api/v1/admim/Editcategories
+// --- admin
+export const EditCategory=async(req,res)=>{
+  try {
+    const { id } = req.params;
+    const { title, description } = req.body;
+
+
+    const updatedCategory = await CATEGORY.findByIdAndUpdate(id, { title, description }, { new: true });
+    console.log(updatedCategory)
+
+    if (!updatedCategory) {
+      return res.status(404).json({ success: false, error: 'Category not found' });
+    }
+
+    const categories=await CATEGORY.find()
+    console.log("heheh",categories)
+    res.status(200).json({ success: true, category: categories });
   } catch (err) {
     console.error(err)
     res.status(500).json({ success: false, error: err.message })

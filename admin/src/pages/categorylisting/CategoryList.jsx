@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import SideBar from '../../components/sidebar/SideBar'
 import 'bootstrap/dist/css/bootstrap.css'
-import { Link, useParams } from 'react-router-dom'
 import AddCategoryPopUP from '../addCategoryPopup/AddCategoryPopUP'
 import axios from 'axios'
 import { baseUrl } from '../../../baseURL'
+import EditCategory from '../editCategory/EditCategory'
+import  {setCategory} from  '../../../redux/reducers/CategorySlice.js'
+import {useDispatch} from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const CategoryList = () => {
+    const dispatch=useDispatch()
   const [currentPage, setCurrentPage] = useState(1)
   const categoriesPerPage = 12
 
@@ -43,10 +47,7 @@ const CategoryList = () => {
         .get(`${baseUrl}/api/v1/admin/categories`)
         .then((res) => {
           setCategories(res.data.categories)
-            //addcategory
-             const addCategory=()=>{
-                    setCategories(res.data.categories)
-                 }
+        dispatch(setCategory(res.data.categories))
   
         })
         .catch((err) => {
@@ -57,11 +58,11 @@ const CategoryList = () => {
     }
   }, [])
 
-
+  const categorys=useSelector(state => state.category.category)
   //category delete
   const handleDelete=(id)=>{
    axios.get(`${baseUrl}/api/v1/admin/deleteCategory`,{params:{id}}).then((res)=>{
-    setCategories(res.data.categories)
+    dispatch(setCategory(res.data.categories))
    })
 
   }
@@ -90,7 +91,7 @@ const CategoryList = () => {
               </tr>
             </thead>
             <tbody>
-              {currentCategories.map((category) => (
+              {categorys.map((category) => (
                     category.isDeleted==false ? <tr key={category._id}>
                     <td>{category._id}</td>
                     <td></td>
@@ -98,10 +99,10 @@ const CategoryList = () => {
                     <td>{category.description}</td>
                     <td></td>
                     <td></td>
-                    <td className='flex'>
-                      <div className='w-[100px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>
-                        EDIT
-                      </div>
+                    <td className='flex gap-4'>
+                     <div className='mt-2'>
+                     <EditCategory id={category._id}/>
+                     </div>
                       <div onClick={()=>handleDelete(category._id)}  className='w-[100px] h-[50px] flex justify-center items-center bg-red-400 text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>
                         DELETE
                       </div>

@@ -5,10 +5,12 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
-import { categorySchema } from '../../../formValidation/categorySchema.js';
+import { categorySchema } from '../../../formValidation/categorySlice.js';
 import { baseUrl } from '../../../baseURL.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCategory } from '../../../redux/reducers/CategorySlice.js';
 
 const style = {
   position: 'absolute',
@@ -24,6 +26,7 @@ const style = {
 
 const AddCategoryPopUP = () => {
 const navigate=useNavigate()
+const dispatch=useDispatch()
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -50,6 +53,7 @@ const navigate=useNavigate()
         axios.post(`${baseUrl}/api/v1/admin/add-category`, category)
             .then((res) => {
                 if (res.status === 200) {
+                  dispatch(setCategory(res.data.categories))
                     handleClose()  
                 }
             })
