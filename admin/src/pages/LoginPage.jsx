@@ -1,32 +1,84 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from "react-router-dom";
+import { useFormik } from 'formik';
+import { loginSchema } from '../../../user/src/formValidationSchema/loginFormValidation';
+import axios from 'axios'
+import {baseUrl} from '../../baseURL.js'
+
 
 const LoginPage = () => {
+  const navigate=useNavigate()
+  const onSubmit = (values, actions) => {
+    const admin={
+      email: values.email,
+      password: values.password,
+    }
+        axios.post(`${baseUrl}/api/v1/admin/adminlogin`,admin).then((res)=>{
+          navigate('/')
+        }).catch((err)=>{
+          console.log(err)
+        })
+  };
+
+  // formik validation
+  const {
+    values,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    errors,
+    isSubmitting,
+  } = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema:loginSchema,
+    onSubmit,
+  });
+
   return (
     <div className='bg-[#F5F5F9] h-screen flex justify-center items-center'>
-      {/*Container */}
-      <div className='bg-[#FFFFFF] h-[50%] w-[35%] flex flex-col justify-center items-center gap-8 rounded-md'>
+      {/* Container */}
+      <form className='bg-[#FFFFFF] h-[50%] w-[35%] flex flex-col justify-center items-center gap-8 rounded-md' onSubmit={handleSubmit}>
         <div className='text-[25px] font-Playfair'>Admin Login</div>
         <div className='w-[100%] flex flex-col justify-center items-center'>
           <div className='font-Josefin font-bold text-[15px]'>Email</div>
           <input
-            type='text'
-            className=' w-[70%] outline-none rounded-md h-[40px] bg-[#FAFAFA]'
+            id='email'
+            name='email' // added name attribute for formik
+            type='email'
+            className={`bg-[#FAFAFA] border h-[40px] w-[70%] rounded-lg ${
+              errors.email ? 'outline-red-400 ' : 'outline-none'
+            }`}
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur} // added onBlur for formik
           />
+          {errors.email ? <p className='text-[10px] '>{errors.email}</p> : ''}
         </div>
         <div className='w-[100%] flex flex-col justify-center items-center'>
           <div className='font-Josefin font-bold text-[15px]'>Password</div>
           <input
+            id='password'
+            name='password' // added name attribute for formik
             type='password'
-            className=' w-[70%] outline-none rounded-md h-[40px] bg-[#FAFAFA]'
+            className={`bg-[#FAFAFA] border h-[40px] w-[70%] rounded-lg ${
+              errors.password ? 'outline-red-400 ' : 'outline-none'
+            }`}
+            value={values.password}
+            onChange={handleChange}
+            onBlur={handleBlur} // added onBlur for formik
           />
+          {errors.password ? <p className='text-[10px] '>{errors.password}</p> : ''}
         </div>
-        {/*Button*/}
-        <button className='bg-[#E7AB3C] w-[70%] h-[40px] rounded-md font-Playfair  text-[#ffff]'>
+        {/* Button */}
+        <button className='bg-[#E7AB3C] w-[70%] h-[40px] rounded-md font-Playfair  text-[#ffff]' type='submit' disabled={isSubmitting}>
           Sign In
         </button>
-      </div>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

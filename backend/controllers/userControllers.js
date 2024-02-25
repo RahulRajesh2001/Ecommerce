@@ -12,7 +12,7 @@ export const login = async (req, res) => {
     //find the user
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' })
     }
     //compare the password
     const isPasswordMatch = await bcrypt.compare(password, user.password);
@@ -136,3 +136,46 @@ export const getAllUsers=async(req,res)=>{
     throw err
   }
 }
+
+// POST
+// api/v1/admin/login
+// --- admin
+
+export const AdminLogin = (req, res) => {
+  console.log("this is body", req.body);
+  const admin = {
+    "email": "rahulrjev@gmail.com",
+    "password": "Rahul@123"
+  };
+
+  try {
+    const { email, password } = req.body;
+    const secretKey = 'superSecretKey';
+
+    if (email === admin.email && password === admin.password) {
+      const token = jwt.sign({ email: admin.email }, secretKey, { expiresIn: '6d' }); 
+      res.status(200).json({ success: true, token: token });
+    } else {
+      res.status(401).json({ success: false, message: "Unauthorized: Incorrect email or password." });
+    }
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// GET
+// api/v1/admin/blockUnblock
+// --- admin
+
+export const BlockUnblockUser = async (req, res) => {
+  try {
+    const { id, userStatus } = req.query;
+    await User.findOneAndUpdate({_id:id }, { $set: { isBlocked: userStatus } }, { new: true });
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
