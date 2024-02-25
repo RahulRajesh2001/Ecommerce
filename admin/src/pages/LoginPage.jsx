@@ -46,14 +46,14 @@ const LoginPage = () => {
           <div className='font-Josefin font-bold text-[15px]'>Email</div>
           <input
             id='email'
-            name='email' // added name attribute for formik
+            name='email' 
             type='email'
             className={`bg-[#FAFAFA] border h-[40px] w-[70%] rounded-lg ${
               errors.email ? 'outline-red-400 ' : 'outline-none'
             }`}
             value={values.email}
             onChange={handleChange}
-            onBlur={handleBlur} // added onBlur for formik
+            onBlur={handleBlur} 
           />
           {errors.email ? <p className='text-[10px] '>{errors.email}</p> : ''}
         </div>
@@ -61,14 +61,14 @@ const LoginPage = () => {
           <div className='font-Josefin font-bold text-[15px]'>Password</div>
           <input
             id='password'
-            name='password' // added name attribute for formik
+            name='password' 
             type='password'
             className={`bg-[#FAFAFA] border h-[40px] w-[70%] rounded-lg ${
               errors.password ? 'outline-red-400 ' : 'outline-none'
             }`}
             value={values.password}
             onChange={handleChange}
-            onBlur={handleBlur} // added onBlur for formik
+            onBlur={handleBlur}
           />
           {errors.password ? <p className='text-[10px] '>{errors.password}</p> : ''}
         </div>

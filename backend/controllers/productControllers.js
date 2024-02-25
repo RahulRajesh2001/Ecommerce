@@ -1,6 +1,7 @@
 import Product from '../model/productModel.js'
 import ProductVariant from '../model/productVarientModel.js'
 import cloudinary from 'cloudinary'
+import CATEGORY from '../model/categoryModel.js'
 
 //cloudinary configaration
 cloudinary.config({
@@ -97,5 +98,58 @@ export const getAllProducts = async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Internal Server error...!' })
+  }
+}
+
+// POSt
+// api/v1/admin/add-category
+// --- admin
+
+export const addCategory = async (req, res) => {
+  try {
+    const { title, description } = req.body
+    const category = new CATEGORY({
+      title,
+      description,
+    })
+    const savedCategory = await category.save()
+    res.status(200).json({ message: 'Category saved', savedCategory })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Internal Server error...!' })
+  }
+}
+
+// Get
+// api/v1/admim/categories
+// --- admin
+
+export const getAllCategories = async (req, res) => {
+  try {
+    const categories = await CATEGORY.find()
+    res.status(200).json({ message: 'Successfull', categories })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Internal Server error...!' })
+  }
+}
+
+// Get
+// api/v1/admim/categories
+// --- admin
+export const DeleteCategory = async (req, res) => {
+  try {
+    const { id } = req.query
+    const category = await CATEGORY.findOneAndUpdate(
+      { _id: id },
+      { $set: { isDeleted: true } },
+      { new: true }
+    )
+    const categories=await CATEGORY.find()
+    console.log(categories)
+    res.status(200).json({ success: true, categories })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ success: false, error: err.message })
   }
 }
