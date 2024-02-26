@@ -4,17 +4,22 @@ import Google from '../../assets/Google.png'
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import {baseUrl} from '../../../baseUrl.js'
+import { useDispatch } from 'react-redux'
+import { setEmailvalue } from '../../../redux/reducers/otpSlice.js'
+
 
 
 
 const SignUp = () => {
+  const dispatch=useDispatch()
 const navigate=useNavigate()
 const [name,setName]=useState("rahul")
 const [email,setEmail]=useState("rahulrjev@gmail.com")
 const [password,setPassword]=useState("12345")
 const [confirmPassword,setConfirmPassword]=useState("12345")
 
-const handleSubmit = (e) => {
+
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
@@ -25,22 +30,25 @@ const handleSubmit = (e) => {
       confirmPassword
     };
 
-
-    axios.post(`${baseUrl}/api/v1/register`, user)
-      .then((response) => {
-        if (response.data) {
-          navigate("/");
-          
-        } 
-      })
-      .catch((err) => {
-        alert("Some error occured..!")
-        console.error(err.message);
-      });
+    const registerResponse = await axios.post(`${baseUrl}/api/v1/register`, user);
+    console.log(registerResponse.data.user.email);
+    
+    if (registerResponse.data) {
+      const otpGenerationResponse = await axios.post(`${baseUrl}/api/v1/otp-generation`, { email:registerResponse.data.user.email });
+      dispatch(setEmailvalue({ email: registerResponse.data.user.email }));
+      if(otpGenerationResponse.status==200){  
+        console.log(otpGenerationResponse)
+        navigate('/email-verification')
+      }else{
+        navigate('/register')
+      }
+    }
   } catch (err) {
-    console.error("Error occured when user registering..!",err);
+    console.error("Error occurred when user registering..!", err);
+    alert("Some error occurred..!");
   }
 };
+
 
 
   return (
@@ -51,17 +59,17 @@ const handleSubmit = (e) => {
 
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Full Name</div>
-          <input type='text' className='border outline-none  h-[35px]' onChange={(e)=>setName(e.target.value)} />
+          <input value={name} type='text' className='border outline-none  h-[35px]' onChange={(e)=>setName(e.target.value)} />
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Email Address</div>
-          <input type='email' className='border outline-none  h-[35px]' onChange={(e)=>setEmail(e.target.value)}/>
+          <input value={email} type='email' className='border outline-none  h-[35px]' onChange={(e)=>setEmail(e.target.value)}/>
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Password</div>
-          <input type='text' className='border outline-none  h-[35px]' onChange={(e)=>setPassword(e.target.value)}/>
+          <input value={password} type='text' className='border outline-none  h-[35px]' onChange={(e)=>setPassword(e.target.value)}/>
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
@@ -71,7 +79,7 @@ const handleSubmit = (e) => {
               Forget Password
             </div>
           </div>
-          <input type='password' className='border outline-none  h-[35px]'  onChange={(e)=>setConfirmPassword(e.target.value)}/>
+          <input value={confirmPassword} type='password' className='border outline-none  h-[35px]'  onChange={(e)=>setConfirmPassword(e.target.value)}/>
         </div>
         <div className='mt-2' onClick={handleSubmit} >
           <FilledButton   value='SIGN UP' w='100%' type="submit"/>
