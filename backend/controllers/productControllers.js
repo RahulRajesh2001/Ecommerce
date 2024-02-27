@@ -257,3 +257,17 @@ export const EditCategory=async(req,res)=>{
     }
   }
 
+// get
+// api/v1/productDetails
+// --- user
+
+export const getProductDetails = (req, res) => {
+  try {
+      const id = req.query.id;
+
+      res.status(200).json({ message: 'Success' });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal Server error...!' });
+  }
+}
