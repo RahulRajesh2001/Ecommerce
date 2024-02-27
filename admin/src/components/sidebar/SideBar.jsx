@@ -18,7 +18,7 @@ const SideBar = () => {
       </div>
       <div className='flex  items-center gap-4 w-[60%] ml-[10%]'>
         <div className='rounded-full bg-[#B4BDC6] w-[10px] h-[10px]'></div>
-        <Link to="/products">
+        <Link to="/base-products">
         <div className='font-Playfair '>Products</div>
         </Link>
       </div>

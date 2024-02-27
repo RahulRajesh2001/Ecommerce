@@ -25,6 +25,9 @@ const productSchema=new mongoose.Schema({
       updatedDate: {
         type: Date,
         default: Date.now
+      },
+      productVarient:{
+        type:mongoose.Schema.Types.ObjectId,ref:"ProductVariant"
       }
 })
 

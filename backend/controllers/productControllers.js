@@ -11,22 +11,22 @@ cloudinary.config({
 })
 
 // Post
-// api/v1/admin/addProduct
+// api/v1/admin/addBaseProduct
 // --- admin
 
-export const addProduct = async (req, res) => {
+export const addBaseProduct = async (req, res) => {
   console.log('addproduct body', req.body)
   try {
-    const { name, category, description, brand } = req.body
+    const {title, category, description, brand } = req.body
     const product = new Product({
-      name,
+      name:title,
       category,
       description,
       brand,
     })
-    const savedProduct = await product.save()
-    const id = savedProduct._id
-    res.status(201).json({ message: 'Product added successfully..!', id })
+    await product.save()
+    const products=await Product.find()
+    res.status(201).json({ message: 'Product added successfully..!',products})
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Internal server error..!' })
@@ -34,6 +34,7 @@ export const addProduct = async (req, res) => {
 }
 
 export const addProductVariant = async (req, res) => {
+  console.log("body",req.body)
   try {
     const {
       id,
@@ -46,13 +47,13 @@ export const addProductVariant = async (req, res) => {
       images,
     } = req.body
 
-    //save images into cloudinary
+    // Save images into Cloudinary
     const cloudinaryUploadImage = async (fileToUpload) => {
       try {
         const data = await cloudinary.uploader.upload(fileToUpload, {
           resource_type: 'auto',
         })
-        return data.url // Return the URL of the uploaded image
+        return data.url; // Return the URL of the uploaded image
       } catch (error) {
         console.log(error)
         throw new Error('Internal Server Error (cloudinary)')
@@ -76,25 +77,72 @@ export const addProductVariant = async (req, res) => {
       images: uploadedImageURLs,
     })
 
-    const savedProductVariant = await productVariantDetails.save()
+    await productVariantDetails.save()
+
+    // Fetch all product variants after saving
+    const productVariants = await ProductVariant.find()
+
     res.status(200).json({
-      message: 'Product variant saved successfully..!',
-      savedProductVariant,
+      message: 'Product variant saved successfully!',
+      productVariants // Consistent variable name
     })
   } catch (err) {
     console.error(err)
-    res.status(500).json({ message: 'Internal server error..!' })
+    res.status(500).json({ message: 'Internal server error!' })
   }
 }
 
+
 // Get
-// api/v1/getProducts
-// --- users
+// api/v1/admin/allfullProducts
+// --- admin
+
+
+export const getFullProducts = async (req, res) => {
+  console.log("executed")
+  try {
+    const products = await Product.aggregate([
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
+   console.log(products)
+    res.status(200).json({message:"full products ",products});
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Internal Server error...!' })
+  }
+}
+// Get
+// api/v1/admin/Singleproducts
+// --- admin
+
+// export const getSingleProduct=async(req,res)=>{
+//   try {
+//     const {id}=req.body
+//     const Singleproducts = await Product.findOne({id})
+//     res.status(200).json({message:"success",Singleproducts});
+//   } catch (err) {
+//     console.error(err)
+//     res.status(500).json({ message: 'Internal Server error...!' })
+//   }
+// }
+
+
+
+// Get
+// api/v1/admin/products
+// --- admin
 
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find()
-    res.status(200).json({ message: 'Successfull', products })
+    res.status(200).json(products);
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Internal Server error...!' })
@@ -182,3 +230,30 @@ export const EditCategory=async(req,res)=>{
     res.status(500).json({ success: false, error: err.message })
   }
 }
+
+
+// GET
+// api/v1/products
+// --- users
+
+  export const getProducts = async (req, res) => {
+    console.log("executed")
+    try {
+      const products = await Product.aggregate([
+        {
+          $lookup: {
+            from: 'productvariants',
+            localField: '_id',
+            foreignField: 'productId',
+            as: 'variants',
+          },
+        },
+      ]);
+  console.log(products)
+      res.status(200).json(products);
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ message: 'Internal Server error...!' })
+    }
+  }
+

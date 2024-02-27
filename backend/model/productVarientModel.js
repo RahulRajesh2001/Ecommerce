@@ -3,11 +3,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const productVariantSchema = new Schema({
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
+    productId:{type: mongoose.Schema.Types.ObjectId,ref:'Product'},
     color: {
         type: String,
         required: true

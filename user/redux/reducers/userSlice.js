@@ -1,7 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialState={
-    user:null
+    user:null,
+    token:null,
+    isAuthenticated:false
 }
 
 export const userSlice=createSlice({
@@ -11,6 +13,9 @@ export const userSlice=createSlice({
         setUser:(state,action)=>{
             state.user=action.payload
             localStorage.setItem("userToken",action.payload.token)
+            state.token=action.payload.token
+            state.isAuthenticated=true
+
         }
     }
 })

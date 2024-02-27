@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import SideBar from '../../components/sidebar/SideBar'
-import { FaRegPlusSquare } from 'react-icons/fa'
 import FileInput from '../../components/imagecrop/FileInput.jsx'
 import ImageCropper from '../../components/imagecrop/ImageCropper.jsx'
 import { ImCross } from 'react-icons/im'
 import axios from 'axios'
 import { baseUrl } from '../../../baseURL.js'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const AddProductPage = () => {
+  const navigate=useNavigate()
   // Initialize imgArray and setImgArray to update its state
   const [imgArray, setImgArray] = useState([])
   // Initialize other state variables
@@ -20,7 +22,6 @@ const AddProductPage = () => {
   const [specName, setSpecName] = useState('')
   const [specValue, setSpecValue] = useState('')
   const [specs, setSpecs] = useState([])
-  console.log("skdsofskf",specs)
 
   // Function to add specifications
   function addSpecs() {
@@ -83,29 +84,19 @@ const AddProductPage = () => {
     setImgArray(imgArr)
   }
   //form submission
-  const [name, setName] = useState('')
-  const [brand, setBrand] = useState('')
-  const [category, setCategory] = useState('')
-  const [description, setDescription] = useState('')
   const [productVarient, setProductVarient] = useState('')
   const [color, setColor] = useState('')
   const [stock, setStock] = useState(0)
   const [regularPrice, setRegularPrice] = useState(0)
   const [salePrice, setSalePrice] = useState(0)
-  const [id, setId] = useState('')
 
-  const handleSubmit = async () => {
+      //takig baseproduct id
+      const baseProductId = useSelector((state) => state.baseProducts.productId)
+
+  const handleSubmit = async (e) => {
     try {
-      const product = {
-        name,
-        brand,
-        category,
-        description,
-      }
-
-      console.log('this is id', id)
       const productVarientdetails = {
-        id,
+        id: baseProductId,
         productVarient,
         color,
         stock,
@@ -115,21 +106,16 @@ const AddProductPage = () => {
         images: imgArray,
       }
 
-      await axios
-        .post(`${baseUrl}/api/v1/admin/addProduct`, product)
-        .then((response) => {
-          setId(response.data.id)
-          if (response.status == 201) {
-            axios
-              .post(
-                `${baseUrl}/api/v1/admin/addProductVarient`,
-                productVarientdetails
-              )
-              .then((res) => {
-                console.log('product vari', res)
-              })
-          } else {
-            alert('Error occured when product details')
+      axios
+        .post(
+          `${baseUrl}/api/v1/admin/addProductVarient`,
+          productVarientdetails
+        )
+        .then((res) => {
+          if(res.data.productVarients){
+            navigate('/varients')
+          }else{
+            navigate('/base-products')
           }
         })
     } catch (err) {
@@ -139,9 +125,7 @@ const AddProductPage = () => {
   }
 
   //handleRemoveSpecs
-  function handleRemoveSpec(index){
-
-  }
+  function handleRemoveSpec(index) {}
 
   return (
     <div className='flex bg-[#F5F5F9] '>
@@ -150,58 +134,11 @@ const AddProductPage = () => {
         <Navbar />
         <div className='w-[98%] h-full rounded-lg flex justify-evenly'>
           {/*form for submission */}
-          <div className='bg-[#FFFF] w-[68%]  rounded-md '>
+          <div className='bg-[#FFFF] w-[68%] '>
             <div className='ml-20 flex flex-col gap-4'>
               <div className='font-Playfair text-[18px] text-[#566A7F] mt-4 '>
                 Product Information
               </div>
-              {/*input box */}
-              <div>
-                <div className='font-Josefin text-[14px] text-[#566A7F]'>
-                  NAME
-                </div>
-                <input
-                  type='text'
-                  className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className='flex'>
-                {/*input box */}
-                <div className='w-[44%]'>
-                  <div className='font-Josefin text-[14px] text-[#566A7F]'>
-                    BRAND
-                  </div>
-                  <input
-                    type='text'
-                    className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
-                    onChange={(e) => setBrand(e.target.value)}
-                  />
-                </div>
-                {/*input box */}
-                <div className='w-[44%]'>
-                  <div className='font-Josefin text-[14px] text-[#566A7F]'>
-                    CATEGORY
-                  </div>
-                  <input
-                    type='text'
-                    className='outline-none w-[80%] h-[40px] rounded-md border border-[#566A7F]'
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                </div>
-              </div>
-              {/*input box */}
-              <div>
-                <div className='font-Josefin text-[14px] text-[#566A7F]'>
-                  DESCRIPTION (OPTIONAL)
-                </div>
-                <input
-                  type='text'
-                  className='outline-none w-[80%] h-[100px] rounded-md border border-[#566A7F]'
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-
               {/*two boxes */}
               <div className='flex'>
                 {/*input box */}
@@ -330,15 +267,23 @@ const AddProductPage = () => {
               <div className='w-[100%] h-full flex flex-col justify-center items-center mb-3'>
                 <div className='h-full  w-[100%] overflow-auto justify-center items-center '>
                   <div className='flex justify-evenly'>
-                    <div className='font-Playfair font-bold text-[13px]'>Specification Name</div>
-                    <div className='font-Playfair font-bold text-[13px]'>Specification Value</div>
+                    <div className='font-Playfair font-bold text-[13px]'>
+                      Specification Name
+                    </div>
+                    <div className='font-Playfair font-bold text-[13px]'>
+                      Specification Value
+                    </div>
                   </div>
-                  {specs.map((value,index) => (
-                    <div className='flex justify-evenly ml-3 items-center mt-1 '>
-                      <div className='flex font-Josefin font-bold'>{value.specName}</div>
-                      <div className='flex font-Josefin font-bold'>{value.specValue}</div>
-                      <button onClick={()=>handleRemoveSpec(index)}>
-                      <ImCross className='right-2 top-2 text-[#000000] text-[12px]' />
+                  {specs.map((value, index) => (
+                    <div key={index} className='flex justify-evenly ml-3 items-center mt-1 '>
+                      <div className='flex font-Josefin font-bold'>
+                        {value.specName}
+                      </div>
+                      <div className='flex font-Josefin font-bold'>
+                        {value.specValue}
+                      </div>
+                      <button onClick={() => handleRemoveSpec(index)}>
+                        <ImCross className='right-2 top-2 text-[#000000] text-[12px]' />
                       </button>
                     </div>
                   ))}
@@ -372,7 +317,6 @@ const AddProductPage = () => {
                   <button
                     className='w-[40px] h-[20x] bg-[#696CFF] text-[#ffff] text-[14px] rounded-md mt-4 mr-2'
                     onClick={addSpecs}
-
                   >
                     Add
                   </button>
