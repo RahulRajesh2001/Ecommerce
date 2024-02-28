@@ -1,5 +1,5 @@
 import express from 'express';
-import { OTPGeneration, login, otpVerification, register } from '../controllers/userControllers.js';
+import { OTPGeneration, login, otpRegeneration, otpVerification, register } from '../controllers/userControllers.js';
 import { getProductDetails, getProducts } from '../controllers/productControllers.js';
 import {verifyToken} from "../utils/authMiddleware.js"
 
@@ -11,5 +11,6 @@ router.post('/otp-generation', OTPGeneration);
 router.post('/otp-verify', otpVerification);
 router.get('/getProducts',getProducts);
 router.get('/getProductDetails', getProductDetails);
+router.post('/otp-regeneration',otpRegeneration)
 
 export default router;

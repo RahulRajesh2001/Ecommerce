@@ -3,20 +3,11 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 dotenv.config()
 import { connectDB } from '../backend/config/db.js';
-import cookieSession from 'cookie-session'
-import passport from 'passport';
 
 
 connectDB()
 const PORT = process.env.PORT
 const app = express()
-app.use(
-  cookieSession({
-    name:"session",
-    keys:["session"],
-    maxAge:24*60*60*100
-  })
-)
 app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

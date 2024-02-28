@@ -199,6 +199,65 @@ export const OTPGeneration = async (req, res) => {
 }
 
 // Post
+// api/v1/otp-regeneration
+// --- user
+
+export const otpRegeneration=async(req,res)=>{
+  
+  try {
+    const {email}=req.body
+    console.log(email)
+    let otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    })
+
+    if (!otp) {
+      return res.status(500).json({ message: 'Error occured..!' })
+    }
+
+    const newOtp = new OTP({
+      email,
+      otp,
+    })
+   await newOtp.save()
+    
+   await res.status(200).json({ message: 'otp save', otp })
+
+    //node mailer
+    // transporter using SMTP transport
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'rahulrjev@gmail.com',
+        pass: 'xgfs dmjo nggx olwa',
+      },
+    })
+
+    // Email data
+    const mailOptions = {
+      from:'rahulrjev@gmail.com',
+      to:`${email}` ,
+      subject: 'Node.js Email Tutorial',
+      text: `${otp}`,
+    }
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error)
+      } else {
+        console.log('Email sent:', info.response)
+      }
+    })
+
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error..' })
+  }
+}
+
+// Post
 // api/v1/otp-verification
 // --- user
 export const otpVerification=async(req,res)=>{

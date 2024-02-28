@@ -133,7 +133,7 @@ const SignUp = () => {
           </div>
           <input
             name='confirmPassword'
-            type='confirmPassword'
+            type='password'
             className={`border h-[35px]  ${
               errors.confirmPassword ? 'outline-red-400 ' : 'outline-none'
             }`}
