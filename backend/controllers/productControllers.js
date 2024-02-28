@@ -237,7 +237,6 @@ export const EditCategory=async(req,res)=>{
 // --- users
 
   export const getProducts = async (req, res) => {
-    console.log("executed")
     try {
       const products = await Product.aggregate([
         {
@@ -249,7 +248,6 @@ export const EditCategory=async(req,res)=>{
           },
         },
       ]);
-  console.log(products)
       res.status(200).json(products);
     } catch (err) {
       console.error(err)
@@ -261,13 +259,33 @@ export const EditCategory=async(req,res)=>{
 // api/v1/productDetails
 // --- user
 
-export const getProductDetails = (req, res) => {
-  try {
-      const id = req.query.id;
+export const getProductDetails=async(req,res)=>{
+  try{
+    let  id = req.query.id;
+    const products = await Product.aggregate([
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField:'_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
 
-      res.status(200).json({ message: 'Success' });
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Internal Server error...!' });
+    products.map((product)=>{
+      if(product._id==id){
+       res.status(200).json({message:"product founded Successfully",product})
+      }else{
+        res.status(400).json({message:"product not found"})
+      }
+    })
+
+
+
+  }catch(err){
+    console.error(err)
+    res.status(500).json({ message: 'Internal Server error...!' })
   }
+  
 }

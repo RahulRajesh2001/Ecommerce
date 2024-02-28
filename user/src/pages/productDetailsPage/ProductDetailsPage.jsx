@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import OfferBar from '../../components/offerbar/OfferBar'
 import Navbar from '../../components/navbar/Navbar'
 import BottomBar from '../../components/bottombar/BottomBar'
@@ -12,8 +12,23 @@ import OutlineButton from '../../components/buttons/oulineButton/OutlineButton'
 import { IoMdHeartEmpty } from 'react-icons/io'
 import { MdOutlineCompareArrows } from 'react-icons/md'
 import ProductDetail from '../../components/productdeatil/ProductDetail'
+import { useSelector } from 'react-redux'
 
 const ProductDetailsPage = () => {
+  const ProductDetails = useSelector(
+    (state) => state.productDetails.productDetails
+  )
+  const [productDetails, setProductDetails] = useState(ProductDetails)
+  const [productDetailsVarient, setProductDetailsVarient] = useState(
+    productDetails.variants[0]
+  )
+  console.log(productDetailsVarient)
+  const [image, setImage] = useState(0)
+
+  function handleImage(index) {
+    setImage(index)
+  }
+
   return (
     <div>
       <OfferBar />
@@ -26,18 +41,22 @@ const ProductDetailsPage = () => {
           <div className='flex flex-col justify-center items-center  mb-12'>
             <div>
               <img
-                src={laptop_image}
+                src={productDetailsVarient.images[image]}
                 alt=''
                 className='w-[400px] h-[300px] mt-5'
               />
             </div>
             <div className='flex gap-3'>
-              <img src={laptop_image} alt='' className='w-[50px] h-[50px]' />
-              <img src={laptop_image} alt='' className='w-[50px] h-[50px]' />
-              <img src={laptop_image} alt='' className='w-[50px] h-[50px]' />
-              <img src={laptop_image} alt='' className='w-[50px] h-[50px]' />
-              <img src={laptop_image} alt='' className='w-[50px] h-[50px]' />
-              <img src={laptop_image} alt='' className='w-[50px] h-[50px]' />
+              {productDetailsVarient.images.map((image, index) => (
+                <div key={index}>
+                  <img
+                    src={image}
+                    alt=''
+                    className='w-[50px] h-[50px]'
+                    onClick={() => handleImage(index)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
           {/*rightside*/}
@@ -73,8 +92,7 @@ const ProductDetailsPage = () => {
             </div>
             {/*headtwo*/}
             <div className='font-semibold text-[15px]'>
-              2020 Apple MacBook Pro With Apple M1 Chip (13-inch,8GB RAM,256GB
-              SSD Storage)-Space Gray
+              {productDetails.name}
             </div>
             {/*headthree*/}
             <div className='flex gap-1'>
@@ -88,21 +106,23 @@ const ProductDetailsPage = () => {
               <div className='flex gap-1'>
                 <div className='text-[11px] text-[#5F6C72]'>Brand :</div>
                 <div className='text-[#191C1F] font-bold text-[10px]'>
-                  Apple
+                  {productDetails.brand}
                 </div>
               </div>
               <div className='flex gap-1 mr-[100px]'>
                 <div className='text-[11px] text-[#5F6C72]'>Category :</div>
                 <div className='text-[#191C1F] font-bold text-[10px]'>
-                  Electronics
+                  {productDetails.category}
                 </div>
               </div>
             </div>
             {/*pricehead*/}
             <div className='flex gap-3 items-center'>
-              <div className='font-bold text-[#2DA5F3] text-[15px]'>₹16000</div>
+              <div className='font-bold text-[#2DA5F3] text-[15px]'>
+                ₹ {productDetailsVarient.salePrice}
+              </div>
               <div className='text-[#77878F] text-[14px]'>
-                <strike>₹19999</strike>
+                <strike>₹{productDetailsVarient.regularPrice}</strike>
               </div>
               <div className='w-[50px] h-[20px] bg-[#F3DE6D] flex justify-center items-center '>
                 <div className='font-bold text-[10px]'>21% OFF</div>
@@ -114,28 +134,30 @@ const ProductDetailsPage = () => {
             {/*color*/}
             <div className='flex justify-between gap-1 mt-2'>
               {/*color*/}
-              <div className='flex flex-col gap-1'>
-                <div className='text-[12px] font-semibold'>Color</div>
-                <div className='flex gap-2'>
-                  <div className='rounded-full bg-[#B1B5B8] w-[30px] h-[30px]'></div>
-                  <div className='rounded-full bg-[#E0E1E1] w-[30px] h-[30px]'></div>
+              <div className='flex  items-center justify-center gap-1'>
+                <div className='text-[12px] font-semibold'>Color :</div>
+                <div className='flex justify-center items-center mt-1 gap-2 '>
+                  <div className='text-[#191C1F] font-bold text-[10px]'>
+                    {productDetailsVarient.color}
+                  </div>
                 </div>
               </div>
               {/*size*/}
-              <SelectButton
-                head='size'
-                innerHead='14-inch Liquid Retina XDR display'
-              />
             </div>
             {/*memory and storage*/}
             <div className='flex justify-between'>
-              <SelectButton head='Memory' innerHead='16GB unified memory' />
-              <SelectButton head='Storage' innerHead='1TV SSD Storage' />
+              {productDetailsVarient.specification.map((element, index) => (
+                <SelectButton
+                  key={index}
+                  head={element.specName}
+                  innerHead={element.specValue}
+                />
+              ))}
             </div>
             {/*buttons section*/}
-            <div className='mt-5 flex justify-around items-center'>
+            <div className='mt-5 flex justify-around items-center gap-2'>
               <CounterButton />
-              <FilledButton value="ADD TO CART" w="230px"/>
+              <FilledButton value='ADD TO CART' w='300px' />
               <OutlineButton />
             </div>
 
@@ -156,7 +178,7 @@ const ProductDetailsPage = () => {
         </div>
         {/*bottomside*/}
         <div className='flex justify-center'>
-        <ProductDetail/>
+          <ProductDetail productDetailsDescription={productDetails.description} />
         </div>
       </div>
 

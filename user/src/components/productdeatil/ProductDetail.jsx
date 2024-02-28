@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { PiMedalDuotone } from 'react-icons/pi'
 
-const ProductDetail = () => {
+const ProductDetail = ({productDetailsDescription}) => {
   const [selectedTab, setSelectedTab] = useState('description')
   return (
     <div className=' w-[70%] h-[400px] mt-5 border border-[#E4E7E9]'>
@@ -46,15 +46,7 @@ const ProductDetail = () => {
           {/*description*/}
           <div className='w-[50%] flex flex-col gap-3 '>
             <div className='text-[15px] font-semibold'>Description</div>
-            <div className='text-[14px] text-[#5F6C72]'>
-              The most powerful MacBook Pro ever is here. With the blazing-fast
-              M1 Pro or M1 Max chip — the first Apple silicon designed for pros
-              — you get groundbreaking performance and amazing battery life. Add
-              to that a stunning Liquid Retina XDR display, the best camera and
-              audio ever in a Mac notebook, and all the ports you need. The
-              first notebook of its kind, this MacBook Pro is a beast. M1 Pro
-              takes the exceptional performance of the M1 architecture to a
-              whole new level for pro users.
+            <div className='text-[14px] text-[#5F6C72]'>{productDetailsDescription}
             </div>
           </div>
 

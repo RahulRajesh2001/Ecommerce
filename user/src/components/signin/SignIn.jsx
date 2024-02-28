@@ -51,7 +51,11 @@ const SignIn = () => {
     onSubmit,
   })
 
-  console.log(errors)
+
+// Google auth
+function googleAuth() {
+  window.open(`${baseUrl}/auth/google/callback`, "_self");
+}
 
   return (
     <div>
@@ -103,7 +107,7 @@ const SignIn = () => {
         {/*0auth section*/}
         <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>
         {/*O Auth*/}
-        <div className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
+        <div onClick={googleAuth} className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
           <img src={Google} alt='' className='ml-[10px]' />
           <div className='text-[11px] text-[#475156]  ml-16'>
             Login with Google

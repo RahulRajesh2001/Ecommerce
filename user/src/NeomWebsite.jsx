@@ -6,6 +6,8 @@ import EmailVerificationPage from './pages/emailverification/EmailVerificationPa
 import { Outlet } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import ShopPage from './pages/shopPage/ShopPage';
+import ProductDetail from './components/productdeatil/ProductDetail';
+import ProductDetailsPage from './pages/productDetailsPage/ProductDetailsPage';
 
 
 
@@ -22,6 +24,7 @@ const NeomWebsite = () => {
       <Routes>
         <Route element={<Protected />}>
         <Route exact path='/shop' element={<ShopPage/>} />
+        <Route exact path='/details' element={<ProductDetailsPage/>} />
           <Route/>
         </Route>
         <Route exact path='/' element={<HomePage />} />
