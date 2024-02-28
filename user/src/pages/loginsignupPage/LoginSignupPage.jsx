@@ -15,12 +15,12 @@ const LoginSignupPage = () => {
       <BottomBar />
       <div
         className={`flex justify-center items-center ${
-          selectedTab === 'signin' ? 'h-[500px]' : 'h-[600px]'
+          selectedTab === 'signin' ? 'h-[500px]' : 'h-[700px]'
         }`}
       >
         <div
           className={`w-[330px] rounded-sm border border-[#E4E7E9] ${
-            selectedTab === 'signin' ? 'h-[400px]' : 'h-[550px]'
+            selectedTab === 'signin' ? 'h-[400px]' : 'h-[650px]'
           }`}
         >
           {/*header */}

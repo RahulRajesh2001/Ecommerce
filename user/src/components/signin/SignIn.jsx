@@ -8,8 +8,11 @@ import { useDispatch } from 'react-redux'
 import { setUser } from '../../../redux/reducers/userSlice.js'
 import { useFormik } from 'formik'
 import { loginSchema } from '../../formValidationSchema/loginFormValidation.js'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const SignIn = () => {
+  const notify = (message) => toast(message)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -20,15 +23,17 @@ const SignIn = () => {
     }
     try {
       axios.post(`${baseUrl}/api/v1/login`, user).then((response) => {
-        console.log(response)
         dispatch(setUser(response.data))
-        navigate('/')
-
-        alert(response.data.message)
+        if (response.status == 200) {
+          navigate('/')
+        } else {
+          navigate('/loginSignup')
+        }
       })
     } catch (error) {
       console.log(error)
       navigate('/loginSignup')
+      notify('Check your details')
     }
 
     actions.resetForm()
@@ -51,14 +56,9 @@ const SignIn = () => {
     onSubmit,
   })
 
-
-// Google auth
-function googleAuth() {
-  window.open(`${baseUrl}/auth/google/callback`, "_self");
-}
-
   return (
     <div>
+      <ToastContainer />
       {/*signinbody*/}
       <div className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
         {/*From validation*/}
@@ -107,7 +107,7 @@ function googleAuth() {
         {/*0auth section*/}
         <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>
         {/*O Auth*/}
-        <div onClick={googleAuth} className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
+        <div className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
           <img src={Google} alt='' className='ml-[10px]' />
           <div className='text-[11px] text-[#475156]  ml-16'>
             Login with Google

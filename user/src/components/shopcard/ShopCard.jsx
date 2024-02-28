@@ -52,7 +52,7 @@ const ShopCard = () => {
   return (
     <div className='flex flex-wrap'>
       {products.map((product, index) => (
-        <div onClick={() => handleDetails(product._id)} key={product._id}>
+        <div className='cursor-pointer' onClick={() => handleDetails(product._id)} key={product._id}>
           {product.variants.map((variant, variantIndex) => (
             <div
               key={variantIndex}

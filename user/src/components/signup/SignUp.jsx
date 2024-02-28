@@ -2,78 +2,126 @@ import React, { useState } from 'react'
 import FilledButton from '../../components/buttons/filledbutton/FilledButton'
 import Google from '../../assets/Google.png'
 import axios from 'axios'
-import {useNavigate} from 'react-router-dom'
-import {baseUrl} from '../../../baseUrl.js'
+import { useNavigate } from 'react-router-dom'
+import { baseUrl } from '../../../baseUrl.js'
 import { useDispatch } from 'react-redux'
 import { setEmailvalue } from '../../../redux/reducers/otpSlice.js'
-
-
-
+import { useFormik } from 'formik'
+import { signupSchema } from '../../formValidationSchema/signUpValidation.js'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const SignUp = () => {
-  const dispatch=useDispatch()
-const navigate=useNavigate()
-const [name,setName]=useState("rahul")
-const [email,setEmail]=useState("rahulrjev@gmail.com")
-const [password,setPassword]=useState("12345")
-const [confirmPassword,setConfirmPassword]=useState("12345")
+  const notify = (message) => toast(message)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
+  const onSubmit = async (values, actions) => {
     const user = {
-      name,
-      email,
-      password,
-      confirmPassword
-    };
-
-    const registerResponse = await axios.post(`${baseUrl}/api/v1/register`, user);
-    console.log(registerResponse.data.user.email);
-    
-    if (registerResponse.data) {
-      const otpGenerationResponse = await axios.post(`${baseUrl}/api/v1/otp-generation`, { email:registerResponse.data.user.email });
-      dispatch(setEmailvalue({ email: registerResponse.data.user.email }));
-      if(otpGenerationResponse.status==200){  
-        console.log(otpGenerationResponse)
-        navigate('/email-verification')
-      }else{
-        navigate('/register')
-      }
+      email: values.email,
+      password: values.password,
+      name: values.name,
+      confirmPassword: values.confirmPassword,
     }
-  } catch (err) {
-    console.error("Error occurred when user registering..!", err);
-    alert("Some error occurred..!");
+
+    try {
+      const registerResponse = await axios.post(
+        `${baseUrl}/api/v1/register`,
+        user
+      )
+
+      if (registerResponse.data) {
+        const otpGenerationResponse = await axios.post(
+          `${baseUrl}/api/v1/otp-generation`,
+          { email: registerResponse.data.user.email }
+        )
+        dispatch(setEmailvalue({ email: registerResponse.data.user.email }))
+        if (otpGenerationResponse.status == 200) {
+          navigate('/email-verification')
+        } else {
+          notify('Registration Failed..!')
+          navigate('/register')
+        }
+      }
+    } catch (err) {
+      console.error('Error occurred when user registering..!', err)
+      alert('Some error occurred..!')
+    }
+    actions.resetForm()
   }
-};
 
-//google auth
-function googleAuth(){
-  window.open(`${baseUrl}/auth/google/callback`,"_self")
-}
-
+  //formik validation
+  const {
+    values,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    errors,
+    isSubmitting,
+  } = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+      name: '',
+      confirmPassword: '',
+    },
+    validationSchema: signupSchema,
+    onSubmit,
+  })
 
   return (
     <div>
       {/*signinbody*/}
-      <div className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
+      <form
+        onSubmit={handleSubmit}
+        className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'
+      >
         {/*input box*/}
 
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Full Name</div>
-          <input value={name} type='text' className='border outline-none  h-[35px]' onChange={(e)=>setName(e.target.value)} />
+          <input
+            name='name'
+            type='text'
+            className={`border h-[35px]  ${
+              errors.name ? 'outline-red-400 ' : 'outline-none'
+            }`}
+            value={values.name}
+            onChange={handleChange}
+          />
+          {errors.name ? <p className='text-[10px] '>{errors.name}</p> : ''}
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Email Address</div>
-          <input value={email} type='email' className='border outline-none  h-[35px]' onChange={(e)=>setEmail(e.target.value)}/>
+          <input
+            name='email'
+            type='email'
+            className={`border h-[35px]  ${
+              errors.email ? 'outline-red-400 ' : 'outline-none'
+            }`}
+            value={values.email}
+            onChange={handleChange}
+          />
+          {errors.email ? <p className='text-[10px] '>{errors.email}</p> : ''}
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
           <div className='text-[12px] font-semibold '>Password</div>
-          <input value={password} type='text' className='border outline-none  h-[35px]' onChange={(e)=>setPassword(e.target.value)}/>
+          <input
+            name='password'
+            type='password'
+            className={`border h-[35px]  ${
+              errors.password ? 'outline-red-400 ' : 'outline-none'
+            }`}
+            value={values.password}
+            onChange={handleChange}
+          />
+          {errors.password ? (
+            <p className='text-[10px] '>{errors.password}</p>
+          ) : (
+            ''
+          )}
         </div>
         {/*input box*/}
         <div className='flex  flex-col gap-2 '>
@@ -83,15 +131,28 @@ function googleAuth(){
               Forget Password
             </div>
           </div>
-          <input value={confirmPassword} type='password' className='border outline-none  h-[35px]'  onChange={(e)=>setConfirmPassword(e.target.value)}/>
+          <input
+            name='confirmPassword'
+            type='confirmPassword'
+            className={`border h-[35px]  ${
+              errors.confirmPassword ? 'outline-red-400 ' : 'outline-none'
+            }`}
+            value={values.confirmPassword}
+            onChange={handleChange}
+          />
+          {errors.confirmPassword ? (
+            <p className='text-[10px] '>{errors.confirmPassword}</p>
+          ) : (
+            ''
+          )}
         </div>
-        <div className='mt-2' onClick={handleSubmit} >
-          <FilledButton   value='SIGN UP' w='100%' type="submit"/>
+        <div disabled={isSubmitting} className='mt-2' onClick={handleSubmit}>
+          <FilledButton value='SIGN UP' w='100%' type='submit' />
         </div>
 
         <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>
         {/*O Auth*/}
-        <div onClick={googleAuth} className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
+        <div className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
           <img src={Google} alt='' className='ml-[10px]' />
           <div className='text-[11px] text-[#475156]  ml-16'>
             Login with Google
@@ -104,7 +165,7 @@ function googleAuth(){
             Login with Google
           </div>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

@@ -3,7 +3,6 @@ import OfferBar from '../../components/offerbar/OfferBar'
 import Navbar from '../../components/navbar/Navbar'
 import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
-import laptop_image from '../../assets/laptop_image.png'
 import { FaStar } from 'react-icons/fa6'
 import SelectButton from '../../components/buttons/selecButton/SelectButton'
 import CounterButton from '../../components/buttons/counterbutton/CounterButton'
@@ -13,6 +12,7 @@ import { IoMdHeartEmpty } from 'react-icons/io'
 import { MdOutlineCompareArrows } from 'react-icons/md'
 import ProductDetail from '../../components/productdeatil/ProductDetail'
 import { useSelector } from 'react-redux'
+import ReactImageMagnify from 'react-image-magnify'
 
 const ProductDetailsPage = () => {
   const ProductDetails = useSelector(
@@ -39,11 +39,22 @@ const ProductDetailsPage = () => {
         <div className='flex justify-center gap-8'>
           {/*leftside*/}
           <div className='flex flex-col justify-center items-center  mb-12'>
-            <div>
-              <img
-                src={productDetailsVarient.images[image]}
-                alt=''
-                className='w-[400px] h-[300px] mt-5'
+            <div className='w-[400px] h-[300px] mt-5'>
+              {/*   */}
+              <ReactImageMagnify
+                {...{
+                  smallImage: {
+                    alt: 'Wristwatch by Ted Baker London',
+                    isFluidWidth: true,
+                    src: productDetailsVarient.images[image],
+                  },
+                  largeImage: {
+                    src: productDetailsVarient.images[image],
+                    width: 700,
+                    height: 1300,
+                  },
+                  isHintEnabled:true
+                }}
               />
             </div>
             <div className='flex gap-3'>
@@ -178,7 +189,9 @@ const ProductDetailsPage = () => {
         </div>
         {/*bottomside*/}
         <div className='flex justify-center'>
-          <ProductDetail productDetailsDescription={productDetails.description} />
+          <ProductDetail
+            productDetailsDescription={productDetails.description}
+          />
         </div>
       </div>
 

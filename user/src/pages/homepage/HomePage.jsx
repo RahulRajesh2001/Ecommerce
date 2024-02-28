@@ -6,27 +6,35 @@ import HomeCarosel from '../../components/homecarosel/HomeCarosel'
 import Footer from '../../components/footer/Footer'
 import CategoryBar from '../../components/categorybar/CategoryBar'
 import FeaturedProducts from '../../components/featuredproducts/FeaturedProducts'
-
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useSelector } from 'react-redux'
 
 const HomePage = () => {
+  const notify = (message) => toast(message)
+
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+  if (isAuthenticated == true) {
+    notify('Login Successfull')
+  }
   return (
     <div className='flex flex-col '>
+      <ToastContainer/>
       <div className='vvsm:hidden md:block'>
-      <OfferBar/>
+        <OfferBar />
       </div>
-     <Navbar />
-       <BottomBar />
+      <Navbar />
+      <BottomBar />
       <div className='w-[100%] flex justify-center items-center'>
         <HomeCarosel />
       </div>
       <div className='flex justify-center mb-5'>
-      <CategoryBar/>
+        <CategoryBar />
       </div>
       <div className='flex justify-center mb-5'>
-        <FeaturedProducts/>
+        <FeaturedProducts />
       </div>
       <Footer />
-
     </div>
   )
 }
