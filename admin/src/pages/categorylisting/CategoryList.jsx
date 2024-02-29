@@ -15,6 +15,9 @@ const CategoryList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const categoriesPerPage = 12
 
+const token=localStorage.getItem("adminLogin")
+
+
   const [categories, setCategories] = useState([])
   const indexOfLastCategory = currentPage * categoriesPerPage
   const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage
@@ -44,8 +47,11 @@ const CategoryList = () => {
   useEffect(() => {
     try {
       axios
-        .get(`${baseUrl}/api/v1/admin/categories`)
-        .then((res) => {
+        .get(`${baseUrl}/api/v1/admin/categories`,{
+          headers: { 
+            Authorization: token,
+          },
+        }).then((res) => {
           setCategories(res.data.categories)
         dispatch(setCategory(res.data.categories))
   
@@ -61,7 +67,12 @@ const CategoryList = () => {
   const categorys=useSelector(state => state.category.category)
   //category delete
   const handleDelete=(id)=>{
-   axios.get(`${baseUrl}/api/v1/admin/deleteCategory`,{params:{id}}).then((res)=>{
+   axios.get(`${baseUrl}/api/v1/admin/deleteCategory`,{
+    params: { id },
+    headers: { 
+      Authorization: token,
+    },
+  }).then((res)=>{
     dispatch(setCategory(res.data.categories))
    })
 

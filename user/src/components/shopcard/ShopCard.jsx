@@ -10,8 +10,9 @@ const ShopCard = () => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
   const [products, setProducts] = useState([])
-  const token = localStorage.getItem('userToken')
 
+
+  const token = localStorage.getItem('userToken')
   useEffect(() => {
     console.log('this is token', token)
     axios
@@ -21,7 +22,7 @@ const ShopCard = () => {
         },
       })
       .then((res) => {
-        setProducts(res.data)
+        setProducts(res.data.products)
       })
       .catch((err) => {
         console.log(err)

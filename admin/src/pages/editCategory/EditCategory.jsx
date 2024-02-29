@@ -32,7 +32,7 @@ const EditCategory = ({id}) => {
   const handleClose = () => setOpen(false);
 
   const categorys=useSelector(state => state.category.category)
-
+const token=localStorage.getItem("adminLogin")
   // formik validation
   const {
     values,
@@ -53,7 +53,11 @@ const EditCategory = ({id}) => {
         title: values.title,
         description: values.description
       };
-      axios.put(`${baseUrl}/api/v1/admin/editCategory/${id}`, category)
+      axios.put(`${baseUrl}/api/v1/admin/editCategory/${id}`, category,{
+        headers: { 
+          Authorization: token,
+        },
+      })
         .then((res) => {
           dispatch(setCategory(res.data.category));
           console.log('Category updated successfully:', res.data);
@@ -112,7 +116,7 @@ const EditCategory = ({id}) => {
               />
               {errors.description && touched.description && <div className="text-red-500">{errors.description}</div>}
             </div>
-            <button  type="submit" className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>Edit</button>
+            <button disabled={isSubmitting}  type="submit" className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>Edit</button>
           </form>
         </Box>
       </Fade>

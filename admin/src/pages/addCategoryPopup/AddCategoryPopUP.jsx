@@ -24,6 +24,8 @@ const style = {
   p: 4,
 };
 
+const token=localStorage.getItem("adminLogin")
+
 const AddCategoryPopUP = () => {
 const navigate=useNavigate()
 const dispatch=useDispatch()
@@ -51,7 +53,11 @@ const dispatch=useDispatch()
             title: values.title,
             description: values.description
         };
-        axios.post(`${baseUrl}/api/v1/admin/add-category`, category)
+        axios.post(`${baseUrl}/api/v1/admin/add-category`, category,{
+          headers: { 
+            Authorization: token,
+          },
+        })
             .then((res) => {
                 if (res.status === 200) {
                   dispatch(setCategory(res.data.categories))

@@ -92,7 +92,7 @@ const AddProductPage = () => {
 
       //takig baseproduct id
       const baseProductId = useSelector((state) => state.baseProducts.productId)
-
+const token=localStorage.getItem('adminLogin')
   const handleSubmit = async (e) => {
     try {
       const productVarientdetails = {
@@ -109,7 +109,11 @@ const AddProductPage = () => {
       axios
         .post(
           `${baseUrl}/api/v1/admin/addProductVarient`,
-          productVarientdetails
+          productVarientdetails,{
+            headers: { 
+              Authorization: token,
+            },
+          }
         )
         .then((res) => {
           if(res.data.productVarients){

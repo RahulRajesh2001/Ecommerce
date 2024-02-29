@@ -68,7 +68,11 @@ function UnBlock(id){
       
 }
 useEffect(()=>{
-    axios.get(`${baseUrl}/api/v1/admin/getUsers`).then((res)=>{
+    axios.get(`${baseUrl}/api/v1/admin/getUsers`,{
+      headers: { 
+        Authorization: token,
+      },
+    }).then((res)=>{
             setUsers(res.data.users)
             console.log(users)
     }).catch((err)=>{

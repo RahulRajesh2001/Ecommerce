@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../model/userModel.js';
 
 export const verifyToken = async (req, res, next) => {
-  const token = req.headers('Authorization');
+  const token = req.header('Authorization');
   if (!token) return res.status(401).json({ error: 'Access denied' });
 
   try {

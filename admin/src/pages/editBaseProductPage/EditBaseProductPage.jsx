@@ -12,6 +12,8 @@ import { useDispatch,useSelector } from 'react-redux';
 import { setBaseProducts } from '../../../redux/reducers/BaseProductSlice.js';
 
 
+
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -42,7 +44,7 @@ const EditBaseProductPage = ({id}) => {
         setProduct(foundProduct);
       }
     }, [baseProducts, id])
-    
+    const token=localStorage.getItem("adminLogin")
     // formik validation
     const {
       values,
@@ -61,17 +63,26 @@ const EditBaseProductPage = ({id}) => {
       validationSchema:productSchema,
       onSubmit: (values) => {
           const baseProduct = {
-              title: values.title,
+              name: values.title,
               description: values.description,
               category:values.category,
               brand:values.brand
           }
       
-          try{
-            console.log("base from front",baseProduct)
-              axios.put(`${baseUrl}/api/v1/admin/editBaseProduct`,{baseProduct,id}).then((res)=>{
-                  dispatch(setBaseProducts(res.data.products))
-              })
+          try {
+            console.log("base from front", baseProduct);
+            const response = axios.post(`${baseUrl}/api/v1/admin/editBaseProduct`, { baseProduct, id }, {
+              headers: {
+                Authorization: token,
+              },
+            });
+        
+            if (response.status === 200) {
+              return setBaseProducts(response.data.products);
+            } else {
+              console.log('Error:', response.statusText);
+              return { error: response.statusText };
+            }
           }catch(err){
               console.log(err)
           }
