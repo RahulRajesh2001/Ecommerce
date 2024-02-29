@@ -21,6 +21,10 @@ const productVariantSchema = new Schema({
         default: 0,
         min: 0
     },
+    isDeleted:{
+        type:Boolean,
+        default:false
+    },
     varientName:{
         type:String,
     },

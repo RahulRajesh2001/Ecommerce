@@ -2,6 +2,7 @@ import Product from '../model/productModel.js'
 import ProductVariant from '../model/productVarientModel.js'
 import cloudinary from 'cloudinary'
 import CATEGORY from '../model/categoryModel.js'
+import reviewModel from '../model/reviewModel.js'
 
 //cloudinary configaration
 cloudinary.config({
@@ -99,7 +100,6 @@ export const addProductVariant = async (req, res) => {
 
 
 export const getFullProducts = async (req, res) => {
-  console.log("executed")
   try {
     const products = await Product.aggregate([
       {
@@ -111,29 +111,12 @@ export const getFullProducts = async (req, res) => {
         },
       },
     ]);
-   console.log(products)
     res.status(200).json({message:"full products ",products});
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Internal Server error...!' })
   }
 }
-// Get
-// api/v1/admin/Singleproducts
-// --- admin
-
-// export const getSingleProduct=async(req,res)=>{
-//   try {
-//     const {id}=req.body
-//     const Singleproducts = await Product.findOne({id})
-//     res.status(200).json({message:"success",Singleproducts});
-//   } catch (err) {
-//     console.error(err)
-//     res.status(500).json({ message: 'Internal Server error...!' })
-//   }
-// }
-
-
 
 // Get
 // api/v1/admin/products
@@ -154,6 +137,7 @@ export const getAllProducts = async (req, res) => {
 // --- admin
 
 export const addCategory = async (req, res) => {
+  console.log("add category",req.body)
   try {
     const { title, description } = req.body
     const category = new CATEGORY({
@@ -281,11 +265,115 @@ export const getProductDetails=async(req,res)=>{
       }
     })
 
-
-
   }catch(err){
     console.error(err)
     res.status(500).json({ message: 'Internal Server error...!' })
   }
   
+}
+
+// get
+// api/v1/admin/deleteBaseProducts
+// --- admin
+
+export const deleteBaseProducts=async(req,res)=>{
+  try{
+    let  id = req.query.id;
+    const product=await Product.findByIdAndUpdate(id, {isDeleted:true}, { new: true })
+    const savedProduct=await Product.find({isDeleted:false})
+    console.log("sved",savedProduct)
+    res.status(200).json({message:"successfull",savedProduct})
+  }catch(err){
+    console.error(err)
+    res.status(500).json({ message: 'Internal Server error...!' })
+  }
+  
+}
+
+// put
+// api/v1/admin/editBaseProduct
+// --- admin
+
+export const editBaseProduct = async (req, res) => {
+  try {
+    const { title, description, category, brand, id } = req.body;
+        const product = await Product.findById(id);
+        if (!product) {
+          return res.status(404).json({ message: 'Product not found' });
+        }
+  
+        product.name = title || product.name;
+        product.description = description || product.description;
+        product.category = category || product.category;
+        product.brand = brand || product.brand;
+  
+        await product.save();
+        console.log("thisis ",product)
+
+        res.status(200).json({ message: 'Product updated successfully', product });
+    
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server error' });
+  }
+};
+
+
+// post
+// api/v1/addReview
+// --- user
+
+export const addReview = async (req, res) => {
+  try {
+    const { productId, rating, review, userId } = req.body;
+    const newReview = new reviewModel({
+      productId,
+      rating,
+      review,
+      userId
+    });
+    await newReview.save();
+    res.status(201).json(newReview);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server error...!' });
+  }
+};
+
+// get
+// api/v1/getReview
+// --- user
+
+export const getReview=async(req,res)=>{
+  try {
+    const id=req.query.id
+    const review=await reviewModel.find({productId:id})
+    if(!review){
+      res.status(400).json({message:"not found"})
+    }
+    res.status(200).json({message:"successfull",review})
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server error...!' });
+  }
+}
+
+// get
+// api/v1/admin/delete
+// --- admin
+
+export const deleteVariant = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const variant = await ProductVariant.findByIdAndUpdate(id, {isDeleted:true}, { new: true });
+    console.log(variant )
+    if(!variant){
+      res.status(500).json({message:"There is no user..!"})
+    }
+    const updatedVarients=await ProductVariant.find()
+    res.status(200).json({ message: "Successful" ,updatedVarients});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 }

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Description from '../discription/Description'
 import Review from '../review/Review'
 
-const ProductDetail = ({productDetailsDescription}) => {
+const ProductDetail = ({productDetailsDescription,id}) => {
   const [selectedTab, setSelectedTab] = useState('description')
   return (
     <div className=' w-[70%] h-[400px] mt-5 border border-[#E4E7E9]'>
@@ -44,7 +44,7 @@ const ProductDetail = ({productDetailsDescription}) => {
       </div>
       {/*bottom part */}
       {selectedTab === 'description' && (<Description productDetailsDescription={productDetailsDescription}/>)}
-      {selectedTab === 'review' && (<Review/>)}
+      {selectedTab === 'review' && (<Review id={id}/>)}
 
     </div>
   )

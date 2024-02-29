@@ -1,20 +1,35 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
+import axios from 'axios'
+import {baseUrl} from '../../../baseUrl.js'
+import person from '../../assets/person.jpeg'
 
-const Review = () => {
+
+const Review = ({id}) => {
+  const [review,setReview]=useState([])
+  useEffect(()=>{
+    try{
+        axios.get(`${baseUrl}/api/v1/get-review`,{params:{id}}).then((res)=>{
+         setReview(res.data.review)
+         console.log(review)
+        })
+    }catch(err){
+      console.log(err)
+    }
+  },[])
+  
   return (
-    <div className='w-[100%] h-[340px] bg-red-300 flex flex-col justify-center items-center overflow-y-scroll gap-2'>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-    <div className='bg-green-200 w-[80%] h-[100px] '></div>
-
+    <div className='w-[100%] h-[340px] flex flex-col justify-center items-center gap-2'>
+   {review.map((review)=>(
+     <div className=' w-[70%] h-[100px]  flex justify-evenly items-center'>
+     <div className='w-[80px] h-[80px] rounded-full'>
+      <img src={person} alt="" className='rounded-full w-[80px] h-[80px]' />
+     </div>
+     <div>
+       <div className='font-semibold'>{review.review}</div>
+       <div></div>
+     </div>
+   </div>
+   ))}
   </div>
   
   )

@@ -35,30 +35,38 @@ const UserListingPage = () => {
 
   //block or unblock user
   
+const token=localStorage.getItem('adminLogin')
 const [userStatus,setUserStatus]=useState('false')
 
-function Blcok(id){
-    setUserStatus(true)
-  axios.get(`${baseUrl}/api/v1/admin/blockUnblock`,{params:{userStatus,id}}).then((res)=>{
-    console.log(res)
-  }).catch((err)=>{
-    console.log(err)
-  })
-    
+function Block(id) {
+  setUserStatus(true);
+  axios.get(`${baseUrl}/api/v1/admin/blockUnblock`, {
+    params: { id },
+    headers: { 
+      Authorization: token,
+    },
+  }).then((res) => {
+    console.log(res);
+  }).catch((err) => {
+    console.log(err);
+  });
 }
 
-function UnBlcok(id){
+
+function UnBlock(id){
     setUserStatus(false)
-    axios.get(`${baseUrl}/api/v1/admin/blockUnblock`,{params:{userStatus,id}}).then((res)=>{
+    axios.get(`${baseUrl}/api/v1/admin/blockUnblock`,{
+      params: { id },
+      headers: { 
+        Authorization: token,
+      },
+    }).then((res)=>{
       console.log(res)
     }).catch((err)=>{
       console.log(err)
     })
       
 }
-
-
-
 useEffect(()=>{
     axios.get(`${baseUrl}/api/v1/admin/getUsers`).then((res)=>{
             setUsers(res.data.users)
@@ -101,8 +109,8 @@ useEffect(()=>{
                   </td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
-                  <td className='font-bold cursor-pointer' onClick={()=>Blcok(user._id)}>Unblock</td>
-                  <td className='font-bold cursor-pointer' onClick={()=>UnBlcok(user._id)} >Block</td>
+                  <td className='font-bold cursor-pointer' onClick={()=>Block(user._id)}>Unblock</td>
+                  <td className='font-bold cursor-pointer' onClick={()=>UnBlock(user._id)} >Block</td>
                   <td><SlActionRedo /></td>
                 </tr>
               ))}

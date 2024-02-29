@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -8,7 +8,7 @@ import { useFormik } from 'formik';
 import { categorySchema } from '../../../formValidation/categorySlice.js';
 import { baseUrl } from '../../../baseURL.js';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { setBaseProducts } from '../../../redux/reducers/BaseProductSlice.js';
 
 
@@ -24,60 +24,65 @@ const style = {
     p: 4,
   };
 
-const AddBaseProduct = () => {
+const EditBaseProductPage = ({id}) => {
     const dispatch=useDispatch()
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
 
-  const token =localStorage.getItem("adminLogin")
 
-  // formik validation
-  const {
-    values,
-    touched,
-    errors,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      title: '',
-      description: '',
-      category:'',
-      brand:''
-    },
-    validationSchema: categorySchema,
-    onSubmit: (values) => {
-        const category = {
-            title: values.title,
-            description: values.description,
-            category:values.category,
-            brand:values.brand
-        };
+    const [product, setProduct] = useState({});
+
+    // Taking base product
+    const baseProducts = useSelector((state) => state.baseProducts.baseProducts);
+    useEffect(() => {
+      const foundProduct = baseProducts.find((baseProduct) => baseProduct._id === id);
+      if (foundProduct) {
+        setProduct(foundProduct);
+      }
+    }, [baseProducts, id])
     
-        try{
-            axios.post(`${baseUrl}/api/v1/admin/addBaseProduct`,category,{
-              headers: { 
-                Authorization: token,
-              },
-            }).then((res)=>{
-                console.log(res)
-                dispatch(setBaseProducts(res.data.products))
-            })
-        }catch(err){
-            console.log(err)
-        }
-
-handleClose()
-    },    
-  });
-
+    // formik validation
+    const {
+      values,
+      touched,
+      errors,
+      handleBlur,
+      handleChange,
+      handleSubmit,
+    } = useFormik({
+      initialValues: {
+        title:'',
+        description: '',
+        category:'',
+        brand:''
+      },
+      validationSchema: categorySchema,
+      onSubmit: (values) => {
+          const baseProduct = {
+              title: values.title,
+              description: values.description,
+              category:values.category,
+              brand:values.brand
+          }
+      
+          try{
+            console.log("base from front",baseProduct)
+              axios.put(`${baseUrl}/api/v1/admin/editBaseProduct`,{baseProduct,id}).then((res)=>{
+                  dispatch(setBaseProducts(res.data.products))
+              })
+          }catch(err){
+              console.log(err)
+          }
+  
+  handleClose()
+      },    
+    });
   return (
     <div>
         <div>
-    <Button onClick={handleOpen}>ADD BASE PRODUCT</Button>
+    <Button onClick={handleOpen}>EDIT</Button>
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
@@ -101,7 +106,7 @@ handleClose()
                 placeholder='Enter title...'
                 className={`bg-[#FAFAFA] border h-[40px] w-[90%] rounded-lg ${errors.title && touched.title ? 'outline-red-400 ' : 'outline-none'
                   }`}
-                value={values.title}
+                  value={values.title || product.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -115,7 +120,7 @@ handleClose()
                 placeholder='Category'
                 className={`bg-[#FAFAFA] border h-[40px] w-[90%] rounded-lg ${errors.category && touched.category ? 'outline-red-400 ' : 'outline-none'
                   }`}
-                value={values.category}
+                value={values.category || product.category}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -130,7 +135,7 @@ handleClose()
                 placeholder='Brand'
                 className={`bg-[#FAFAFA] border h-[40px] w-[90%] rounded-lg ${errors.brand && touched.brand ? 'outline-red-400 ' : 'outline-none'
                   }`}
-                value={values.brand}
+                  value={values.brand || product.brand}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -145,7 +150,7 @@ handleClose()
                 placeholder='Description...'
                 className={`bg-[#FAFAFA] border h-[90px] w-[90%] rounded-lg ${errors.description && touched.description ? 'outline-red-400 ' : 'outline-none'
                   }`}
-                value={values.description}
+                  value={values.description || product.description}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -162,4 +167,4 @@ handleClose()
   )
 }
 
-export default AddBaseProduct
+export default EditBaseProductPage

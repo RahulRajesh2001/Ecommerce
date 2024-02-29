@@ -12,6 +12,9 @@ import {
 } from '../../../redux/reducers/BaseProductSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { setProducts } from '../../../redux/reducers/ProductSlice'
+import { MdDelete } from "react-icons/md";
+import EditBaseProductPage from '../editBaseProductPage/EditBaseProductPage'
+
 
 const BaseProducts = () => {
   const dispatch = useDispatch()
@@ -26,9 +29,14 @@ const BaseProducts = () => {
   }, [])
 
   // Fetch products from the API
+  const token=localStorage.getItem('adminLogin')
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/admin/getAllProducts`)
+      const response = await axios.get(`${baseUrl}/api/v1/admin/getAllProducts`,{
+        headers: { 
+          Authorization: token,
+        },
+      })
       dispatch(setBaseProducts(response.data))
     } catch (error) {
       console.error('Error fetching products:', error)
@@ -36,7 +44,11 @@ const BaseProducts = () => {
   }
   //for fetch full products
   useEffect(()=>{
-    axios.get(`${baseUrl}/api/v1/admin/fullProducts`).then((res)=>{
+    axios.get(`${baseUrl}/api/v1/admin/fullProducts`,{
+      headers: { 
+        Authorization: token,
+      },
+    }).then((res)=>{
         dispatch(setProducts(res.data.products))
     })
   },[])
@@ -61,6 +73,23 @@ const BaseProducts = () => {
     dispatch(setBaseProductId(id))
   }
 
+  //handle Delete
+  const handleDelete=async(id)=>{
+    await axios.get(`${baseUrl}/api/v1/admin/deleteBaseProduct`,{
+      params: { id },
+      headers: { 
+        Authorization: token,
+      },
+    }).then((res)=>{
+      dispatch(setBaseProducts(res.data.savedProduct))
+    })
+  }
+
+  //handle Edit
+  const handleEdit=async(id)=>{
+    console.log(id)
+  }
+
   return (
     <div className='flex bg-[#F5F5F9]'>
       <SideBar />
@@ -79,33 +108,35 @@ const BaseProducts = () => {
                 <th>CATEGORY</th>
                 <th></th>
                 <th></th>
-                <th></th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {baseproducts
-                .slice(firstIndex, lastIndex)
-                .map((product, index) => (
-                  <tr key={index}>
-                    <td>{product._id}</td>
-                    <td></td>
-                    <td>{product.name}</td>
-                    <td>{product.category}</td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <Link to='/varients'>
-                        <div
-                          onClick={() => handleSetBaseProductId(product._id)}
-                          className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair'
-                        >
-                          ADD VARIANTS
-                        </div>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
+  {baseproducts.map((product) => (
+      !product.isDeleted && (
+        <tr key={product._id}>
+          <td>{product._id}</td>
+          <td></td>
+          <td>{product.name}</td>
+          <td>{product.category}</td>
+          
+          <td>
+            <Link to='/varients'>
+              <div
+                onClick={() => handleSetBaseProductId(product._id)}
+                className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair'
+              >
+                ADD VARIANTS
+              </div>
+            </Link>
+          </td>
+          <td onClick={()=>handleEdit(product._id)} className='text-[25px] cursor-pointer'><EditBaseProductPage id={product._id}/></td>
+          <td onClick={()=>handleDelete(product._id)} className='text-[25px] cursor-pointer'><MdDelete /></td>
+        </tr>
+      )
+    ))}
+</tbody>
+
           </table>
           <nav>
             <ul className='pagination'>

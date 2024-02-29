@@ -17,7 +17,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 600,
+    width: 600, 
     height: 500,
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -40,6 +40,7 @@ const EditCategory = ({id}) => {
     handleBlur,
     handleChange,
     handleSubmit,
+    isSubmitting
   } = useFormik({
     initialValues: {
       title: '',
@@ -47,20 +48,21 @@ const EditCategory = ({id}) => {
     },
     validationSchema: categorySchema,
     onSubmit: (values) => {
-        const category = {
-            title: values.title,
-            description: values.description
-        };
-        axios.put(`${baseUrl}/api/v1/admin/editCategory/${id}`, category)
+      const category = {
+        title: values.title,
+        description: values.description
+      };
+      axios.put(`${baseUrl}/api/v1/admin/editCategory/${id}`, category)
         .then((res) => {
-          dispatch(setCategory(res.data.category))
-          console.log('Category updated successfully:', res.data.category);
-          handleClose()
+          dispatch(setCategory(res.data));
+          console.log('Category updated successfully:', res.data);
+          handleClose();
         })
         .catch(error => {
           console.error('Error editing category:', error);
         });
-    },    
+    }
+        
   });
   return (
     <div>
@@ -109,7 +111,7 @@ const EditCategory = ({id}) => {
               />
               {errors.description && touched.description && <div className="text-red-500">{errors.description}</div>}
             </div>
-            <button type="submit" className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>ADD</button>
+            <button  type="submit" className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>Edit</button>
           </form>
         </Box>
       </Fade>

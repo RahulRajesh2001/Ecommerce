@@ -189,7 +189,7 @@ const ProductDetailsPage = () => {
         </div>
         {/*bottomside*/}
         <div className='flex justify-center'>
-          <ProductDetail
+          <ProductDetail id={productDetails._id}
             productDetailsDescription={productDetails.description}
           />
         </div>

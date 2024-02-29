@@ -4,9 +4,7 @@ import HomePage from './pages/homepage/HomePage';
 import LoginSignupPage from './pages/loginsignupPage/LoginSignupPage';
 import EmailVerificationPage from './pages/emailverification/EmailVerificationPage';
 import { Outlet } from "react-router-dom";
-import { useSelector } from 'react-redux';
 import ShopPage from './pages/shopPage/ShopPage';
-import ProductDetail from './components/productdeatil/ProductDetail';
 import ProductDetailsPage from './pages/productDetailsPage/ProductDetailsPage';
 
 

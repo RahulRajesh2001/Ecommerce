@@ -2,20 +2,24 @@ import React, { useEffect, useState } from 'react'
 import SideBar from '../../components/sidebar/SideBar'
 import Navbar from '../../components/navbar/Navbar'
 import 'bootstrap/dist/css/bootstrap.css'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import axios from 'axios'
+import { baseUrl } from '../../../baseURL'
+import {setProducts} from '../../../redux/reducers/ProductSlice.js'
 
 const VarientListingPage = () => {
+    const dispatch=useDispatch()
     const fullproducts = useSelector((state) => state.products.Products)
-    const [products, setProducts] = useState(fullproducts)
+    const [products, setproducts] = useState(fullproducts)
 
     // Fetching id from state
     const id = useSelector((state) => state.baseProducts.productId)
 
     // Filter specific product based on ID
     const specificProduct = products.find(product => product._id === id)
-
-    console.log(specificProduct.variants)
 
     const [varients,setVarients]=useState(specificProduct.variants)
 
@@ -41,6 +45,26 @@ const VarientListingPage = () => {
         if (currentPage !== 1) {
             setCurrentPage(currentPage - 1)
         }
+    }
+
+    const token=localStorage.getItem('adminLogin')
+
+    //for edint the varient
+    const handleEdit=(id)=>{
+console.log(id)
+    }
+
+    //for edint the varient
+    const handleDelete=async(id)=>{
+        await axios.get(`${baseUrl}/api/v1/admin/deleteVarient`,{
+            params: { id },
+            headers: { 
+              Authorization: token,
+            },
+          }).then((res)=>{
+            console.log(res.data.updatedVarients)
+            dispatch(setProducts(res.data.updatedVarients))
+          })
     }
 
     return (
@@ -69,26 +93,33 @@ const VarientListingPage = () => {
                                     <th>REGULAR ₹</th>
                                     <th>STOCK</th>
                                     <th>COLOR</th>
+                                    <th>EDIT</th>
+                                    <th>DELETE</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {varients.map((varients)=>(
-                                    <tr>
-                                    <td>{varients._id}</td>
-                                    <td>
-                                        <img
-                                            src={varients.images[0]}
-                                            className='w-[50px] h-[50px] rounded-sm'
-                                        />
-                                    </td>
-                                    <td>{varients.varientName}</td>
-                                    <td>{varients.salePrice}</td>
-                                    <td>{varients.regularPrice}</td>
-                                    <td>{varients.stock}</td>
-                                    <td>{varients.color}</td>
-                                </tr>
-                                ))}
-                            </tbody>
+  {varients.map((variant) => (
+    variant.isDeleted === false && (
+      <tr key={variant._id}>
+        <td>{variant._id}</td>
+        <td>
+          <img
+            src={variant.images[0]}
+            className='w-[50px] h-[50px] rounded-sm'
+          />
+        </td>
+        <td>{variant.varientName}</td>
+        <td>{variant.salePrice}</td>
+        <td>{variant.regularPrice}</td>
+        <td>{variant.stock}</td>
+        <td>{variant.color}</td>
+        <td><FaRegEdit className='text-[25px] cursor-pointer' onClick={() => handleEdit(variant._id)} /></td>
+        <td><MdDelete className='text-[25px] cursor-pointer' onClick={() => handleDelete(variant._id)} /></td>
+      </tr>
+    )
+  ))}
+</tbody>
+
                         </table>
                         <nav>
                             <ul className='pagination'>
