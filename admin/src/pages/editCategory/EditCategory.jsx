@@ -5,7 +5,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
-import { categorySchema } from '../../../formValidation/categorySlice.js';
+import {categorySchema} from '../../../formValidation/categorySchema.js'
 import { baseUrl } from '../../../baseURL.js';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -32,6 +32,7 @@ const EditCategory = ({id}) => {
   const handleClose = () => setOpen(false);
 
   const categorys=useSelector(state => state.category.category)
+
   // formik validation
   const {
     values,
@@ -54,7 +55,7 @@ const EditCategory = ({id}) => {
       };
       axios.put(`${baseUrl}/api/v1/admin/editCategory/${id}`, category)
         .then((res) => {
-          dispatch(setCategory(res.data));
+          dispatch(setCategory(res.data.category));
           console.log('Category updated successfully:', res.data);
           handleClose();
         })

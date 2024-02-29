@@ -5,7 +5,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
-import { categorySchema } from '../../../formValidation/categorySlice.js';
+import {productSchema} from '../../../formValidation/productSchema.js'
 import { baseUrl } from '../../../baseURL.js';
 import axios from 'axios';
 import { useDispatch,useSelector } from 'react-redux';
@@ -58,7 +58,7 @@ const EditBaseProductPage = ({id}) => {
         category:'',
         brand:''
       },
-      validationSchema: categorySchema,
+      validationSchema:productSchema,
       onSubmit: (values) => {
           const baseProduct = {
               title: values.title,

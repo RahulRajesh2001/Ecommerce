@@ -4,13 +4,13 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
-import { useFormik } from 'formik';
-import { categorySchema } from '../../../formValidation/categorySlice.js';
 import { baseUrl } from '../../../baseURL.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setCategory } from '../../../redux/reducers/CategorySlice.js';
+import {categorySchema} from '../../../formValidation/categorySchema.js'
+import {useFormik} from 'formik'
 
 const style = {
   position: 'absolute',
@@ -39,6 +39,7 @@ const dispatch=useDispatch()
     handleBlur,
     handleChange,
     handleSubmit,
+    isSubmitting
   } = useFormik({
     initialValues: {
       title: '',
@@ -79,9 +80,8 @@ const dispatch=useDispatch()
       >
         <Fade in={open}>
           <Box sx={style}>
-            <form onSubmit={handleSubmit} className='w-[100%] h-full flex flex-col justify-center items-center gap-4'>
-              <div className='font-Playfair font-bold text-[18px]'>ADD CATEGORY</div>
-              <div className='flex flex-col gap-2 w-[80%] '>
+          <form onSubmit={handleSubmit} className='w-[100%] h-full flex flex-col justify-center items-center gap-4'>
+          <div className='flex flex-col gap-2 w-[80%] '>
                 <div className='font-Josefin font-bold'>TITLE</div>
                 <input
                   id='title'
@@ -95,7 +95,6 @@ const dispatch=useDispatch()
                 />
                 {errors.title && touched.title && <div className="text-red-500">{errors.title}</div>}
               </div>
-
               <div className='flex flex-col gap-2 w-[80%] '>
                 <div className='font-Josefin font-bold'>DESCRIPTION</div>
                 <input
@@ -110,8 +109,8 @@ const dispatch=useDispatch()
                 />
                 {errors.description && touched.description && <div className="text-red-500">{errors.description}</div>}
               </div>
-              <button type="submit" className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>ADD</button>
-            </form>
+              <button onClick={()=>console.log("dfalsdhfdaf")} type="submit" disabled={isSubmitting} className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'>ADD</button>
+          </form>
           </Box>
         </Fade>
       </Modal>
