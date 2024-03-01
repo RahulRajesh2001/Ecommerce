@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import Description from '../discription/Description'
 import Review from '../review/Review'
 

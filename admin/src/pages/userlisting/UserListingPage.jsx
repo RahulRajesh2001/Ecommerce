@@ -6,15 +6,19 @@ import axios from 'axios'
 import { baseUrl } from '../../../baseURL'
 import personimage from '../../assets/personimage.jpg'
 import { SlActionRedo } from "react-icons/sl";
+import { useDispatch, useSelector } from 'react-redux'
+import { setUsers } from '../../../redux/reducers/UserSlice.js'
 
 const UserListingPage = () => {
-  const [users,setUsers]=useState([])
+  const dispatch=useDispatch()
+  const Users=useSelector((state)=>state.users.users)
+
     const [currentPage, setCurrentPage] = useState(1)
     const recordPerPage = 8
     const firstIndex = (currentPage - 1) * recordPerPage
     const lastIndex = currentPage * recordPerPage
-    const records = users.slice(firstIndex, lastIndex)
-    const npage = Math.ceil(users.length / recordPerPage)
+    const records = Users.slice(firstIndex, lastIndex)
+    const npage = Math.ceil(Users.length / recordPerPage)
     const numbers = [...Array(npage + 1).keys()].slice(1)
   
     function nextPage() {
@@ -36,32 +40,32 @@ const UserListingPage = () => {
   //block or unblock user
   
 const token=localStorage.getItem('adminLogin')
-const [userStatus,setUserStatus]=useState('false')
 
-function Block(id) {
-  setUserStatus(true);
-  axios.get(`${baseUrl}/api/v1/admin/blockUnblock`, {
-    params: { id },
+
+function Block(id,userStatus) {
+
+  axios.get(`${baseUrl}/api/v1/admin/blockUnblock`,{
+    params: { id ,userStatus},
     headers: { 
       Authorization: token,
     },
   }).then((res) => {
-    console.log(res);
+    dispatch(setUsers(res.data.users))
   }).catch((err) => {
     console.log(err);
   });
 }
 
 
-function UnBlock(id){
-    setUserStatus(false)
+
+function UnBlock(id,userStatus){
     axios.get(`${baseUrl}/api/v1/admin/blockUnblock`,{
-      params: { id },
+      params: { id, userStatus},
       headers: { 
         Authorization: token,
       },
     }).then((res)=>{
-      console.log(res)
+      dispatch(setUsers(res.data.users))
     }).catch((err)=>{
       console.log(err)
     })
@@ -73,8 +77,7 @@ useEffect(()=>{
         Authorization: token,
       },
     }).then((res)=>{
-            setUsers(res.data.users)
-            console.log(users)
+       dispatch(setUsers(res.data.users))     
     }).catch((err)=>{
         console.log(err)
     })
@@ -102,7 +105,7 @@ useEffect(()=>{
               </tr>
             </thead>
             <tbody>
-              {users.map((user, index) => (
+              {Users.map((user, index) => (
                 <tr key={index}>
                   <td>{user._id}</td>
                   <td>
@@ -113,8 +116,10 @@ useEffect(()=>{
                   </td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
-                  <td className='font-bold cursor-pointer' onClick={()=>Block(user._id)}>Unblock</td>
-                  <td className='font-bold cursor-pointer' onClick={()=>UnBlock(user._id)} >Block</td>
+                  <td onClick={()=>Block(user._id,true)}>
+                    <div className={`w-[100px] h-[40px] rounded-md bg-red-500 flex justify-center items-center font-bold text-[#ffff] cursor-pointer ${user.isBlocked ? 'opacity-50 cursor-not-allowed' : ''}`}>Unblock</div>
+                  </td>
+                  <td onClick={()=>UnBlock(user._id,false)} ><div className={`w-[100px] h-[40px] rounded-md bg-green-500 flex justify-center items-center font-bold text-[#ffff] cursor-pointer ${user.isBlocked ? '' : 'opacity-50 cursor-not-allowed'}`}>Block</div></td>
                   <td><SlActionRedo /></td>
                 </tr>
               ))}

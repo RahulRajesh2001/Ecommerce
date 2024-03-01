@@ -8,11 +8,8 @@ import { useDispatch } from 'react-redux'
 import { setEmailvalue } from '../../../redux/reducers/otpSlice.js'
 import { useFormik } from 'formik'
 import { signupSchema } from '../../formValidationSchema/signUpValidation.js'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 const SignUp = () => {
-  const notify = (message) => toast(message)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -35,11 +32,12 @@ const SignUp = () => {
           `${baseUrl}/api/v1/otp-generation`,
           { email: registerResponse.data.user.email }
         )
-        dispatch(setEmailvalue({ email: registerResponse.data.user.email }))
+        dispatch(setEmailvalue({email: registerResponse.data.user.email }))
         if (otpGenerationResponse.status == 200) {
+          alert(registerResponse.data.message)
           navigate('/email-verification')
         } else {
-          notify('Registration Failed..!')
+         alert(registerResponse.data.message)
           navigate('/register')
         }
       }

@@ -8,11 +8,8 @@ import { useDispatch } from 'react-redux'
 import { setUser } from '../../../redux/reducers/userSlice.js'
 import { useFormik } from 'formik'
 import { loginSchema } from '../../formValidationSchema/loginFormValidation.js'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 const SignIn = () => {
-  const notify = (message) => toast(message)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -25,8 +22,10 @@ const SignIn = () => {
       axios.post(`${baseUrl}/api/v1/login`, user).then((response) => {
         dispatch(setUser(response.data))
         if (response.status == 200) {
+          alert(response.data.message)
           navigate('/')
         } else {
+          alert(response.data.message)
           navigate('/loginSignup')
         }
       })
@@ -58,7 +57,6 @@ const SignIn = () => {
 
   return (
     <div>
-      <ToastContainer />
       {/*signinbody*/}
       <div className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
         {/*From validation*/}

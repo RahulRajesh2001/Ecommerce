@@ -9,20 +9,26 @@ import AddBaseProduct from '../addBaseproduct/AddBaseProduct'
 import {
   setBaseProductId,
   setBaseProducts,
-} from '../../../redux/reducers/BaseProductSlice'
+} from '../../../redux/reducers/BaseProductSlice.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { setProducts } from '../../../redux/reducers/ProductSlice'
+import { setProducts } from '../../../redux/reducers/ProductSlice.js'
 import { MdDelete } from "react-icons/md";
 import EditBaseProductPage from '../editBaseProductPage/EditBaseProductPage'
 
 
 const BaseProducts = () => {
+  const baseproducts = useSelector((state) => state.baseProducts.baseProducts)
+
   const dispatch = useDispatch()
   const [currentPage, setCurrentPage] = useState(1)
   const recordPerPage = 8
   const firstIndex = (currentPage - 1) * recordPerPage
   const lastIndex = currentPage * recordPerPage
-  const baseproducts = useSelector((state) => state.baseProducts.baseProducts)
+  const records = baseproducts.slice(firstIndex, lastIndex)
+  const npage = Math.ceil(baseproducts.length / recordPerPage)
+  const numbers = [...Array(npage + 1).keys()].slice(1)
+
+
 
   useEffect(() => {
     fetchProducts()
@@ -32,19 +38,21 @@ const BaseProducts = () => {
   const token=localStorage.getItem('adminLogin')
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/admin/getAllProducts`,{
+      const response = await axios.get(`${baseUrl}/api/v1/admin/getBaseProducts`,{
         headers: { 
           Authorization: token,
         },
       })
-      dispatch(setBaseProducts(response.data))
+      console.log("baseproducts",response)
+
+      dispatch(setBaseProducts(response.data.products))
     } catch (error) {
       console.error('Error fetching products:', error)
     }
   }
   //for fetch full products
   useEffect(()=>{
-    axios.get(`${baseUrl}/api/v1/admin/fullProducts`,{
+    axios.get(`${baseUrl}/api/v1/admin/getFullProducts`,{
       headers: { 
         Authorization: token,
       },

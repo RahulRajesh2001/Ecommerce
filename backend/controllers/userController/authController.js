@@ -87,9 +87,11 @@ export const register = async (req, res) => {
       name,
     })
     await user.save()
+
+ 
     return res
       .status(201)
-      .json({ message: 'User registered successfully', user })
+      .json({ message: 'Verify your email address !', user })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some Error occured .. Try again !' })
@@ -224,19 +226,33 @@ export const otpRegeneration=async(req,res)=>{
 // Post
 // api/v1/otp-verification
 // --- user
-export const otpVerification=async(req,res)=>{
-  try{
-    const {userEmail}=req.body;
-  
-  const response = await OTP.find({ email:userEmail}).sort({ createdAt: -1 }).limit(1);
- if(!response){
-  return res.status(404).json({ message: 'No OTP found for the user' });
- }
-  res.status(200).json({message:"Successfull",response})
+export const otpVerification = async (req, res) => {
+  try {
+    console.log("executed")
+    console.log(req.body)
+    const { userEmail, otp } = req.body;
 
-  }catch(err){
-     console.error(err)
-    res.status(500).json({ message: 'Some Error occured .. Try again !' })
-    throw err
+    if ( !otp) {
+      return res.status(400).json({ message: 'OTP is required field !' });
+    }
+
+    const response = await OTP.find({ email: userEmail }).sort({ createdAt: -1 }).limit(1);
+
+   
+
+    if (!response || response.length === 0 || response[0].otp === '') {
+      return res.status(404).json({ message: 'Your OTP is expired. Please regenerate!' });
+    }
+    console.log(otp)
+    if (response[0].otp == otp) {
+      console.log("executed 3")
+      return res.status(200).json({ message: "You are successfully registered!" });
+    } else {
+      return res.status(400).json({ message: "Your OTP is incorrect!" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Try again!' });
+    throw err;
   }
-}
+};

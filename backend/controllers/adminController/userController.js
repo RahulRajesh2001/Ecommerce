@@ -24,12 +24,17 @@ export const getAllUsers = async (req, res) => {
 export const BlockUnblockUser = async (req, res) => {
     try {
       const { id, userStatus } = req.query
-      await User.findOneAndUpdate(
+  const updatedUser=await User.findOneAndUpdate(
         { _id: id },
         { $set: { isBlocked: userStatus } },
         { new: true }
       )
-      res.status(200).json({ success: true })
+    if(!updatedUser){
+      return res.status(400).json({message:"There is no user.!"})
+    }
+
+  const users=await User.find()
+      res.status(200).json({message:"Successfull",users})
     } catch (err) {
       console.error(err)
       res.status(500).json({ message: 'Some Error occured .. Try again !' })

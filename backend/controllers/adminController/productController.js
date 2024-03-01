@@ -131,13 +131,12 @@ export const getFullProducts = async (req, res) => {
 }
 
 // Get
-// api/v1/admin/products
+// api/v1/admin/getBaseproducts
 // --- admin
-
-export const getAllProducts = async (req, res) => {
+export const getBaseProducts = async (req, res) => {
   try {
     const products = await Product.find()
-    res.status(200).json({ message: 'Successfull', products })
+    res.status(200).json({ message: 'Successfull ! ', products })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Some Error occured .. Try again !' })
@@ -238,7 +237,9 @@ export const EditCategory = async (req, res) => {
       return res.status(404).json({ message: 'Category is not found' })
     }
     const categories = await CATEGORY.find()
-    res.status(200).json({ message: 'Category Edited Successfully', categories })
+    res
+      .status(200)
+      .json({ message: 'Category Edited Successfully', categories })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Some Error occured .. Try again !' })
@@ -250,65 +251,75 @@ export const EditCategory = async (req, res) => {
 // api/v1/admin/deleteBaseProducts
 // --- admin
 
-export const deleteBaseProducts=async(req,res)=>{
-    try{
-      let  id = req.query.id;
-      await Product.findByIdAndUpdate(id, {isDeleted:true}, { new: true })
-      const savedProduct=await Product.find({isDeleted:false})
-      console.log("sved",savedProduct)
-      res.status(200).json({message:"Baseproduct Deleted Successfully",savedProduct})
-    }catch(err){
-        console.log(err)
-        res.status(500).json({ message: 'Some Error occured .. Try again !' })
-        throw err
-    } 
+export const deleteBaseProducts = async (req, res) => {
+  try {
+    let id = req.query.id
+    await Product.findByIdAndUpdate(id, { isDeleted: true }, { new: true })
+    const savedProduct = await Product.find({ isDeleted: false })
+    console.log('sved', savedProduct)
+    res
+      .status(200)
+      .json({ message: 'Baseproduct Deleted Successfully', savedProduct })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
   }
-  
-  // put
+}
+
+// put
 // api/v1/admin/editBaseProduct
 // --- admin
-export const editBaseProduct = async (req,res) => {  
-    try {
-      const { id, name, description, category, brand } = req.body;
-      const product = await Product.findById(id);
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-  
-      product.name = name;
-      product.description = description;
-      product.category = category;
-      product.brand = brand;
-  
-      await product.save();
-
-      return res.status(200).json({ message: 'Product updated successfully', product });
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: 'Some Error occured .. Try again !' })
-        throw err
+export const editBaseProduct = async (req, res) => {
+  try {
+    const id = req.query.id
+    const { name, description, category, brand } = req.body
+    const product = await Product.findById(id)
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' })
     }
-  };
-  
 
+    product.name = name
+    product.description = description
+    product.category = category
+    product.brand = brand
+
+    await product.save()
+
+    const products = await Product.find()
+
+    return res
+      .status(200)
+      .json({ message: 'Product updated successfully', products })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
+  }
+}
 
 // get
 // api/v1/admin/delete
 // --- admin
 
 export const deleteVariant = async (req, res) => {
-    try {
-      const id = req.query.id;
-      const variant = await ProductVariant.findByIdAndUpdate(id, {isDeleted:true}, { new: true });
-      if(!variant){
-        res.status(500).json({message:"There is no Varient !"})
-      }
-      const updatedVarients=await ProductVariant.find()
-      res.status(200).json({ message: "Successful Deleted Varient !" ,updatedVarients});
-    } catch (err) {
-      console.log(err)
-        res.status(500).json({ message: 'Some Error occured .. Try again !' })
-        throw err
+  try {
+    const id = req.query.id
+    const variant = await ProductVariant.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true }
+    )
+    if (!variant) {
+      res.status(500).json({ message: 'There is no Varient !' })
     }
+    const updatedVarients = await ProductVariant.find()
+    res
+      .status(200)
+      .json({ message: 'Successful Deleted Varient !', updatedVarients })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
   }
-  
+}

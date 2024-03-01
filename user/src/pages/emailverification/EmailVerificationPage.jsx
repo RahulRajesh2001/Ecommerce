@@ -10,17 +10,18 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { otpSchema } from '../../formValidationSchema/otpShcema';
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 const EmailVerificationPage = () => {
-  const notify = (message) => toast(message)
+    // Get email from Redux store
+
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState('');
   const [timer, setTimer] = useState({ minutes: 5, seconds: 0 });
 
-  // Get email from Redux store
+
   const email = useSelector(state => state.email.email);
+  console.log("redux ",email)
+
 
   // Update userEmail when email changes
   useEffect(() => {
@@ -34,23 +35,21 @@ const EmailVerificationPage = () => {
     const { otp } = values;
     try {
       const response = await axios.post(`${baseUrl}/api/v1/otp-verify`, { otp, userEmail });
-      const verifiedOtp = response.data.response[0].otp;
-      if (verifiedOtp === otp) {
-        navigate('/');
-      } else {
-        notify("Enter correct OTP")
-        navigate('/email-verification');
-      }
+      if (response.status === 200) {
+        alert(response.data.message);
+        navigate('/loginSignup');
+      } 
     } catch (error) {
       console.log(error);
+      alert('Your otp is incorrect..!');
     }
     actions.resetForm();
   };
-
+  
   const otpRegenerate = async () => {
     try {
       const response = await axios.post(`${baseUrl}/api/v1/otp-regeneration`, {email: userEmail });
-      console.log("hehe", response);
+
       notify("OTP Regenerated successfully");
     } catch (error) {
       console.error("Error regenerating OTP:", error);

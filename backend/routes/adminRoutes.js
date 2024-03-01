@@ -15,7 +15,7 @@ import {
   deleteVariant,
   editBaseProduct,
   getAllCategories,
-  getAllProducts,
+  getBaseProducts,
   getFullProducts,
 } from '../controllers/adminController/productController.js'
 
@@ -25,9 +25,9 @@ router.post('/adminlogin', AdminLogin)
 router.get('/getUsers',verifyAdminToken, getAllUsers)
 router.get('/blockUnblock', BlockUnblockUser)
 router.post('/addBaseProduct', addBaseProduct)
+router.get('/getBaseProducts',getBaseProducts)
 router.post('/addProductVarient', addProductVariant)
-router.get('/fullProducts', getFullProducts)
-router.get('/getAllProducts', getAllProducts)
+router.get('/getfullProducts', getFullProducts)
 router.post('/add-category', addCategory)
 router.get('/categories', getAllCategories)
 router.get('/deleteCategory', DeleteCategory)
