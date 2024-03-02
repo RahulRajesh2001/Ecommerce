@@ -21,7 +21,7 @@ const FeaturedProducts = () => {
         {/*body*/}
         <div className='flex flex-col gap-2'>
           <div className='font-bold'>Featured Products</div>
-          <div className='flex flex-row  w-[800px]    bg-red-400'>
+          <div className='flex flex-row  w-[800px]'>
             <ShopCard />
           </div>
         </div>

@@ -50,13 +50,13 @@ const ShopCard = () => {
     }
   }
   return (
-    <div className='bg-blue-200 w-[100%] flex flex-wrap   items-center'>
+    <div className=' w-[100%] flex flex-wrap   items-center'>
       {products.map((product, index) => (
         product.variants.map((variant, variantIndex) => (
           <div
             onClick={() => handleDetails(product._id)}
             key={product._id + "-" + variantIndex}
-            className='w-[160px] h-[250px] border px-5 py-5 mt-4 ml-2 bg-slate-400'
+            className='w-[160px] h-[250px] border px-5 py-5 mt-4 ml-2 '
           >
             <div>
               <img src={variant.images[0]} alt='' className='mt-2' />

@@ -108,20 +108,11 @@ export const addProductVariant = async (req, res) => {
 }
 
 // Get
-// api/v1/admin/allfullProducts
+// api/v1/admin/deleteProductVarient
 // --- admin
-export const getFullProducts = async (req, res) => {
+export const deleteProductVarient = async (req, res) => {
   try {
-    const products = await Product.aggregate([
-      {
-        $lookup: {
-          from: 'productvariants',
-          localField: '_id',
-          foreignField: 'productId',
-          as: 'variants',
-        },
-      },
-    ])
+    const products = await Product.find()
     res.status(200).json({ message: 'Successfull ! ', products })
   } catch (err) {
     console.log(err)
@@ -129,6 +120,23 @@ export const getFullProducts = async (req, res) => {
     throw err
   }
 }
+
+// Get
+// api/v1/admin/getProductVarients
+// --- admin
+export const getProductVarients = async (req, res) => {
+  try {
+    const productVarients = await ProductVariant.find()
+    res.status(200).json({ message: 'Successfull ! ', productVarients })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
+  }
+}
+
+
+
 
 // Get
 // api/v1/admin/getBaseproducts

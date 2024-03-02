@@ -16,7 +16,7 @@ import {
   editBaseProduct,
   getAllCategories,
   getBaseProducts,
-  getFullProducts,
+  getProductVarients,
 } from '../controllers/adminController/productController.js'
 
 const router = express.Router()
@@ -27,7 +27,7 @@ router.get('/blockUnblock', BlockUnblockUser)
 router.post('/addBaseProduct', addBaseProduct)
 router.get('/getBaseProducts',getBaseProducts)
 router.post('/addProductVarient', addProductVariant)
-router.get('/getfullProducts', getFullProducts)
+router.get("/productVarients",getProductVarients)
 router.post('/add-category', addCategory)
 router.get('/categories', getAllCategories)
 router.get('/deleteCategory', DeleteCategory)
