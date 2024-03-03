@@ -98,3 +98,38 @@ export const getReview = async (req, res) => {
     throw err
   }
 }
+
+// get
+// api/v1/featured-products
+// --- user
+
+export const getFeaturedProducts = async (req, res) => {
+  try {
+    const products = await Product.aggregate([
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+      {
+        $sort: { createdAt: -1 } 
+      },
+      {
+        $limit: 8 
+      }
+    ]);
+    
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No Products Found!" });
+    }
+    res.status(200).json({ message: "Successfully fetched products", products });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'An error occurred. Please try again.' });
+    throw err;
+  }
+};
+

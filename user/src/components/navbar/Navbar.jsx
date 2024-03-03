@@ -16,6 +16,7 @@ const Navbar = () => {
 
   const [isHovered,setIsHovered]=useState(false)
   
+const token=localStorage.getItem("userToken")
 
 
   const handleMouseEnter=()=>{
@@ -62,9 +63,11 @@ const Navbar = () => {
         <div className='bg-[#1B6392] w-[100%] h-[60px] flex justify-around items-center'>
           {/*bottom_left*/}
           <div className='flex items-center gap-2 '>
+            <Link to="/shop">
             <div>
               <NeomIcon />
             </div>
+            </Link>
             
           </div>
           {/*bottom_center*/}
@@ -80,10 +83,9 @@ const Navbar = () => {
           <div className='flex vvsm:gap-2 sm:gap-5 justify-items-center items-center'>
             <FiShoppingCart className='text-[#ffff] text-[15px] hover:cursor-pointer' />
             <CiHeart className='text-[#ffff] text-[20px] hover:cursor-pointer' />
-            <Link to='/loginSignup'>
+            <Link to={token ? '/profile' :'/loginSignup'}>
             <IoPersonOutline className='text-[#ffff] text-[16px] hover:cursor-pointer' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}/>
             </Link>
-            
           </div>
         </div>
       </div>

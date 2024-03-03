@@ -20,6 +20,7 @@ const SignIn = () => {
     }
     try {
       axios.post(`${baseUrl}/api/v1/login`, user).then((response) => {
+        localStorage.setItem('userToken',response.data.token)
         dispatch(setUser(response.data))
         if (response.status == 200) {
           alert(response.data.message)
@@ -32,7 +33,6 @@ const SignIn = () => {
     } catch (error) {
       console.log(error)
       navigate('/loginSignup')
-      notify('Check your details')
     }
 
     actions.resetForm()

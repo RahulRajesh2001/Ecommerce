@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import OfferBar from '../../components/offerbar/OfferBar'
 import Navbar from '../../components/navbar/Navbar'
 import BottomBar from '../../components/bottombar/BottomBar'
@@ -7,16 +7,33 @@ import Footer from '../../components/footer/Footer'
 import CategoryBar from '../../components/categorybar/CategoryBar'
 import FeaturedProducts from '../../components/featuredproducts/FeaturedProducts'
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { useSelector } from 'react-redux'
+import { setFeaturedProduct } from '../../../redux/reducers/productSlice'
+import { useDispatch } from 'react-redux'
+import axios from 'axios'
+import { baseUrl } from '../../../baseUrl.js'
+
 
 const HomePage = () => {
-  const notify = (message) => toast(message)
+  const dispatch=useDispatch()
 
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
-  if (isAuthenticated == true) {
-    notify('Login Successfull')
-  }
+  const token = localStorage.getItem('userToken')
+  useEffect(() => {
+    console.log('this is token', token)
+    axios
+      .get(`${baseUrl}/api/v1/featuredProducts`, {
+        headers: {
+          Authorization:token,
+        },
+      })
+      .then((res) => {
+        console.log('featred',res)
+        dispatch(setFeaturedProduct(res.data.products))
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
   return (
     <div className='flex flex-col '>
       <ToastContainer/>

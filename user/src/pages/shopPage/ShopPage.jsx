@@ -1,12 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import OfferBar from '../../components/offerbar/OfferBar'
 import Navbar from '../../components/navbar/Navbar'
 import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
 import { IoIosSearch } from 'react-icons/io'
 import ShopCard from '../../components/shopcard/ShopCard'
+import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { baseUrl } from '../../../baseUrl'
 
 const ShopPage = () => {
+  const [products,setProducts]=useState([])
+  const token = localStorage.getItem('userToken')
+  useEffect(() => {
+    console.log('this is token', token)
+    axios
+      .get(`${baseUrl}/api/v1/getProducts`, {
+        headers: {
+          Authorization:token,
+        },
+      })
+      .then((res) => {
+        setProducts(res.data.products)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
   return (
     <div>
       <OfferBar />
@@ -120,16 +140,7 @@ const ShopPage = () => {
           </div>
           {/*cards*/}
           <div className='flex flex-wrap mt-5'>
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
-            <ShopCard />
+            <ShopCard products={products}/>
           </div>
         </div>
       </div>

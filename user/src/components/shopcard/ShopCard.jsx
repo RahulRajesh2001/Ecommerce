@@ -4,31 +4,13 @@ import { baseUrl } from '../../../baseUrl.js'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { setProductDetails } from '../../../redux/reducers/productSlice.js'
+import { setProductDetails,setFeaturedProduct} from '../../../redux/reducers/productSlice.js'
 
-const ShopCard = () => {
+const ShopCard = ({products}) => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
-  const [products, setProducts] = useState([])
-
 
   const token = localStorage.getItem('userToken')
-  useEffect(() => {
-    console.log('this is token', token)
-    axios
-      .get(`${baseUrl}/api/v1/getProducts`, {
-        headers: {
-          Authorization:token,
-        },
-      })
-      .then((res) => {
-        setProducts(res.data.products)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
-
   //handeDetails
   const handleDetails = async (id) => {
     try {

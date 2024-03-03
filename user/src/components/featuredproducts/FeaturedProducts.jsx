@@ -3,9 +3,12 @@ import featureBanner from '../../assets/featureBanner.png'
 import ShopCard from '../../components/shopcard/ShopCard'
 import feature_banner1 from '../../assets/feature_banner1.png'
 import feature_banner2 from '../../assets/feature_banner2.png'
+import { useSelector } from 'react-redux'
 
 
 const FeaturedProducts = () => {
+  const products=useSelector((state)=>state.productDetails.featuredProducts)
+
   return (
     <div>
       {/* head section*/}
@@ -22,7 +25,7 @@ const FeaturedProducts = () => {
         <div className='flex flex-col gap-2'>
           <div className='font-bold'>Featured Products</div>
           <div className='flex flex-row  w-[800px]'>
-            <ShopCard />
+            <ShopCard products={products}/>
           </div>
         </div>
       </div>

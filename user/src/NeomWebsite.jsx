@@ -6,6 +6,7 @@ import EmailVerificationPage from './pages/emailverification/EmailVerificationPa
 import { Outlet } from "react-router-dom";
 import ShopPage from './pages/shopPage/ShopPage';
 import ProductDetailsPage from './pages/productDetailsPage/ProductDetailsPage';
+import ProfilePage from './pages/profilepage/ProfilePage';
 
 
 
@@ -23,6 +24,7 @@ const NeomWebsite = () => {
         <Route element={<Protected />}>
         <Route exact path='/shop' element={<ShopPage/>} />
         <Route exact path='/details' element={<ProductDetailsPage/>} />
+        <Route exact path='/profile' element={<ProfilePage/>} />
           <Route/>
         </Route>
         <Route exact path='/' element={<HomePage />} />
