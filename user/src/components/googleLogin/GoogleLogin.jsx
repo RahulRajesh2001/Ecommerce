@@ -1,20 +1,19 @@
 import React from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "../../components/googleLogin/services/api.js";
-                              
+import Google from '../../assets/Google.png'
 
-export default (props) => {
+const GoogleLoginComponent = (props) => {
 	const responseGoogle = async (authResult) => {
-        
 		try {
 			if (authResult["code"]) {
 				console.log(authResult.code);
 				const result = await googleAuth(authResult.code);
 				props.setUser(result.data.data.user);
-                console.log("this is uer",result.data.data.user)
-				alert("successfuly logged in");
+				console.log("this is user", result.data.data.user);
+				alert("Successfully logged in");
 			} else {
-				console.log("is this error",authResult);
+				console.log("is this error", authResult);
 				throw new Error(authResult);
 			}
 		} catch (e) {
@@ -29,13 +28,17 @@ export default (props) => {
 	});
 
 	return (
-		<button
-			style={{
-				padding: "10px 20px",
-			}}
-			onClick={googleLogin}
-		>
-			Sign in with Google
-		</button>
+		<>
+			<div onClick={googleLogin}
+          className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5 cursor-pointer'
+        >
+          <img src={Google} alt='' className='ml-[10px]' />
+          <div className='text-[11px] text-[#475156]  ml-16'>
+            Login with Google
+          </div>
+        </div>
+		</>
 	);
 };
+
+export default GoogleLoginComponent;

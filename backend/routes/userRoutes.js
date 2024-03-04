@@ -2,10 +2,12 @@ import express from 'express'
 import {verifyToken} from '../utils/authMiddleware.js'
 import {
   OTPGeneration,
+  forgetPassword,
   login,
   otpRegeneration,
   otpVerification,
   register,
+  resetPassword,
 } from '../controllers/userController/authController.js'
 import {
   addReview,
@@ -29,5 +31,7 @@ router.get('/get-review',verifyToken, getReview)
 router.get('/getCurrentUser',getUser)
 router.post('/editUser',editUser)
 router.get('/featuredProducts',verifyToken,getFeaturedProducts)
+router.post("/forgetPassword", forgetPassword);
+router.post("/reset-password/:token", resetPassword);
 
 export default router

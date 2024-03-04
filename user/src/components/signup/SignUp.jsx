@@ -147,22 +147,6 @@ const SignUp = () => {
         <div disabled={isSubmitting} className='mt-2' onClick={handleSubmit}>
           <FilledButton value='SIGN UP' w='100%' type='submit' />
         </div>
-
-        <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>
-        {/*O Auth*/}
-        <div className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
-          <img src={Google} alt='' className='ml-[10px]' />
-          <div className='text-[11px] text-[#475156]  ml-16'>
-            Login with Google
-          </div>
-        </div>
-        {/*O Auth*/}
-        <div className='h-[35px] border border-[#E4E7E9] flex  items-center'>
-          <img src={Google} alt='' className='ml-[10px]' />
-          <div className='text-[11px] text-[#475156]  ml-16'>
-            Login with Google
-          </div>
-        </div>
       </form>
     </div>
   )

@@ -7,12 +7,7 @@ function App() {
 	const [user, setUser] = useState();
 
 	return (
-		<GoogleOAuthProvider clientId="163584497548-6uovpebrvioqdepje90dinuagvi60ulc.apps.googleusercontent.com">
-			<div className="App">
-				<GoogleLogin setUser={setUser}></GoogleLogin>
-				{user && user.name}
-				{user && user.email}
-			</div>
+		<GoogleOAuthProvider clientId="1059014681918-q61snoptndd2edig5ncioj0m9ivtb4qt.apps.googleusercontent.com">
       <NeomWebsite />
 		</GoogleOAuthProvider>
 	);

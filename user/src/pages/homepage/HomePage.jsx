@@ -36,7 +36,6 @@ const HomePage = () => {
 
   return (
     <div className='flex flex-col '>
-      <ToastContainer/>
       <div className='vvsm:hidden md:block'>
         <OfferBar />
       </div>

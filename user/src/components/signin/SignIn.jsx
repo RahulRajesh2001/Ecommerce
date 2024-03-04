@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import FilledButton from '../../components/buttons/filledbutton/FilledButton'
-import Google from '../../assets/Google.png'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../../redux/reducers/userSlice.js'
 import { useFormik } from 'formik'
 import { loginSchema } from '../../formValidationSchema/loginFormValidation.js'
+import GoogleLoginComponent from '../googleLogin/GoogleLogin.jsx'
+
 
 const SignIn = () => {
   const navigate = useNavigate()
@@ -55,6 +56,8 @@ const SignIn = () => {
     onSubmit,
   })
 
+
+
   return (
     <div>
       {/*signinbody*/}
@@ -79,9 +82,11 @@ const SignIn = () => {
           <div className='flex  flex-col gap-2 '>
             <div className='flex justify-between'>
               <div className='text-[12px] font-semibold '>Password</div>
+              <Link to="/forget-password">
               <div className='text-[12px] font-semibold text-[#2DA5F3]'>
                 Forget Password
               </div>
+              </Link>
             </div>
             <input
               name='password'
@@ -98,26 +103,16 @@ const SignIn = () => {
               ''
             )}
           </div>
-          <button className='mt-2' type='submit' disabled={isSubmitting}>
+          <button className='mt-2' type='submit' disabled={isSubmitting}> 
             <FilledButton value='SIGN IN' w='100%' />
           </button>
         </form>
         {/*0auth section*/}
         <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>
         {/*O Auth*/}
-        <div className='h-[35px] border border-[#E4E7E9] flex  items-center mt-5'>
-          <img src={Google} alt='' className='ml-[10px]' />
-          <div className='text-[11px] text-[#475156]  ml-16'>
-            Login with Google
-          </div>
-        </div>
-        {/*O Auth*/}
-        <div className='h-[35px] border border-[#E4E7E9] flex  items-center'>
-          <img src={Google} alt='' className='ml-[10px]' />
-          <div className='text-[11px] text-[#475156]  ml-16'>
-            Login with Google
-          </div>
-        </div>
+        
+        <GoogleLoginComponent/>
+  
       </div>
     </div>
   )

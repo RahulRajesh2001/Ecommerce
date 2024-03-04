@@ -7,6 +7,8 @@ import { Outlet } from "react-router-dom";
 import ShopPage from './pages/shopPage/ShopPage';
 import ProductDetailsPage from './pages/productDetailsPage/ProductDetailsPage';
 import ProfilePage from './pages/profilepage/ProfilePage';
+import  ResetPasswordPage from './pages/resetpasswordPage/ResetPasswordPage.jsx'
+
 
 
 
@@ -30,6 +32,7 @@ const NeomWebsite = () => {
         <Route exact path='/' element={<HomePage />} />
         <Route path='/loginSignup' element={<LoginSignupPage />} />
         <Route path='/email-verification' element={<EmailVerificationPage />} />
+        <Route path='/forget-password' element={<ResetPasswordPage/>}/>
       </Routes>
     </BrowserRouter>
   );

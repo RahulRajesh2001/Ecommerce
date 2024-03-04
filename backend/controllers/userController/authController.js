@@ -256,3 +256,15 @@ export const otpVerification = async (req, res) => {
     throw err;
   }
 };
+
+// Post
+// api/v1/forgetPassword
+// --- user
+
+export const forgetPassword = async (req, res) => {
+  // Logic for forget password
+};
+
+export const resetPassword = async (req, res) => {
+  // Logic for reset password
+};

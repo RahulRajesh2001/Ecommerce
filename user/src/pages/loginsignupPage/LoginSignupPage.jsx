@@ -20,7 +20,7 @@ const LoginSignupPage = () => {
       >
         <div
           className={`w-[330px] rounded-sm border border-[#E4E7E9] ${
-            selectedTab === 'signin' ? 'h-[400px]' : 'h-[650px]'
+            selectedTab === 'signin' ? 'h-[400px]' : 'h-[500px]'
           }`}
         >
           {/*header */}
