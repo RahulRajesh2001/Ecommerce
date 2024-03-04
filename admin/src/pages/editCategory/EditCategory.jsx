@@ -8,7 +8,6 @@ import { useFormik } from 'formik';
 import {categorySchema} from '../../../formValidation/categorySchema.js'
 import { baseUrl } from '../../../baseURL.js';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setCategory } from '../../../redux/reducers/CategorySlice.js';
 
@@ -31,7 +30,6 @@ const EditCategory = ({id}) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const categorys=useSelector(state => state.category.category)
 const token=localStorage.getItem("adminLogin")
   // formik validation
   const {
@@ -59,13 +57,14 @@ const token=localStorage.getItem("adminLogin")
         },
       })
         .then((res) => {
-          dispatch(setCategory(res.data.category));
-          console.log('Category updated successfully:', res.data);
-          handleClose();
+          console.log("category",res.data.categories)
+          dispatch(setCategory(res.data.categories));
+          
         })
         .catch(error => {
           console.error('Error editing category:', error);
         });
+        handleClose();
     }
         
   });

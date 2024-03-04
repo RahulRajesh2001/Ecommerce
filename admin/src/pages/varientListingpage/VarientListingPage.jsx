@@ -3,31 +3,49 @@ import SideBar from '../../components/sidebar/SideBar'
 import Navbar from '../../components/navbar/Navbar'
 import 'bootstrap/dist/css/bootstrap.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaRegEdit } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md'
 import axios from 'axios'
 import { baseUrl } from '../../../baseURL'
-import { setProducts } from '../../../redux/reducers/ProductSlice.js'
+import {
+  setProductVarientId,
+  setProducts,
+  setVarients,
+} from '../../../redux/reducers/ProductSlice.js'
 
 const VarientListingPage = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const fullproducts = useSelector((state) => state.products.Products)
-
   // Fetching id from state
   const id = useSelector((state) => state.baseProducts.productId)
 
-  // Filter specific product based on ID
-  const specificProduct = products.find((product) => product._id === id)
+  //fetching the baseproduct data
+  useEffect(() => {
+    try {
+      axios
+        .get(`${baseUrl}/api/v1/admin/productVarients`, {
+          params: { id },
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((res) => {
+          dispatch(setVarients(res.data.productVarients))
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }, [])
 
-  const [varients, setVarients] = useState(specificProduct.variants)
+  const productVarients = useSelector((state) => state.products.varients)
 
   const [currentPage, setCurrentPage] = useState(1)
   const recordPerPage = 8
   const firstIndex = (currentPage - 1) * recordPerPage
   const lastIndex = currentPage * recordPerPage
-  const records = products.slice(firstIndex, lastIndex)
-  const npage = Math.ceil(products.length / recordPerPage)
+  const records = productVarients.slice(firstIndex, lastIndex)
+  const npage = Math.ceil(productVarients.length / recordPerPage)
   const numbers = [...Array(npage + 1).keys()].slice(1)
 
   function nextPage() {
@@ -49,25 +67,6 @@ const VarientListingPage = () => {
   const token = localStorage.getItem('adminLogin')
 
   //for edint the varient
-  const handleEdit = (id) => {
-    console.log(id)
-  }
-
-//fetching the baseproduct data
-useEffect(()=>{
-    try{
-        axios.get(`${baseUrl}/api/v1/admin/productVarients`).then((res)=>{
-            console.log("varients",res)
-        })
-    }catch(err){
-
-    }
-
-},[])
-
-
-
-  //for edint the varient
   const handleDelete = async (id) => {
     await axios
       .get(`${baseUrl}/api/v1/admin/deleteVarient`, {
@@ -78,8 +77,16 @@ useEffect(()=>{
       })
       .then((res) => {
         console.log(res.data.updatedVarients)
-        dispatch(setProducts(res.data.updatedVarients))
+        dispatch(setVarients(res.data.updatedVarients))
+        if (res.status == 200) {
+          alert(res.data.message)
+        }
       })
+  }
+
+  const handleEdit = (id) => {
+    dispatch(setProductVarientId(id))
+    navigate('/edit-productVarient')
   }
 
   return (
@@ -89,11 +96,10 @@ useEffect(()=>{
         <Navbar />
         <div className='w-[98%] h-full rounded-lg flex justify-evenly'>
           <div className='w-[98%] h-full rounded-lg '>
-            <Link to='/add-product'>
-              <div className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair mb-2 a'>
-                ADD VARIANTS
-              </div>
-            </Link>
+            <div className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair mb-2 a'>
+              <Link to='/add-product'>ADD VARIANTS</Link>
+            </div>
+
             <table className='table'>
               <thead>
                 <tr>
@@ -109,7 +115,7 @@ useEffect(()=>{
                 </tr>
               </thead>
               <tbody>
-                {varients.map(
+                {productVarients.map(
                   (variant) =>
                     variant.isDeleted === false && (
                       <tr key={variant._id}>

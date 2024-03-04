@@ -14,26 +14,28 @@ import {
   deleteBaseProducts,
   deleteVariant,
   editBaseProduct,
+  editProductVarient,
   getAllCategories,
   getBaseProducts,
   getProductVarients,
 } from '../controllers/adminController/productController.js'
 
-const router = express.Router()
+const router = express.Router() 
 
 router.post('/adminlogin', AdminLogin)
 router.get('/getUsers',verifyAdminToken, getAllUsers)
-router.get('/blockUnblock', BlockUnblockUser)
-router.post('/addBaseProduct', addBaseProduct)
-router.get('/getBaseProducts',getBaseProducts)
-router.post('/addProductVarient', addProductVariant)
-router.get("/productVarients",getProductVarients)
-router.post('/add-category', addCategory)
-router.get('/categories', getAllCategories)
-router.get('/deleteCategory', DeleteCategory)
-router.put('/editCategory/:id', EditCategory)
-router.get('/deleteBaseProduct', deleteBaseProducts)
-router.post('/editBaseProduct', editBaseProduct)
-router.get('/deleteVarient', deleteVariant)
+router.get('/blockUnblock',verifyAdminToken, BlockUnblockUser)
+router.post('/addBaseProduct',verifyAdminToken, addBaseProduct)
+router.get('/getBaseProducts',verifyAdminToken,getBaseProducts)
+router.post('/addProductVarient',verifyAdminToken, addProductVariant)
+router.get("/productVarients",verifyAdminToken,getProductVarients)
+router.post('/add-category',verifyAdminToken, addCategory)
+router.get('/categories', verifyAdminToken,getAllCategories)
+router.get('/deleteCategory',verifyAdminToken, DeleteCategory)
+router.put('/editCategory/:id',verifyAdminToken, EditCategory)
+router.get('/deleteBaseProduct',verifyAdminToken,deleteBaseProducts)
+router.post('/editBaseProduct',verifyAdminToken, editBaseProduct)
+router.get('/deleteVarient',verifyAdminToken, deleteVariant)
+router.get('/editProductVarient',verifyAdminToken,editProductVarient)
 
 export default router

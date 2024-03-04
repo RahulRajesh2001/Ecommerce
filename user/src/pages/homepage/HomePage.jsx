@@ -26,7 +26,6 @@ const HomePage = () => {
         },
       })
       .then((res) => {
-        console.log('featred',res)
         dispatch(setFeaturedProduct(res.data.products))
       })
       .catch((err) => {

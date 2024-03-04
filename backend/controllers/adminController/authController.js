@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken'
 // --- admin
 
 export const AdminLogin = (req, res) => {
-  console.log('this is body', req.body)
   const admin = {
     email: 'rahulrjev@gmail.com',
     password: 'Rahul@123',

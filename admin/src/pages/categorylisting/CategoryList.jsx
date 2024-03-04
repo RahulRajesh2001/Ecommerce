@@ -12,21 +12,20 @@ import { useSelector } from 'react-redux'
 
 const CategoryList = () => {
     const dispatch=useDispatch()
+    const token=localStorage.getItem("adminLogin")
+    const productCategory =useSelector((state)=>state.category.category)
+
+
   const [currentPage, setCurrentPage] = useState(1)
   const categoriesPerPage = 12
-
-const token=localStorage.getItem("adminLogin")
-
-
-  const [categories, setCategories] = useState([])
   const indexOfLastCategory = currentPage * categoriesPerPage
   const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage
-  const currentCategories = categories.slice(
+  const currentCategories = productCategory.slice(
     indexOfFirstCategory,
     indexOfLastCategory
   )
 
-  const totalPages = Math.ceil(categories.length / categoriesPerPage)
+  const totalPages = Math.ceil(productCategory.length / categoriesPerPage)
   const pageNumbers = Array.from(
     { length: totalPages },
     (_, index) => index + 1
@@ -52,9 +51,7 @@ const token=localStorage.getItem("adminLogin")
             Authorization: token,
           },
         }).then((res) => {
-          setCategories(res.data.categories)
         dispatch(setCategory(res.data.categories))
-  
         })
         .catch((err) => {
           console.log(err)
@@ -64,7 +61,7 @@ const token=localStorage.getItem("adminLogin")
     }
   }, [])
 
-  const categorys=useSelector(state => state.category.category)
+
   //category delete
   const handleDelete=(id)=>{
    axios.get(`${baseUrl}/api/v1/admin/deleteCategory`,{
@@ -73,6 +70,7 @@ const token=localStorage.getItem("adminLogin")
       Authorization: token,
     },
   }).then((res)=>{
+    alert(res.data.message)
     dispatch(setCategory(res.data.categories))
    })
 
@@ -102,7 +100,7 @@ const token=localStorage.getItem("adminLogin")
               </tr>
             </thead>
             <tbody>
-              {categorys.map((category) => (
+              {productCategory.map((category) => (
                     category.isDeleted==false ? <tr key={category._id}>
                     <td>{category._id}</td>
                     <td></td>

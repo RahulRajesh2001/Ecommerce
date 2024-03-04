@@ -126,7 +126,8 @@ export const deleteProductVarient = async (req, res) => {
 // --- admin
 export const getProductVarients = async (req, res) => {
   try {
-    const productVarients = await ProductVariant.find()
+    const id=req.query.id;
+    const productVarients = await ProductVariant.find({productId:id})
     res.status(200).json({ message: 'Successfull ! ', productVarients })
   } catch (err) {
     console.log(err)
@@ -245,6 +246,7 @@ export const EditCategory = async (req, res) => {
       return res.status(404).json({ message: 'Category is not found' })
     }
     const categories = await CATEGORY.find()
+    console.log(categories)
     res
       .status(200)
       .json({ message: 'Category Edited Successfully', categories })
@@ -325,6 +327,22 @@ export const deleteVariant = async (req, res) => {
     res
       .status(200)
       .json({ message: 'Successful Deleted Varient !', updatedVarients })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
+  }
+}
+
+
+// Get
+// api/v1/admin/editProductVarient
+// --- admin
+
+export const editProductVarient = async (req, res) => {
+  try {
+    console.log(req.body)
+   
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Some Error occured .. Try again !' })

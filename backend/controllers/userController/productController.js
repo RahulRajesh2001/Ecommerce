@@ -17,6 +17,7 @@ export const getProducts = async (req, res) => {
         },
       },
     ])
+    
     res.status(200).json({ message: 'Successfully fetched products', products })
   } catch (err) {
     console.error(err)
@@ -121,7 +122,6 @@ export const getFeaturedProducts = async (req, res) => {
         $limit: 8 
       }
     ]);
-    
     if (products.length === 0) {
       return res.status(404).json({ message: "No Products Found!" });
     }

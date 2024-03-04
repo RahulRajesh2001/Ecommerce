@@ -32,16 +32,17 @@ const ShopCard = ({products}) => {
     }
   }
   return (
-    <div className=' w-[100%] flex flex-wrap   items-center'>
-      {products.map((product, index) => (
-        product.variants.map((variant, variantIndex) => (
-          <div
-            onClick={() => handleDetails(product._id)}
-            key={product._id + "-" + variantIndex}
-            className='w-[160px] h-[250px] border px-5 py-5 mt-4 ml-2 '
-          >
+    <div className='w-[100%] flex flex-wrap items-center'>
+    {products.map((product, index) => (
+      <div
+        onClick={() => handleDetails(product._id)}
+        key={product._id}
+        className='w-[160px] h-[250px] border px-5 py-5 mt-4 ml-2 '
+      >
+        {product.variants && product.variants.length > 0 && (
+          <>
             <div>
-              <img src={variant.images[0]} alt='' className='mt-2' />
+              <img src={product.variants[0].images[0]} alt='' className='mt-2' />
             </div>
             <div className='flex justify-start items-center gap-1 mt-2'>
               <div className='flex'></div>
@@ -55,12 +56,14 @@ const ShopCard = ({products}) => {
               <div className='text-[#191C1F] text-[12px]'>{product.name}</div>
             </div>
             <div className='text-[#2DA5F3] font-semibold text-[14px] mt-2'>
-              ₹{variant.salePrice}
+              ₹{product.variants[0].salePrice}
             </div>
-          </div>
-        ))
-      ))}
-    </div>
+          </>
+        )}
+      </div>
+    ))}
+  </div>
+  
   );
         }  
 

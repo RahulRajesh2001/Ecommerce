@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 const AddProductPage = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   // Initialize imgArray and setImgArray to update its state
   const [imgArray, setImgArray] = useState([])
   // Initialize other state variables
@@ -90,9 +90,9 @@ const AddProductPage = () => {
   const [regularPrice, setRegularPrice] = useState(0)
   const [salePrice, setSalePrice] = useState(0)
 
-      //takig baseproduct id
-      const baseProductId = useSelector((state) => state.baseProducts.productId)
-const token=localStorage.getItem('adminLogin')
+  //takig baseproduct id
+  const baseProductId = useSelector((state) => state.baseProducts.productId)
+  const token = localStorage.getItem('adminLogin')
   const handleSubmit = async (e) => {
     try {
       const productVarientdetails = {
@@ -109,17 +109,20 @@ const token=localStorage.getItem('adminLogin')
       axios
         .post(
           `${baseUrl}/api/v1/admin/addProductVarient`,
-          productVarientdetails,{
-            headers: { 
+          productVarientdetails,
+          {
+            headers: {
               Authorization: token,
             },
           }
         )
         .then((res) => {
-          if(res.data.productVarients){
+          if (res.status == 200) {
             navigate('/varients')
-          }else{
+            alert(res.data.message)
+          } else {
             navigate('/base-products')
+            alert(res.data.message)
           }
         })
     } catch (err) {
@@ -279,7 +282,10 @@ const token=localStorage.getItem('adminLogin')
                     </div>
                   </div>
                   {specs.map((value, index) => (
-                    <div key={index} className='flex justify-evenly ml-3 items-center mt-1 '>
+                    <div
+                      key={index}
+                      className='flex justify-evenly ml-3 items-center mt-1 '
+                    >
                       <div className='flex font-Josefin font-bold'>
                         {value.specName}
                       </div>

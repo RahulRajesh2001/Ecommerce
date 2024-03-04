@@ -14,8 +14,13 @@ const LoginPage = () => {
       password: values.password,
     }
         axios.post(`${baseUrl}/api/v1/admin/adminlogin`,admin).then((res)=>{
-          localStorage.setItem('adminLogin',res.data.token)
+          if(res.status ==200){
+            localStorage.setItem('adminLogin',res.data.token)
           navigate('/')
+          alert(res.data.message)
+          }else{
+            alert(res.data.message)
+          }
         }).catch((err)=>{
           console.log(err)
         })
