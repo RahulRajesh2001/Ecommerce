@@ -1,43 +1,66 @@
-import React from 'react'
-import OfferBar from '../../components/offerbar/OfferBar'
-import Navbar from '../../components/navbar/Navbar'
-import BottomBar from '../../components/bottombar/BottomBar'
-import Footer from '../../components/footer/Footer'
-import FilledButton from '../../components/buttons/filledbutton/FilledButton'
+import React, { useState ,useEffect} from 'react';
+import OfferBar from '../../components/offerbar/OfferBar';
+import Navbar from '../../components/navbar/Navbar';
+import BottomBar from '../../components/bottombar/BottomBar';
+import Footer from '../../components/footer/Footer';
+import FilledButton from '../../components/buttons/filledbutton/FilledButton';
+import axios from 'axios';
+import { baseUrl } from '../../../baseUrl.js';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ResetPasswordPage = () => {
+  const navigate=useNavigate()
+  const [newPassword, setNewPassword] = useState('');
+
+  const { token } = useParams();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.post(`${baseUrl}/api/v1/reset-password/${token}`, { newPassword });
+      if(response.status==200){
+        navigate('/loginSignup')
+        alert(response.data.message)
+      }else{
+        navigate('/forget-password')
+        alert(response.data.message)
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <OfferBar />
       <Navbar />
       <BottomBar />
       <div className='h-[450px] flex justify-center items-center '>
-        <div className='flex flex-col justify-center items-center gap-4 w-[300px] h-[350px]  rounded-sm border border-[#E4E7E9]'>
+        <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center gap-4 w-[300px] h-[350px]  rounded-sm border border-[#E4E7E9]'>
           <div className='font-semibold text-[14px]'>Reset Password</div>
           <div className='w-[90%] text-[#5F6C72] text-[12px] flex justify-center'>
             Lorem ipsum dolor sit amet consectetur ipsum dolor sit amet
             consectetur{' '}
           </div>
-
           <div className='flex  flex-col gap-2 bg-red- w-[90%]'>
             <div className='flex justify-between'>
-              <div className='text-[12px] font-semibold '>Password</div>
+              <div className='text-[12px] font-semibold '>Enter new password</div>
             </div>
-            <input type='password' className='border outline-none  h-[35px]' />
+            <input
+              type='password'
+              className='border outline-none  h-[35px]'
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
           </div>
-          <div className='flex  flex-col gap-2 bg-red- w-[90%]'>
-            <div className='flex justify-between'>
-              <div className='text-[12px] font-semibold '>Confirm Password</div>
-            </div>
-            <input type='password' className='border outline-none  h-[35px]' />
-          </div>
-
-          <FilledButton value='RESET PASSWORD' w='90%' />
-        </div>
+          <button type="submit">
+            <FilledButton value='RESET PASSWORD' w='90%' />
+          </button>
+        </form>
       </div>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default ResetPasswordPage
+export default ResetPasswordPage;
