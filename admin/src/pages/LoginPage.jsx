@@ -79,7 +79,7 @@ const LoginPage = () => {
           {errors.password ? <p className='text-[10px] '>{errors.password}</p> : ''}
         </div>
         {/* Button */}
-        <button className='bg-[#E7AB3C] w-[70%] h-[40px] rounded-md font-Playfair  text-[#ffff]' type='submit' disabled={isSubmitting}>
+        <button className='bg-[#E7AB3C] w-[70%] h-[40px] rounded-md font-Playfair  text-[#ffff]' type='submit'>
           Sign In
         </button>
       </form>

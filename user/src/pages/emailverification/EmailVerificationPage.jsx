@@ -16,7 +16,7 @@ const EmailVerificationPage = () => {
 
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState('');
-  const [timer, setTimer] = useState({ minutes: 5, seconds: 0 });
+  const [timer, setTimer] = useState({ minutes: 2, seconds: 0 });
 
 
   const email = useSelector(state => state.email.email);
