@@ -14,7 +14,7 @@ import {
   deleteBaseProducts,
   deleteVariant,
   editBaseProduct,
-  editProductVarient,
+  editProductVariant,
   getAllCategories,
   getBaseProducts,
   getProductVarients,
@@ -36,6 +36,6 @@ router.put('/editCategory/:id',verifyAdminToken, EditCategory)
 router.get('/deleteBaseProduct',verifyAdminToken,deleteBaseProducts)
 router.post('/editBaseProduct',verifyAdminToken, editBaseProduct)
 router.get('/deleteVarient',verifyAdminToken, deleteVariant)
-router.get('/editProductVarient',verifyAdminToken,editProductVarient)
+router.post('/editProductVarient',verifyAdminToken,editProductVariant)
 
 export default router

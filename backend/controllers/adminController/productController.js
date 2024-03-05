@@ -338,14 +338,35 @@ export const deleteVariant = async (req, res) => {
 // Get
 // api/v1/admin/editProductVarient
 // --- admin
-
-export const editProductVarient = async (req, res) => {
+export const editProductVariant = async (req, res) => {
   try {
-    console.log(req.body)
-   
+    const { productVariant, color, stock, regularPrice, salesPrice } = req.body;
+    const id = req.query.id; 
+
+    const foundProductVariant = await ProductVariant.findOne({ _id: id }); 
+
+    if (!foundProductVariant) {
+      return res.status(404).json({ message: 'Product variant not found' });
+    }
+
+    foundProductVariant.varientName = productVariant;
+    foundProductVariant.color = color;
+    foundProductVariant.stock = stock;
+    foundProductVariant.regularPrice = regularPrice;
+    foundProductVariant.salePrice = salesPrice;
+
+  
+    await foundProductVariant.save();
+    
+    const productVarients=await ProductVariant.find()
+    if(!productVarients){
+      return res.status(404).json({message:"There is no products!"})
+    }
+    res.status(200).json({ message: 'Product variant updated successfully',productVarients});
+
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: 'Some Error occured .. Try again !' })
-    throw err
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Please try again!' });
+    throw err;
   }
-}
+};
