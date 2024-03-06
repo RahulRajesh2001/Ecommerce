@@ -11,12 +11,13 @@ import {
 } from '../controllers/userController/authController.js'
 import {
   addReview,
+  getCategories,
   getFeaturedProducts,
   getProductDetails,
   getProducts,
   getReview,
 } from '../controllers/userController/productController.js'
-import { editUser, getUser } from '../controllers/userController/userController.js'
+import { addShippingAddress, deleteShippingAddress, editShippingAddress, editUser, getShippingAddress, getUser } from '../controllers/userController/userController.js'
 
 const router = express.Router()
 router.get('/getProducts',verifyToken, getProducts)
@@ -33,5 +34,10 @@ router.post('/editUser',editUser)
 router.get('/featuredProducts',verifyToken,getFeaturedProducts)
 router.post("/forgetPassword", forgetPassword);
 router.post("/reset-password/:token", resetPassword);
+router.get('/getCategories',getCategories)
+router.post('/add-address',verifyToken,addShippingAddress)
+router.get('/getShippingAddress',verifyToken,getShippingAddress)
+router.delete('/deleteShippingAddress',verifyToken,deleteShippingAddress)
+router.put('/editShippingAddress',verifyToken,editShippingAddress)
 
 export default router

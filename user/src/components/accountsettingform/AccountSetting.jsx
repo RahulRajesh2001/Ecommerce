@@ -13,8 +13,9 @@ const AccountSetting = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${baseUrl}/api/v1/getCurrentUser`, { params: { token } });
-        dispatch(setUser(res.data.user));
+        await axios.get(`${baseUrl}/api/v1/getCurrentUser`, { params: { token } }).then((res)=>{
+          dispatch(setUser(res.data.user));
+        })
       } catch (err) {
         console.error('Error fetching user:', err);
       }

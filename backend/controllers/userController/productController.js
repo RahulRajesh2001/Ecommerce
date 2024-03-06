@@ -1,3 +1,4 @@
+import CATEGORY from '../../model/categoryModel.js'
 import Product from '../../model/productModel.js'
 import reviewModel from '../../model/reviewModel.js'
 
@@ -133,3 +134,15 @@ export const getFeaturedProducts = async (req, res) => {
   }
 };
 
+// get
+// api/v1/getCategies
+// --- user
+export const getCategories = async (req, res) => {
+  try {
+    const categories = await CATEGORY.find().sort({ createdAt: -1 }).limit(6);
+    res.status(200).json({ message: 'categories fetched successfully', categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Try again!' });
+  }
+};

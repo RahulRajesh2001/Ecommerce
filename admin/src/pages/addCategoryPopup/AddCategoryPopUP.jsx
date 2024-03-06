@@ -65,6 +65,7 @@ const dispatch=useDispatch()
                 }
             })
             .catch(error => {
+                alert("Add unique Category !")
                 console.error('Error adding category:', error);
             });
     },    

@@ -11,10 +11,12 @@ import { setFeaturedProduct } from '../../../redux/reducers/productSlice'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
+import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs.jsx'
 
 
 const HomePage = () => {
   const dispatch=useDispatch()
+  const breadcrumbs = [{ label: 'Home', path: '/' }];
 
   const token = localStorage.getItem('userToken')
   useEffect(() => {
@@ -35,11 +37,13 @@ const HomePage = () => {
 
   return (
     <div className='flex flex-col '>
+      
       <div className='vvsm:hidden md:block'>
         <OfferBar />
       </div>
       <Navbar />
       <BottomBar />
+      <BrudCrumbs breadcrumbs={breadcrumbs}/>
       <div className='w-[100%] flex justify-center items-center'>
         <HomeCarosel />
       </div>

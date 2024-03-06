@@ -2,7 +2,8 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const initialState={
     user:{},
-    isAuthenticated:false
+    isAuthenticated:false,
+    shippingAddress:[]
 }
 
 export const userSlice=createSlice({
@@ -13,10 +14,12 @@ export const userSlice=createSlice({
             state.user=action.payload
             state.token=action.payload.token
             state.isAuthenticated=true
-
+        },
+        setShippingAddress:(state,action)=>{
+            state.shippingAddress=action.payload
         }
     }
 })
 
-export const {setUser}=userSlice.actions
+export const {setUser,setShippingAddress}=userSlice.actions
 export default userSlice.reducer;

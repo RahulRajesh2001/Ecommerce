@@ -159,31 +159,41 @@ export const getBaseProducts = async (req, res) => {
 
 export const addCategory = async (req, res) => {
   try {
-    const { title, description } = req.body
+    const { title, description } = req.body;
 
     if (!title) {
-      res.status(400).json({ message: 'Enter the title !' })
+      return res.status(400).json({ message: 'Enter the title!' });
     }
+
     if (!description) {
-      res.status(400).json({ message: 'Enter the description !' })
+      return res.status(400).json({ message: 'Enter the description!' });
+    }
+
+    const existingCategory = await CATEGORY.findOne({ title });
+
+    if (existingCategory) {
+      return res.status(400).json({ message: 'Category already exists!' });
     }
 
     const category = new CATEGORY({
       title,
       description,
-    })
-    const savedCategory = await category.save()
+    });
+
+    const savedCategory = await category.save();
+
     if (!savedCategory) {
-      return res.status(400).json({ message: 'The category is not saved !' })
+      return res.status(400).json({ message: 'The category is not saved!' });
     }
-    const categories = await CATEGORY.find()
-    res.status(200).json({ message: 'Category saved', categories })
+
+    const categories = await CATEGORY.find();
+
+    return res.status(200).json({ message: 'Category saved', categories });
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: 'Some Error occured .. Try again !' })
-    throw err
+    console.error(err);
+    return res.status(500).json({ message: 'Some Error occurred. Try again!' });
   }
-}
+};
 
 // Get
 // api/v1/admim/categories
@@ -237,6 +247,12 @@ export const EditCategory = async (req, res) => {
     if (!description) {
       res.status(400).json({ message: 'Enter the description !' })
     }
+    const existingCategory = await CATEGORY.findOne({ title });
+
+    if (existingCategory) {
+      return res.status(400).json({ message: 'Category already exists!' });
+    }
+
     const updatedCategory = await CATEGORY.findByIdAndUpdate(
       id,
       { title, description },

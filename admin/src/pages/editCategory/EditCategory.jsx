@@ -59,10 +59,11 @@ const token=localStorage.getItem("adminLogin")
         .then((res) => {
           console.log("category",res.data.categories)
           dispatch(setCategory(res.data.categories));
-          
+          alert(res.data.message)
         })
         .catch(error => {
           console.error('Error editing category:', error);
+          alert("Alert Unique Category !")
         });
         handleClose();
     }

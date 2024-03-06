@@ -1,53 +1,39 @@
 import React from 'react'
-import { MdDashboard } from "react-icons/md";
-import { IoMdSettings } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import * as Icons from 'react-icons/io'
 
 const SideBar = () => {
+  const dashboard = [
+    { name: 'Dashboard', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Order History', route: '/orderHistory', icon: 'IoMdSettings' },
+    { name: 'Track Order', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Shoppig Cart', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Whishlist', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Browsing History', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Setting', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Wallet', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Cupons', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Log-out', route: '/profile', icon: 'IoMdSettings' },
+  ]
+
   return (
-    <div className='bg-red-100 w-[200px] h-[500px] flex flex-col justify-center items-center gap-5 '>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <Link to="/profile">
-        <div className='flex gap-2 justify-center items-center'>
-            <div><IoMdSettings  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Setting</div>
-        </div>
-        </Link>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
-        <div className='flex gap-2 justify-center items-center'>
-            <div><MdDashboard  className='font-semibold text-[#5F6C72] text-[15px]'/></div>
-            <div className='font-semibold text-[#5F6C72] text-[16px]'>Dashboard</div>
-        </div>
+    <div className='w-[200px] h-[500px] flex flex-col items-start justify-center gap-5 shadow-md '>
+      {dashboard.map((value, index) => {
+        const IconComponent = Icons[value.icon]
+
+        return (
+          <Link key={index} to={value.route}>
+            <div className='flex gap-2 justify-center items-center ml-5'>
+              <div>
+                <IconComponent className='font-semibold text-[#5F6C72] text-[15px]' />
+              </div>
+              <div className='font-semibold text-[#5F6C72] text-[16px]'>
+                {value.name}
+              </div>
+            </div>
+          </Link>
+        )
+      })}
     </div>
   )
 }

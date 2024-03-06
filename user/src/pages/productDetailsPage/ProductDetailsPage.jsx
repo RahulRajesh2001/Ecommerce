@@ -13,6 +13,7 @@ import { MdOutlineCompareArrows } from 'react-icons/md'
 import ProductDetail from '../../components/productdeatil/ProductDetail'
 import { useSelector } from 'react-redux'
 import ReactImageMagnify from 'react-image-magnify'
+import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
 
 const ProductDetailsPage = () => {
   const ProductDetails = useSelector(
@@ -28,13 +29,15 @@ const ProductDetailsPage = () => {
   function handleImage(index) {
     setImage(index)
   }
+  const breadcrumbs = [{ label: 'Home', path: '/' },{label:'Product Details'}];
 
   return (
     <div>
       <OfferBar />
       <Navbar />
       <BottomBar />
-      <div className=' h-[850px]'>
+      <BrudCrumbs breadcrumbs={breadcrumbs}/>
+      <div className=' h-[900px]'>
         {/*upperside*/}
         <div className='flex justify-center gap-8'>
           {/*leftside*/}
@@ -63,7 +66,7 @@ const ProductDetailsPage = () => {
                   <img
                     src={image}
                     alt=''
-                    className='w-[50px] h-[50px]'
+                    className='w-[50px] h-[50px] mt-[50px]'
                     onClick={() => handleImage(index)}
                   />
                 </div>

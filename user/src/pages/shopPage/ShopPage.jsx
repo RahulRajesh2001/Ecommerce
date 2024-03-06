@@ -7,7 +7,8 @@ import { IoIosSearch } from 'react-icons/io'
 import ShopCard from '../../components/shopcard/ShopCard'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
-import { baseUrl } from '../../../baseUrl'
+import { baseUrl } from '../../../baseUrl.js'
+import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
 
 const ShopPage = () => {
   const [products,setProducts]=useState([])
@@ -27,11 +28,14 @@ const ShopPage = () => {
         console.log(err)
       })
   }, [])
+
+  const breadcrumbs = [{ label: 'Home', path: '/' },{label:'Shop',path:'/shop'}];
   return (
     <div>
       <OfferBar />
       <Navbar />
       <BottomBar />
+      <BrudCrumbs breadcrumbs={breadcrumbs}/>
 
       <div className='flex justify-center flex-wrap mt-5 mb-5 gap-5 '>
         <section className='flex flex-col gap-2'>
