@@ -18,6 +18,7 @@ import {
   getReview,
 } from '../controllers/userController/productController.js'
 import { addShippingAddress, deleteShippingAddress, editShippingAddress, editUser, getShippingAddress, getUser } from '../controllers/userController/userController.js'
+import { addToCart, getCartItems } from '../controllers/userController/cartController.js'
 
 const router = express.Router()
 router.get('/getProducts',verifyToken, getProducts)
@@ -39,5 +40,7 @@ router.post('/add-address',verifyToken,addShippingAddress)
 router.get('/getShippingAddress',verifyToken,getShippingAddress)
 router.delete('/deleteShippingAddress',verifyToken,deleteShippingAddress)
 router.put('/editShippingAddress',verifyToken,editShippingAddress)
+router.post('/addToCart',verifyToken,addToCart)
+router.get('/getCartItems',verifyToken,getCartItems)
 
 export default router
