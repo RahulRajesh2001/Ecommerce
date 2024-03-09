@@ -24,15 +24,13 @@ const ProductDetailsPage = () => {
   const productDetailsVariant = productDetails?.variants?.[0] || {}
 
   const [productId, setProductId] = useState(productDetailsVariant?._id || '')
-  const [productQuantity, setProductQuantity] = useState(0)
+
+  console.log("productvid form detjal",productId)
+
   const [image, setImage] = useState(0)
 
   const handleImage = (index) => {
     setImage(index)
-  }
-
-  const quantity = (quantity) => {
-    setProductQuantity(quantity)
   }
 
   const handleSubmit = () => {
@@ -45,9 +43,10 @@ const ProductDetailsPage = () => {
     })
 
     const requestData = {
-      productId: productId,
-      quantity: productQuantity,
+      productVarientId: productId,
+      quantity:1,
     }
+    console.log("handle submit",requestData)
 
     axios
       .post(`${baseUrl}/api/v1/addToCart`, requestData)
@@ -173,10 +172,6 @@ const ProductDetailsPage = () => {
               ))}
             </div>
             <div className='mt-5 flex justify-around items-center gap-2'>
-              <CounterButton
-                count={productDetailsVariant.stock}
-                quantity={quantity}
-              />
               <div onClick={handleSubmit}>
                 <FilledButton value='ADD TO CART' w='300px' link='/cart' />
               </div>

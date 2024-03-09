@@ -8,64 +8,71 @@ import jwt from 'jsonwebtoken'
 
 export const addToCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body
-    if (!productId) {
-      return res.status(400).json({ message: 'Product ID is required.' })
+    const {productVarientId, quantity } = req.body;
+    console.log(productVarientId,quantity)
+    const maxQuantityPerPerson = 5;
+
+    if (!productVarientId) {
+      return res.status(400).json({ message: 'Product ID is required.' });
     }
 
-    const productVariant = await ProductVariant.findById(productId)
+    const productVariant = await ProductVariant.findById(productVarientId);
 
     if (!productVariant) {
-      return res.status(404).json({ message: 'Product variant not found.' })
+      return res.status(404).json({ message: 'Product variant not found.' });
     }
 
     if (quantity > productVariant.stock) {
-      return res.json({ message: 'InSufficient Stock !' })
+      return res.json({ message: 'Insufficient Stock!' });
     }
 
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
+
     if (!token) {
-      return res
-        .status(401)
-        .json({ message: 'You are unauthorized. Please login to continue.' })
+      return res.status(401).json({ message: 'You are unauthorized. Please login to continue.' });
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    const userId = decoded.id
 
-    //setting maxqty
-    const maxQty = 5
-    let cart = await CartModel.findOne({ userId })
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
 
-    if (!cart) {
-      cart = new CartModel({
-        userId,
-        products: [{ productVarientId: productId, quantity }],
-      })
-    } else {
-      const existingProductIndex = cart.products.findIndex(
-        (item) => item.productVarientId.toString() === productId
-      )
+    let userCart = await CartModel.findOne({ userId });
+
+    if (userCart) {
+      const existingProductIndex = userCart.products.findIndex(item => item.productVarientId.equals(productVarientId));
 
       if (existingProductIndex !== -1) {
-        const totalQty = (cart.products[existingProductIndex].quantity +=
-          quantity)
-        if (totalQty > maxQty) {
-          return res
-            .status(404)
-            .json({ message: `Maximum ${maxQty} quantity allowed per person` })
-        }
-      } else {
-        cart.products.push({ productVarientId: productId, quantity })
-      }
-    }
+        const totalQuantity = userCart.products[existingProductIndex].quantity + quantity;
 
-    const savedCart = await cart.save()
-    res.status(200).json({message:"Product added to Cart Successfully !",savedCart})
+        if (totalQuantity > maxQuantityPerPerson) {
+          return res.status(400).json({ message: `Maximum ${maxQuantityPerPerson} quantity allowed per person` });
+        }
+
+        userCart.products[existingProductIndex].quantity += quantity || 1;
+      } else {
+        userCart.products.push({
+          productVarientId,
+          quantity: quantity || 1,
+        });
+      }
+
+      await userCart.save();
+      return res.status(200).json({ message: 'Successfully added to cart', cart: userCart });
+    } else {
+      const newUserCart = new CartModel({  userId });
+
+      newUserCart.products.push({
+        productVarientId,
+        quantity: quantity || 1,
+      });
+
+      await newUserCart.save();
+      return res.status(200).json({ message: 'Successfully added to cart', cart: newUserCart });
+    }
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Some Error occurred. Try again!' })
+    console.error(err);
+    return res.status(500).json({ message: 'Some Error occurred. Try again!' });
   }
-}
+};
 
 // POST
 // api/v1/getCartItems
@@ -82,17 +89,14 @@ export const getCartItems = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const userId = decoded.id
 
-    const cartt=await CartModel.findOne({userId})
-    console.log(cartt)
+    const cartItems=await CartModel.findOne({userId})
+    console.log("getitems bodyhehe",cartItems)
     
     const cart=await CartModel.findOne({userId}).populate({
       path:'products.productVarientId',
       model:"ProductVariant",
-      select:'varientName images salePrice regularPrice productId'
+      select:'varientName images salePrice regularPrice productId stock'
     })
-
-    console.log("hhehehehe",cart.products[0].productVarientId)
-
     res.status(200).json({message:"Succesfull",cart})
 
   } catch (err) {
@@ -100,3 +104,44 @@ export const getCartItems = async (req, res) => {
     res.status(500).json({ message: 'Some Error occurred. Try again!' })
   }
 }
+
+
+// POST
+// api/v1/deleteCartItem
+// --- 
+
+export const deleteFromCart = async (req, res) => {
+  try {
+    const {productVarientId} = req.query;
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ message: 'You are unauthorized. Please login to continue.' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const cart = await CartModel.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    const existingProductIndex = cart.products.findIndex((item) => item.productVarientId.equals(productVarientId));
+  
+    if (existingProductIndex === -1) {
+      return res.status(404).json({ message: 'Product variant not found in the cart' });
+    }
+
+    cart.products.splice(existingProductIndex, 1);
+    await cart.save();
+
+    console.log("this is cart",cart)
+
+    res.status(200).json({ message: 'Successfully deleted from cart', cart });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Try again!' });
+  }
+};
