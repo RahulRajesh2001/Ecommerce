@@ -12,6 +12,7 @@ import EmailSubmissionForgetPass from './pages/emailSubmissionForgetPasswordPage
 import OrderHistoryPage from './pages/orderPages/orderhistorypage/OrderHistoryPage.jsx';
 import OrderDetailsPage from './pages/orderPages/orderDetailsPage/OrderDetailsPage.jsx';
 import CartPage from './pages/orderPages/cartpage/CartPage.jsx';
+import CheckoutPage from './pages/checkoutpage/CheckoutPage.jsx';
 
 
 
@@ -34,6 +35,7 @@ const NeomWebsite = () => {
         <Route exact path='/orderHistory' element={<OrderHistoryPage/>} />
         <Route exact path='/orderDetails' element={<OrderDetailsPage/>} />
         <Route exact path='/cart' element={<CartPage/>} />
+        <Route exact path='/checkout' element={<CheckoutPage/>} />
           <Route/>
         </Route>
         <Route exact path='/' element={<HomePage />} />

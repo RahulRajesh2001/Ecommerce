@@ -8,6 +8,7 @@ import axios from 'axios';
 import { baseUrl } from '../../../../baseUrl';
 import { useDispatch} from 'react-redux';
 import { setCartProducts } from '../../../../redux/reducers/cartSlice';
+import { Link } from "react-router-dom";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -203,7 +204,9 @@ const CartPage = () => {
                 <div className='text-[#191C1F] font-Playfair font-semibold'>₹ {subTotal}</div>
               </div>
         
+              <Link className="w-[100%] flex justify-center"  to='/checkout'>
               <div className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>PROCEED TO CHECKOUT</div>
+              </Link>
           
           </div>
         </div>

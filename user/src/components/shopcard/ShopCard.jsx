@@ -6,9 +6,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setProductDetails,setFeaturedProduct} from '../../../redux/reducers/productSlice.js'
 
-const ShopCard = ({products}) => {
+const ShopCard = () => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
+
+  const products=useSelector((store)=>store.productDetails.products)
 
   const token = localStorage.getItem('userToken')
   //handeDetails
@@ -35,7 +37,7 @@ const ShopCard = ({products}) => {
     <div className='w-[100%] flex flex-wrap items-center'>
     {products
       .filter(product => !product.isDeleted)
-      .map((product, index) => (
+      .map((product, index) => ( 
         <div
           onClick={() => handleDetails(product._id)}
           key={product._id}

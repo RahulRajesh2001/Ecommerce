@@ -11,14 +11,20 @@ import {
 } from '../controllers/userController/authController.js'
 import {
   addReview,
+  alphaSort,
+  categorySort,
   getCategories,
   getFeaturedProducts,
   getProductDetails,
   getProducts,
   getReview,
+  priceSort,
+  searchProducts,
+  tagSort,
 } from '../controllers/userController/productController.js'
-import { addShippingAddress, deleteShippingAddress, editShippingAddress, editUser, getShippingAddress, getUser } from '../controllers/userController/userController.js'
+import { addShippingAddress, chooseShippingAddress, deleteShippingAddress, editShippingAddress, editUser, getShippingAddress, getUser } from '../controllers/userController/userController.js'
 import { addToCart, deleteFromCart, getCartItems } from '../controllers/userController/cartController.js'
+import { placeOrder } from '../controllers/userController/orderController.js'
 
 const router = express.Router()
 router.get('/getProducts',verifyToken, getProducts)
@@ -43,5 +49,12 @@ router.put('/editShippingAddress',verifyToken,editShippingAddress)
 router.post('/addToCart',verifyToken,addToCart)
 router.get('/getCartItems',verifyToken,getCartItems)
 router.delete('/removeItem',verifyToken,deleteFromCart)
+router.get('/category-sort',categorySort)
+router.get('/price-range',priceSort)
+router.get('/sort-tag',tagSort)
+router.get('/alpha-sort',alphaSort)
+router.get('/search',searchProducts)
+router.get('/chooseAddress',chooseShippingAddress)
+router.post('/placeOrder',verifyToken,placeOrder)
 
 export default router

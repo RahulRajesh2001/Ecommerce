@@ -109,6 +109,7 @@ export const addShippingAddress = async (req, res) => {
 export const getShippingAddress = async (req, res) => {
   try {
     const token = req.headers.authorization
+    
     if (!token) {
       return res
         .status(401)
@@ -116,7 +117,9 @@ export const getShippingAddress = async (req, res) => {
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const userId = decoded.id
+    
     const shippingAddresses = await ShippingAddressModel.find({userId })
+    console.log('this is shipping address',shippingAddresses)
     if(!shippingAddresses){
       return res.status(404).json({message:"No addresses present ! Add address "})
     }
@@ -201,6 +204,30 @@ export const editShippingAddress = async (req, res) => {
     }
     
 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const chooseShippingAddress = async (req, res) => {
+console.log('executed')
+  try {
+    const id = req.query.id;
+   
+    if (!id) {
+      return res.status(400).json({ message: "Invalid address ID provided" });
+    }
+
+    const address = await ShippingAddressModel.findOne({ _id: id });
+
+    if (!address) {
+      return res.status(500).json({ message: "There is no id" });
+    }
+
+   res.status(200).json({ message: "Successfull",address});
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

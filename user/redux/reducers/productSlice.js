@@ -2,7 +2,8 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const initialState={
     productDetails:{},
-    featuredProducts:[]
+    featuredProducts:[],
+    products:[]
 }
 
 export const productDetailsSlice=createSlice({
@@ -14,9 +15,12 @@ export const productDetailsSlice=createSlice({
         },
         setFeaturedProduct:(state,action)=>{
             state.featuredProducts=action.payload
+        },
+        setFullProducts:(state,action)=>{
+            state.products=action.payload
         }
     }
 })
 
-export const {setProductDetails,setFeaturedProduct}=productDetailsSlice.actions
+export const {setProductDetails,setFeaturedProduct,setFullProducts}=productDetailsSlice.actions
 export default productDetailsSlice.reducer;

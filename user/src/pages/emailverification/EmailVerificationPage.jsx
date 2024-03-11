@@ -9,7 +9,7 @@ import FilledButton from '../../components/buttons/filledbutton/FilledButton';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import { otpSchema } from '../../formValidationSchema/otpShcema';
+import  {otpSchema} from '../../formValidationSchema/otpShcema.js'
 
 const EmailVerificationPage = () => {
     // Get email from Redux store

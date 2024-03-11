@@ -227,6 +227,7 @@ export const otpRegeneration=async(req,res)=>{
 // api/v1/otp-verification
 // --- user
 export const otpVerification = async (req, res) => {
+  console.log("this from otp verification")
   try {
     console.log(req.body)
     const { userEmail, otp } = req.body;

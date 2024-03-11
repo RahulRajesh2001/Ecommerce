@@ -5,12 +5,15 @@ import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
 import { IoIosSearch } from 'react-icons/io'
 import ShopCard from '../../components/shopcard/ShopCard'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
 import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
+import SortSideBar from '../../components/product/sortSidebar/SortSideBar.jsx'
+import {setFullProducts } from '../../../redux/reducers/productSlice.js'
 
 const ShopPage = () => {
+  const dispatch=useDispatch()
   const [products,setProducts]=useState([])
   const token = localStorage.getItem('userToken')
   useEffect(() => {
@@ -23,11 +26,37 @@ const ShopPage = () => {
       })
       .then((res) => {
         setProducts(res.data.products)
+        dispatch(setFullProducts(res.data.products))
+        console.log("from shopage",res.data.products)
       })
       .catch((err) => {
         console.log(err)
       })
   }, [])
+
+    //serach
+    const [searchQuery, setSearchQuery] = useState('')
+
+
+    axios.interceptors.request.use((config) => {
+      const token = localStorage.getItem('userToken')
+      if (token) {
+        config.headers.Authorization = token
+      }
+      return config
+    })
+  useEffect(()=>{
+    axios
+    .get(`${baseUrl}/api/v1/search`, { params: {searchQuery} })
+    .then((res) => {
+      console.log('res from cat', res.data.products)
+      dispatch(setFullProducts(res.data.products))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  },[searchQuery,dispatch])
+  
 
   const breadcrumbs = [{ label: 'Home', path: '/' },{label:'Shop',path:'/shop'}];
   return (
@@ -38,81 +67,7 @@ const ShopPage = () => {
       <BrudCrumbs breadcrumbs={breadcrumbs}/>
 
       <div className='flex justify-center flex-wrap mt-5 mb-5 gap-5 '>
-        <section className='flex flex-col gap-2'>
-          {/*leftside */}
-          <section className='w-[200px] flex flex-col gap-1'>
-            <div className='text-[15px] font-semibold'>CATEGORY</div>
-            {/*one Radio button*/}
-            <div className='flex items-center  gap-2'>
-              <input
-                id='default-radio-1'
-                type='radio'
-                value=''
-                name='default-radio'
-                className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-              />
-              <div className='text-[#475156] text-[12px]'>Default radio</div>
-            </div>
-          </section>
-          {/*Price range*/}
-          <section className='w-[200px] flex flex-col gap-1'>
-            <div className='text-[15px] font-semibold'>PRICE RANGE</div>
-            {/*one Radio button*/}
-            <div className='flex items-center  gap-2'>
-              <input
-                id='default-radio-1'
-                type='radio'
-                value=''
-                name='default-radio'
-                className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-              />
-              <div className='text-[#475156] text-[12px]'>Default radio</div>
-            </div>
-          </section>
-
-          {/*Poppular brands*/}
-          <section className=' flex flex-col gap-1'>
-            <div className='text-[15px] font-semibold'>POPULAR BRANDS</div>
-            {/*one Radio button*/}
-            <div className='flex items-center  gap-2'>
-              <input
-                id='default-checkbox'
-                type='checkbox'
-                value=''
-                className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-              />
-              <div className='text-[#475156] text-[12px]'>Apple</div>
-              <div className='flex items-center  gap-2'>
-                <input
-                  id='default-checkbox'
-                  type='checkbox'
-                  value=''
-                  className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                />
-                <div className='text-[#475156] text-[12px]'>Apple</div>
-              </div>
-            </div>
-            {/*one Radio button*/}
-            <div className='flex items-center  gap-2'>
-              <input
-                id='default-checkbox'
-                type='checkbox'
-                value=''
-                className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-              />
-              <div className='text-[#475156] text-[12px]'>Apple</div>
-              <div className='flex items-center  gap-2'>
-                <input
-                  id='default-checkbox'
-                  type='checkbox'
-                  value=''
-                  className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                />
-                <div className='text-[#475156] text-[12px]'>Apple</div>
-              </div>
-            </div>
-          </section>
-        </section>
+        <SortSideBar/>
         {/*rightside */}
         <div className=' w-[60%] h-screen'>
           <div className='flex justify-between'>
@@ -120,15 +75,10 @@ const ShopPage = () => {
               <input
                 type='text'
                 placeholder='search for anything....'
+                onChange={(e)=>setSearchQuery(e.target.value)}
                 className='outline-none border rounded-sm w-[350px] placeholder:text-[#77878F] placeholder:text-[12px]  px-5   h-[30px]'
               />
               <IoIosSearch className='absolute top-[7px] right-[10px] hover:cursor-pointer' />
-            </div>
-            <div className='flex gap-3 items-center'>
-              <div className='font-semibold text-[12px]'>Sort by:</div>
-              <div className='border w-[120px] h-[30px] flex justify-center items-center text-[#77878F] text-[12px]'>
-                Most Popular
-              </div>
             </div>
           </div>
 
@@ -144,7 +94,7 @@ const ShopPage = () => {
           </div>
           {/*cards*/}
           <div className='flex flex-wrap mt-5'>
-            <ShopCard products={products}/>
+            <ShopCard/>
           </div>
         </div>
       </div>

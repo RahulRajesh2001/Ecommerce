@@ -1,5 +1,6 @@
 import CATEGORY from '../../model/categoryModel.js'
 import Product from '../../model/productModel.js'
+import ProductVariant from '../../model/productVarientModel.js'
 import reviewModel from '../../model/reviewModel.js'
 
 // GET
@@ -144,5 +145,137 @@ export const getCategories = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Some Error occurred. Try again!' });
+  }
+};
+
+// get
+// api/v1/category
+// --- user
+export const categorySort= async (req, res) => {
+  try {
+    const {check}=req.query;
+    const products = await Product.aggregate([
+      {
+        $match: { category: check } 
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
+    res.status(200).json({message:"Category Successfull",products});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Try again!' });
+  }
+};
+
+// get
+// api/v1/price-range
+// --- user
+
+export const priceSort = async (req, res) => {
+  try {
+    const { min, max } = req.query;
+    const minPrice = Number(min) * 1000;
+    const maxPrice = Number(max) * 1000;
+
+    const products = await ProductVariant.find({ salePrice: { $gt: minPrice, $lt: maxPrice } });
+
+    res.status(200).json({ message: "Successful", products });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Try again!' });
+  }
+};
+
+// get
+// api/v1/category
+// --- user
+export const tagSort= async (req, res) => {
+  try {
+    const {tag}=req.query;
+    const products = await Product.aggregate([
+      {
+        $match: { brand:tag } 
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
+    res.status(200).json({message:"Category Successfull",products});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Try again!' });
+  }
+};
+
+// get
+// api/v1/category
+// --- user
+export const alphaSort= async (req, res) => {
+  try {
+    const { alpha } = req.query;
+    const sortValue = parseInt(alpha);
+
+    if (sortValue !== 1 && sortValue !== -1) {
+      return res.status(400).json({ message: 'Invalid sorting order. Must be 1 (ascending) or -1 (descending).' });
+    }
+
+    const products = await Product.aggregate([
+      {
+        $sort: { name: sortValue } 
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
+    res.status(200).json({ message: "Category Successfull", products });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Try again!' });
+  }
+};
+
+// get
+// api/v1/category
+// --- user
+export const searchProducts = async (req, res) => {
+  try {
+    const { searchQuery } = req.query;
+
+    const products = await Product.aggregate([
+      {
+        $match: { $search: searchQuery } 
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
+
+    console.log("Search results:", products);
+    res.status(200).json({ message: "Search successful", products });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Try again!' });
   }
 };

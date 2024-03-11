@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import FilledButton from '../buttons/filledbutton/FilledButton';
+import FilledButton from '../buttons/filledbutton/FilledButton.jsx';
 import axios from 'axios';
 import { baseUrl } from '../../../baseUrl.js';
 import { useDispatch, useSelector } from 'react-redux';
