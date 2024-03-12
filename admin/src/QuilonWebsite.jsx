@@ -10,6 +10,7 @@ import BaseProducts from './pages/baseproducts/BaseProducts.jsx'
 import VarientListingPage from './pages/varientListingpage/VarientListingPage.jsx'
 import { Outlet } from 'react-router-dom'
 import EditProductVarient from './pages/editProductVarient/EditProductVarient.jsx'
+import OrderListing from './pages/orderlisting/OrderListing.jsx'
 
 const QuilonWebsite = () => {
   const Protected = () => {
@@ -28,7 +29,8 @@ const QuilonWebsite = () => {
           <Route path='/add-category' element={<AddCategoryPopUP />} />
           <Route path='/base-products' element={<BaseProducts />} />
           <Route path='/varients' element={<VarientListingPage />} />
-          <Route path='/edit-productVarient' element={<EditProductVarient/>} />
+          <Route path='/edit-productVarient' element={< EditProductVarient/>} />
+          <Route path='/orders' element={<OrderListing/>} />
           <Route />
         </Route>
         <Route path='/login' element={<LoginPage/>} />

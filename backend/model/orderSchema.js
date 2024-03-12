@@ -48,7 +48,7 @@ const OrderSchema = new Schema({
         street: { type: String, required: true },
         phone1: { type: Number, required: true },
         phone2: { type: Number },
-        state: { type: String, default: 'Unknown', required: true }, // Added default value
+        state: { type: String, default: 'Unknown', required: true }, 
         pincode: { type: String, required: true },
         address: { type: String, required: true },
         fullName: { type: String, required: true },

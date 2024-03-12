@@ -1,6 +1,6 @@
 import express from 'express'
 import { AdminLogin } from '../controllers/adminController/authController.js'
-import {verifyAdminToken} from '../utils/authMiddleware.js'
+import {verifyAdminToken, verifyToken} from '../utils/authMiddleware.js'
 import {
   BlockUnblockUser,
   getAllUsers,
@@ -19,6 +19,7 @@ import {
   getBaseProducts,
   getProductVarients,
 } from '../controllers/adminController/productController.js'
+import { editPaymentStatus, getAllOrders } from '../controllers/adminController/orderController.js'
 
 const router = express.Router() 
 
@@ -37,5 +38,7 @@ router.get('/deleteBaseProduct',verifyAdminToken,deleteBaseProducts)
 router.post('/editBaseProduct',verifyAdminToken, editBaseProduct)
 router.get('/deleteVarient',verifyAdminToken, deleteVariant)
 router.post('/editProductVarient',verifyAdminToken,editProductVariant)
+router.get('/orders',verifyAdminToken,getAllOrders)
+router.put('/editPaymentStatus/:orderId',verifyAdminToken,editPaymentStatus)
 
 export default router
