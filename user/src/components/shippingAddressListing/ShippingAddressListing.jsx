@@ -58,7 +58,7 @@ const ShippingAddressListing = () => {
   return (
     <div className=' w-[100%] h-[300px] flex flex-col justify-center items-center gap-2  mt-[50px] '>
       <div className='flex justify-around w-[100%] items-center '>
-        <div className='flex font-semibold text-[18px] '>Account Setting</div>
+        <div className='flex font-semibold text-[18px] '>Shippig Address</div>
         <div className='cursor-pointer '>
           <AddShippingAddress />
         </div>

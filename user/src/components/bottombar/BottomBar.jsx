@@ -5,6 +5,7 @@
         import { MdHeadphones } from "react-icons/md";
         import { IoHelpCircleOutline } from "react-icons/io5";
         import { MdOutlinePhoneCallback } from "react-icons/md";
+import { Link } from 'react-router-dom';
 
         const BottomBar = () => {
         return (
@@ -15,11 +16,13 @@
                     <div className='text-[10px]'>All Category </div>
                     <MdKeyboardArrowDown className='text-[black] text-[15px]' />
                 </div>
-                <div className='flex items-center justify-center gap-2 hover:bg-[#F2F4F5]  h-[40px] w-[100px] hover:cursor-pointer'>
+               <Link to='/orderHistory'>
+               <div className='flex items-center justify-center gap-2 hover:bg-[#F2F4F5]  h-[40px] w-[100px] hover:cursor-pointer'>
                     <CiLocationOn className='text-[black] text-[15px]'/>
                     <div className='text-[10px]'>Track Order</div>
                 
                 </div>
+               </Link>
                 <div className='flex items-center justify-center gap-2 hover:bg-[#F2F4F5]  h-[40px] w-[100px] hover:cursor-pointer'>
                     <MdOutlineCompareArrows className='text-[black] text-[15px]'/>
                     <div className='text-[10px]'>Compare</div>

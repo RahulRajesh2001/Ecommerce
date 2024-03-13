@@ -5,6 +5,7 @@ import ShippingAddressModel from '../../model/shoppingAddress.js'
 export const getUser = async (req, res) => {
   try {
     const token = req.query.token
+
     if (!token) {
       return res
         .status(404)
@@ -18,6 +19,8 @@ export const getUser = async (req, res) => {
         .status(404)
         .json({ message: 'User not found .. Please login !' })
     }
+
+
     res.status(200).json({ message: 'Successfull', user })
   } catch (err) {
     console.error(err)
@@ -39,6 +42,7 @@ export const editUser = async (req, res) => {
         .status(404)
         .json({ message: 'There is no User .. Please login.!' })
     }
+
     res.status(200).json({ message: 'Updated Successfully !', updatedUser })
   } catch (err) {
     console.error(err)
@@ -212,7 +216,7 @@ export const editShippingAddress = async (req, res) => {
 
 
 export const chooseShippingAddress = async (req, res) => {
-console.log('executed')
+
   try {
     const id = req.query.id;
    

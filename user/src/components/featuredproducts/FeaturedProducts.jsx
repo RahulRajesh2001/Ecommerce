@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 
 
 const FeaturedProducts = () => {
-  const products=useSelector((state)=>state.productDetails.featuredProducts)
+ 
 
   return (
     <div>
@@ -25,7 +25,7 @@ const FeaturedProducts = () => {
         <div className='flex flex-col gap-2'>
           <div className='font-bold'>Featured Products</div>
           <div className='flex flex-row  w-[800px]'>
-            <ShopCard products={products}/>
+            <ShopCard/>
           </div>
         </div>
       </div>

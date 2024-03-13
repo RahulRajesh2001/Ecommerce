@@ -7,25 +7,25 @@ import { setUser } from '../../../redux/reducers/userSlice.js';
 
 const AccountSetting = () => {
   const dispatch = useDispatch();
-
+  const currentUser = useSelector((state) => state.user.user);
   const token = localStorage.getItem('userToken');
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        await axios.get(`${baseUrl}/api/v1/getCurrentUser`, { params: { token } }).then((res)=>{
-          dispatch(setUser(res.data.user));
-        })
+        const response = await axios.get(`${baseUrl}/api/v1/getCurrentUser`, { params: { token } });
+        dispatch(setUser(response.data.user));
+        setName(response.data.user.name);
+        setEmail(response.data.user.email);
       } catch (err) {
         console.error('Error fetching user:', err);
       }
     };
     fetchUser();
-  }, []);
-
-  const currentUser = useSelector((state) => state.user.user);
-  const [name, setName] = useState(currentUser.name );
-  const [email, setEmail] = useState(currentUser.email);
+  }, [dispatch, token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,15 +36,20 @@ const AccountSetting = () => {
         id: currentUser._id
       };
 
-      const res = await axios.post(`${baseUrl}/api/v1/editUser`, editUser);
-      if(res.status==200){
-        alert(res.data.message)
-      }else{
-        alert(res.data.message)
+      const res = await axios.post(`${baseUrl}/api/v1/editUser`, editUser, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log("Response from server:", res);
+      if (res.status === 200) {
+        alert(res.data.message);
+      } else {
+        alert(res.data.message);
       }
     } catch (err) {
       console.error('Error editing user:', err);
-      alert('Please resubmit the form!');
+      alert('An error occurred. Please try again later.');
     }
   };
 
@@ -72,8 +77,8 @@ const AccountSetting = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <button type='submit' className='mt-5'>
-          <FilledButton value={'Save Changes'} w={'100px'} />
+        <button  type='submit' className='mt-5 bg-orange-500 rounded-md w-[50px] h-[30px] text-[#ffff]'>
+          Edit
         </button>
       </form>
     </div>

@@ -1,6 +1,4 @@
-import React, { useState } from 'react'
-import FilledButton from '../../components/buttons/filledbutton/FilledButton'
-import Google from '../../assets/Google.png'
+import React from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { baseUrl } from '../../../baseUrl.js'
@@ -32,12 +30,12 @@ const SignUp = () => {
           `${baseUrl}/api/v1/otp-generation`,
           { email: registerResponse.data.user.email }
         )
-        dispatch(setEmailvalue({email: registerResponse.data.user.email }))
+        dispatch(setEmailvalue({ email: registerResponse.data.user.email }))
         if (otpGenerationResponse.status == 200) {
           alert(registerResponse.data.message)
           navigate('/email-verification')
         } else {
-         alert(registerResponse.data.message)
+          alert(registerResponse.data.message)
           navigate('/register')
         }
       }
@@ -49,31 +47,22 @@ const SignUp = () => {
   }
 
   //formik validation
-  const {
-    values,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    errors,
-    isSubmitting,
-  } = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-      name: '',
-      confirmPassword: '',
-    },
-    validationSchema: signupSchema,
-    onSubmit,
-  })
+  const { values, handleChange, handleSubmit, errors, isSubmitting } =
+    useFormik({
+      initialValues: {
+        email: '',
+        password: '',
+        name: '',
+        confirmPassword: '',
+      },
+      validationSchema: signupSchema,
+      onSubmit,
+    })
 
   return (
     <div>
       {/*signinbody*/}
-      <form
-        onSubmit={handleSubmit}
-        className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'
-      >
+      <form className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
         {/*input box*/}
 
         <div className='flex  flex-col gap-2 '>
@@ -125,9 +114,6 @@ const SignUp = () => {
         <div className='flex  flex-col gap-2 '>
           <div className='flex justify-between'>
             <div className='text-[12px] font-semibold '>Confirm Password</div>
-            <div className='text-[12px] font-semibold text-[#2DA5F3]'>
-              Forget Password
-            </div>
           </div>
           <input
             name='confirmPassword'
@@ -144,8 +130,14 @@ const SignUp = () => {
             ''
           )}
         </div>
-        <div disabled={isSubmitting} className='mt-2' onClick={handleSubmit}>
-          <FilledButton value='SIGN UP' w='100%' type='submit' />
+        <div className='w-[100%] flex justify-center items-center'>
+          <button
+            disabled={isSubmitting}
+            className='mt-2 font-Playfair bg-orange-500 w-[100%] h-[40px] rounded-md text-[#ffff] flex justify-center items-center '
+            onClick={handleSubmit}
+          >
+            Sign up
+          </button>
         </div>
       </form>
     </div>

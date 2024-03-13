@@ -1,34 +1,37 @@
-import React, { useState ,useEffect} from 'react';
-import OfferBar from '../../components/offerbar/OfferBar';
-import Navbar from '../../components/navbar/Navbar';
-import BottomBar from '../../components/bottombar/BottomBar';
-import Footer from '../../components/footer/Footer';
-import FilledButton from '../../components/buttons/filledbutton/FilledButton';
-import axios from 'axios';
-import { baseUrl } from '../../../baseUrl.js';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import OfferBar from '../../components/offerbar/OfferBar'
+import Navbar from '../../components/navbar/Navbar'
+import BottomBar from '../../components/bottombar/BottomBar'
+import Footer from '../../components/footer/Footer'
+import FilledButton from '../../components/buttons/filledbutton/FilledButton'
+import axios from 'axios'
+import { baseUrl } from '../../../baseUrl.js'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const ResetPasswordPage = () => {
-  const navigate=useNavigate()
-  const [newPassword, setNewPassword] = useState('');
+  const navigate = useNavigate()
+  const [newPassword, setNewPassword] = useState('')
 
-  const { token } = useParams();
+  const { token } = useParams()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/reset-password/${token}`, { newPassword });
-      if(response.status==200){
+      const response = await axios.post(
+        `${baseUrl}/api/v1/reset-password/${token}`,
+        { newPassword }
+      )
+      if (response.status == 200) {
         navigate('/loginSignup')
         alert(response.data.message)
-      }else{
+      } else {
         navigate('/forget-password')
         alert(response.data.message)
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <div>
@@ -36,7 +39,7 @@ const ResetPasswordPage = () => {
       <Navbar />
       <BottomBar />
       <div className='h-[450px] flex justify-center items-center '>
-        <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center gap-4 w-[300px] h-[350px]  rounded-sm border border-[#E4E7E9]'>
+        <form className='flex flex-col justify-center items-center gap-4 w-[300px] h-[350px]  rounded-sm border border-[#E4E7E9]'>
           <div className='font-semibold text-[14px]'>Reset Password</div>
           <div className='w-[90%] text-[#5F6C72] text-[12px] flex justify-center'>
             Lorem ipsum dolor sit amet consectetur ipsum dolor sit amet
@@ -44,7 +47,9 @@ const ResetPasswordPage = () => {
           </div>
           <div className='flex  flex-col gap-2 bg-red- w-[90%]'>
             <div className='flex justify-between'>
-              <div className='text-[12px] font-semibold '>Enter new password</div>
+              <div className='text-[12px] font-semibold '>
+                Enter new password
+              </div>
             </div>
             <input
               type='password'
@@ -53,14 +58,17 @@ const ResetPasswordPage = () => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
-          <button type="submit">
-            <FilledButton value='RESET PASSWORD' w='90%' />
+          <button
+            onClick={handleSubmit}
+            className='mt-2 font-Playfair bg-orange-500 w-[90%] h-[40px] rounded-md text-[#ffff] flex justify-center items-center '
+          >
+            Submit
           </button>
         </form>
       </div>
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default ResetPasswordPage;
+export default ResetPasswordPage

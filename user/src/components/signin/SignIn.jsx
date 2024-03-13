@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import FilledButton from '../../components/buttons/filledbutton/FilledButton'
+import React from 'react'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,7 +7,6 @@ import { setUser } from '../../../redux/reducers/userSlice.js'
 import { useFormik } from 'formik'
 import { loginSchema } from '../../formValidationSchema/loginFormValidation.js'
 import GoogleLoginComponent from '../googleLogin/GoogleLogin.jsx'
-
 
 const SignIn = () => {
   const navigate = useNavigate()
@@ -21,7 +19,7 @@ const SignIn = () => {
     }
     try {
       axios.post(`${baseUrl}/api/v1/login`, user).then((response) => {
-        localStorage.setItem('userToken',response.data.token)
+        localStorage.setItem('userToken', response.data.token)
         dispatch(setUser(response.data))
         if (response.status == 200) {
           alert(response.data.message)
@@ -40,30 +38,22 @@ const SignIn = () => {
   }
 
   //formik validation
-  const {
-    values,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    errors,
-    isSubmitting,
-  } = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validationSchema: loginSchema,
-    onSubmit,
-  })
-
-
+  const { values, handleChange, handleSubmit, errors, isSubmitting } =
+    useFormik({
+      initialValues: {
+        email: '',
+        password: '',
+      },
+      validationSchema: loginSchema,
+      onSubmit,
+    })
 
   return (
     <div>
       {/*signinbody*/}
       <div className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
         {/*From validation*/}
-        <form className='flex justify-center flex-col' onSubmit={handleSubmit}>
+        <form className='flex justify-center flex-col'>
           {/*input box*/}
           <div className='flex  flex-col gap-2 '>
             <div className='text-[12px] font-semibold '>Email Address</div>
@@ -82,10 +72,10 @@ const SignIn = () => {
           <div className='flex  flex-col gap-2 '>
             <div className='flex justify-between'>
               <div className='text-[12px] font-semibold '>Password</div>
-              <Link to="/forget-password">
-              <div className='text-[12px] font-semibold text-[#2DA5F3]'>
-                Forget Password
-              </div>
+              <Link to='/forget-password'>
+                <div className='text-[12px] font-semibold text-[#2DA5F3]'>
+                  Forget Password
+                </div>
               </Link>
             </div>
             <input
@@ -103,16 +93,21 @@ const SignIn = () => {
               ''
             )}
           </div>
-          <button className='mt-2' type='submit' disabled={isSubmitting}> 
-            <FilledButton value='SIGN IN' w='100%' />
-          </button>
+          <div className='flex justify-center items-center'>
+            <button
+              className='mt-2 font-Playfair bg-orange-500 w-[100%] h-[40px] rounded-md text-[#ffff] flex justify-center items-center '
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              SignIn
+            </button>
+          </div>
         </form>
         {/*0auth section*/}
         <div className='h-[1px] bg-[#E4E7E9] mt-2'></div>
         {/*O Auth*/}
-        
-        <GoogleLoginComponent/>
-  
+
+        <GoogleLoginComponent />
       </div>
     </div>
   )

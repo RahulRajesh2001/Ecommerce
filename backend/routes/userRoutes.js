@@ -24,10 +24,10 @@ import {
 } from '../controllers/userController/productController.js'
 import { addShippingAddress, chooseShippingAddress, deleteShippingAddress, editShippingAddress, editUser, getShippingAddress, getUser } from '../controllers/userController/userController.js'
 import { addToCart, deleteFromCart, getCartItems } from '../controllers/userController/cartController.js'
-import { placeOrder } from '../controllers/userController/orderController.js'
+import { cancelOrder, getAllOrders, getOrderDetails, placeOrder } from '../controllers/userController/orderController.js'
 
 const router = express.Router()
-router.get('/getProducts',verifyToken, getProducts)
+router.get('/getProducts', getProducts)
 router.get('/getProductDetails',verifyToken, getProductDetails)
 router.post('/login',login)
 router.post('/register',register)
@@ -36,8 +36,8 @@ router.post('/otp-verify', otpVerification)
 router.post('/otp-regeneration', otpRegeneration)
 router.post('/add-review',verifyToken, addReview)
 router.get('/get-review',verifyToken, getReview)
-router.get('/getCurrentUser',getUser)
-router.post('/editUser',editUser)
+router.get('/getCurrentUser',verifyToken,getUser)
+router.post('/editUser',verifyToken,editUser)
 router.get('/featuredProducts',verifyToken,getFeaturedProducts)
 router.post("/forgetPassword", forgetPassword);
 router.post("/reset-password/:token", resetPassword);
@@ -56,5 +56,8 @@ router.get('/alpha-sort',alphaSort)
 router.get('/search',searchProducts)
 router.get('/chooseAddress',chooseShippingAddress)
 router.post('/placeOrder',verifyToken,placeOrder)
+router.get('/orders',verifyToken,getAllOrders)
+router.get('/orderDetails',verifyToken,getOrderDetails)
+router.get('/cancelOrder',cancelOrder)
 
 export default router

@@ -3,125 +3,127 @@ import OfferBar from '../../components/offerbar/OfferBar'
 import Navbar from '../../components/navbar/Navbar'
 import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl'
 import ChooseAddresss from '../../components/chooseAddress/ChooseAddresss'
 
 const CheckoutPage = () => {
-  const [id,setAddressId]=useState('')
-  const [update,setUpdate]=useState(false)
-//taking choosen address id
-const chooseAddress=(id)=>{
-  setAddressId(id)
-  setUpdate(!update)
-}
-
-//payment status in checkout page
-const [paymentStatus,setPaymentStatus]=useState({})
-
-//shipping addres in checkout page
-const [shippingAddress,setShippingAddress]=useState({})
-
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('userToken')
-  if (token) {
-    config.headers.Authorization = token
+  const navigate = useNavigate()
+  const [id, setAddressId] = useState('')
+  const [update, setUpdate] = useState(false)
+  //taking choosen address id
+  const chooseAddress = (id) => {
+    setAddressId(id)
+    setUpdate(!update)
   }
-  return config
-})
-useEffect(() => {
-  axios
-    .get(`${baseUrl}/api/v1/chooseAddress`,{params:{id}})
-    .then((res) => {
-      console.log("reponse form",res.data.address)
-      setShippingAddress(res.data.address)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}, [update])
 
+  //payment status in checkout page
+  const [paymentStatus, setPaymentStatus] = useState({})
 
-//scart items in checkout page
-const [cartItems,setCartItems]=useState([])
-const [subTotal,setSubTotal]=useState('')
+  //shipping addres in checkout page
+  const [shippingAddress, setShippingAddress] = useState({})
 
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('userToken')
-  if (token) {
-    config.headers.Authorization = token
-  }
-  return config
-})
-useEffect(() => {
-  axios
-    .get(`${baseUrl}/api/v1/getCartItems`)
-    .then((res) => {
-      console.log("cartItems",res.data.cart.products)
-      setCartItems(res.data.cart.products)
-      setSubTotal(()=>res.data.cart.products.reduce((acc,curr)=>acc+curr.productVarientId.salePrice * curr.quantity,0))
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}, [])
-
-
-//order placing in checkout page
-const [paymentMethod,setPaymentMethod]=useState('')
-
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('userToken')
-  if (token) {
-    config.headers.Authorization = token
-  }
-  return config
-})
-
-const orderData = {
-  orderedItems: cartItems.map(item => ({
-    product: item.productVarientId._id,
-    quantity: item.quantity,
-    price: item.productVarientId.salePrice * item.quantity,
-    orderStatus: 'Pending',
-    paymentStatus: 'Pending',
-    offers: [] 
-  })),
-  deliveryDate:'',
-  payment:shippingAddress._id,
-  paymentMethod: paymentMethod,
-  shippingAddress: {
-    street: shippingAddress.street,
-    phone1: shippingAddress.phone1,
-    phone2: shippingAddress.phone2,
-    state: shippingAddress.state,
-    pincode: shippingAddress.pincode,
-    address: shippingAddress.address,
-    fullName: shippingAddress.name
-  },
-  orderDate: new Date(),
-  coupons: null,
-  totalAmount: subTotal 
-};
-
-const handleSubmit = () => {
-  try {
+  axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('userToken')
+    if (token) {
+      config.headers.Authorization = token
+    }
+    return config
+  })
+  useEffect(() => {
     axios
-      .post(`${baseUrl}/api/v1/placeOrder`, orderData)
+      .get(`${baseUrl}/api/v1/chooseAddress`, { params: { id } })
       .then((res) => {
-        console.log("order", res);
-        alert(res.data.message)
+        console.log('reponse form', res.data.address)
+        setShippingAddress(res.data.address)
       })
       .catch((err) => {
-        console.log(err);
-      });
-  } catch (err) {
-    console.error(err);
+        console.log(err)
+      })
+  }, [update])
+
+  //scart items in checkout page
+  const [cartItems, setCartItems] = useState([])
+  const [subTotal, setSubTotal] = useState('')
+
+  axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('userToken')
+    if (token) {
+      config.headers.Authorization = token
+    }
+    return config
+  })
+  useEffect(() => {
+    axios
+      .get(`${baseUrl}/api/v1/getCartItems`)
+      .then((res) => {
+        console.log('cartItems', res.data.cart.products)
+        setCartItems(res.data.cart.products)
+        setSubTotal(() =>
+          res.data.cart.products.reduce(
+            (acc, curr) =>
+              acc + curr.productVarientId.salePrice * curr.quantity,
+            0
+          )
+        )
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  //order placing in checkout page
+  const [paymentMethod, setPaymentMethod] = useState('')
+
+  const orderData = {
+    orderedItems: cartItems.map((item) => ({
+      product: item.productVarientId._id,
+      quantity: item.quantity,
+      price: item.productVarientId.salePrice * item.quantity,
+      orderStatus: 'Pending',
+      paymentStatus: 'Pending',
+      offers: [],
+    })),
+    deliveryDate: '',
+    payment: shippingAddress._id,
+    paymentMethod: paymentMethod,
+    shippingAddress: {
+      street: shippingAddress.street,
+      phone1: shippingAddress.phone1,
+      phone2: shippingAddress.phone2,
+      state: shippingAddress.state,
+      pincode: shippingAddress.pincode,
+      address: shippingAddress.address,
+      fullName: shippingAddress.name,
+    },
+    orderDate: new Date(),
+    coupons: null,
+    totalAmount: subTotal,
   }
-};
 
-
+  const handleSubmit = () => {
+    try {
+      axios.interceptors.request.use((config) => {
+        const token = localStorage.getItem('userToken')
+        if (token) {
+          config.headers.Authorization = token
+        }
+        return config
+      })
+      axios
+        .post(`${baseUrl}/api/v1/placeOrder`, orderData)
+        .then((res) => {
+          alert(res.data.message)
+          navigate('/orderHistory')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   return (
     <div>
@@ -156,7 +158,6 @@ const handleSubmit = () => {
                       type='text'
                       value={shippingAddress.address}
                       placeholder='address'
-
                       className='bg-[#FAFAFA] border h-[40px] w-[80%] rounded-lg outline-none ml-5'
                     />
                   </div>
@@ -246,7 +247,7 @@ const handleSubmit = () => {
                   </div>
                   <div className='w-[100%] flex justify-center items-center'>
                     <button className='w-[200px] h-[40px] flex justify-center items-center bg-[#FA8232] text-[#ffff] text-[12px] rounded-md mr-5 font-Playfair cursor-pointer mt-4'>
-                      <ChooseAddresss chooseAddress={chooseAddress}/>
+                      <ChooseAddresss chooseAddress={chooseAddress} />
                     </button>
                   </div>
                 </div>
@@ -265,7 +266,11 @@ const handleSubmit = () => {
                 <div className='font-Playfair text-[18px]'>
                   Cash on Delivery
                 </div>
-                <input onChange={()=>setPaymentMethod("Cash On Delivery")} className='h-5 w-5' type='radio' />
+                <input
+                  onChange={() => setPaymentMethod('Cash On Delivery')}
+                  className='h-5 w-5'
+                  type='radio'
+                />
               </div>
             </div>
           </div>
@@ -276,24 +281,27 @@ const handleSubmit = () => {
             <div className='text-[25px] font-Playfair'>Card Total</div>
             <div className=' w-[100%] h-[50%] flex flex-col justify-center items-center gap-4 border-b '>
               <div className='w-[100%] flex flex-col  justify-evenly items-center bg-[#FFFFFF] h-[50%] overflow-auto'>
-                {cartItems.map((item)=>(
+                {cartItems.map((item) => (
                   <div className='flex justify-evenly w-[100%]'>
-                  <div className='w-[100%] h-[100px] flex justify-evenly items-center '>
-                    <img src={item.productVarientId.images[0]} className='h-[50px] w-[50px] rounded-md' />
-                    <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                      {item.productVarientId.varientName}
+                    <div className='w-[100%] h-[100px] flex justify-evenly items-center '>
+                      <img
+                        src={item.productVarientId.images[0]}
+                        className='h-[50px] w-[50px] rounded-md'
+                      />
+                      <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+                        {item.productVarientId.varientName}
+                      </div>
                     </div>
-                  </div>
-                  <div className='w-[70%]  flex justify-evenly items-center'>
-                    <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                    {item.quantity}
-                    </div>
+                    <div className='w-[70%]  flex justify-evenly items-center'>
+                      <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+                        {item.quantity}
+                      </div>
 
-                    <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                      {item.productVarientId.salePrice * item.quantity}
+                      <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+                        {item.productVarientId.salePrice * item.quantity}
+                      </div>
                     </div>
                   </div>
-                </div>
                 ))}
               </div>
               <div className='flex justify-between items-center w-[80%] '>
@@ -312,12 +320,15 @@ const handleSubmit = () => {
             <div className='flex justify-between items-center w-[80%] '>
               <div className='text-[#5F6C72] font-Playfair'>Total</div>
               <div className='text-[#191C1F] font-Playfair font-semibold'>
-              ₹{subTotal}
+                ₹{subTotal}
               </div>
             </div>
 
             <Link className='w-[100%] flex justify-center' to='/checkout'>
-              <div onClick={handleSubmit} className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>
+              <div
+                onClick={handleSubmit}
+                className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'
+              >
                 PLACE ORDER
               </div>
             </Link>

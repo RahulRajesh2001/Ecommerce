@@ -1,114 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../../../components/navbar/Navbar';
-import BottomBar from '../../../components/bottombar/BottomBar';
-import Footer from '../../../components/footer/Footer';
-import { IoMdRemoveCircleOutline } from 'react-icons/io';
-import headphone1 from '../../../assets/headphone1.png';
-import axios from 'axios';
-import { baseUrl } from '../../../../baseUrl';
-import { useDispatch} from 'react-redux';
-import { setCartProducts } from '../../../../redux/reducers/cartSlice';
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import Navbar from '../../../components/navbar/Navbar'
+import BottomBar from '../../../components/bottombar/BottomBar'
+import Footer from '../../../components/footer/Footer'
+import { IoMdRemoveCircleOutline } from 'react-icons/io'
+import headphone1 from '../../../assets/headphone1.png'
+import axios from 'axios'
+import { baseUrl } from '../../../../baseUrl'
+import { useDispatch } from 'react-redux'
+import { setCartProducts } from '../../../../redux/reducers/cartSlice'
+import { Link } from 'react-router-dom'
 
 const CartPage = () => {
-  const dispatch = useDispatch();
-  const [newQty, setNewQty] = useState([]);
-  const [update, setUpdate] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-  const [subTotal,setSubTotal]=useState(0)
+  const dispatch = useDispatch()
+  const [newQty, setNewQty] = useState([])
+  const [update, setUpdate] = useState(false)
+  const [cartItems, setCartItems] = useState([])
+  const [subTotal, setSubTotal] = useState(0)
 
   useEffect(() => {
     axios.interceptors.request.use((config) => {
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem('userToken')
       if (token) {
-        config.headers.Authorization = token;
+        config.headers.Authorization = token
       }
-      return config;
-    });
+      return config
+    })
 
     axios
       .get(`${baseUrl}/api/v1/getCartItems`)
       .then((res) => {
         if (res.data.cart) {
-          console.log(res.data.cart.products);
-          dispatch(setCartProducts(res.data.cart?.products));
-          setCartItems(res.data.cart.products);
-          setNewQty(() => res.data.cart?.products.map((item) => item.quantity));
-          setSubTotal(()=>res.data.cart.products.reduce((acc,curr)=>acc+curr.productVarientId.salePrice * curr.quantity,0))
+          console.log(res.data.cart.products)
+          dispatch(setCartProducts(res.data.cart?.products))
+          setCartItems(res.data.cart.products)
+          setNewQty(() => res.data.cart?.products.map((item) => item.quantity))
+          setSubTotal(() =>
+            res.data.cart.products.reduce(
+              (acc, curr) =>
+                acc + curr.productVarientId.salePrice * curr.quantity,
+              0
+            )
+          )
         } else {
-          alert(res.data.message);
         }
       })
       .catch((err) => {
-        console.log(err);
-      });
-  }, [update]);
-
-
-  
+        console.log(err)
+      })
+  }, [update])
 
   const increaseQuantity = (id, index) => {
     const requestData = {
       productVarientId: id,
       quantity: 1,
-    };
+    }
 
     if (newQty[index] < 5) {
       axios
         .post(`${baseUrl}/api/v1/addToCart`, requestData)
         .then((res) => {
-          dispatch(setCartProducts(res.data.cart.products));
-          setNewQty(res.data.cart.products.map((item) => item.quantity));
-          setUpdate(!update); 
+          dispatch(setCartProducts(res.data.cart.products))
+          setNewQty(res.data.cart.products.map((item) => item.quantity))
+          setUpdate(!update)
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     }
-  };
+  }
 
   const decreaseQuantity = (id, index) => {
     const requestData = {
       productVarientId: id,
       quantity: -1,
-    };
+    }
 
     if (newQty[index] > 1) {
       axios
         .post(`${baseUrl}/api/v1/addToCart`, requestData)
         .then((res) => {
-          dispatch(setCartProducts(res.data.cart.products));
-          setNewQty(res.data.cart.products.map((item) => item.quantity));
-          setUpdate(!update); 
+          dispatch(setCartProducts(res.data.cart.products))
+          setNewQty(res.data.cart.products.map((item) => item.quantity))
+          setUpdate(!update)
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     }
-  };
-
+  }
 
   const removeCartItem = (id) => {
     axios.interceptors.request.use((config) => {
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem('userToken')
       if (token) {
-        config.headers.Authorization = token;
+        config.headers.Authorization = token
       }
-      return config;
-    });
+      return config
+    })
 
-  
     axios
-      .delete(`${baseUrl}/api/v1/removeItem`, { params: {productVarientId:id} })
+      .delete(`${baseUrl}/api/v1/removeItem`, {
+        params: { productVarientId: id },
+      })
       .then((res) => {
-        setUpdate(!update); 
+        setUpdate(!update)
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
-  console.log("cartitems",cartItems)
+  console.log('cartitems', cartItems)
 
   return (
     <div>
@@ -153,7 +155,10 @@ const CartPage = () => {
               {/* {item?.productVarientId?.stock}
               <div>now {newQty} index {index}</div> */}
               <div className='w-[40%] flex justify-evenly items-center '>
-                <IoMdRemoveCircleOutline onClick={()=>removeCartItem(item?.productVarientId?._id)} className='text-[25px] cursor-pointer' />
+                <IoMdRemoveCircleOutline
+                  onClick={() => removeCartItem(item?.productVarientId?._id)}
+                  className='text-[25px] cursor-pointer'
+                />
                 <img src={headphone1} className='h-[50px] w-[50px]' />
                 <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                   {item.productVarientId.varientName}
@@ -165,19 +170,33 @@ const CartPage = () => {
                 </div>
                 <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                   <div className='w-[100px] h-[50px] border flex justify-evenly items-center'>
-                    <div onClick={() => decreaseQuantity(item?.productVarientId?._id, index)} className='text-[40px] font-semibold cursor-pointer'>
+                    <div
+                      onClick={() =>
+                        decreaseQuantity(item?.productVarientId?._id, index)
+                      }
+                      className='text-[40px] font-semibold cursor-pointer'
+                    >
                       -
                     </div>
                     <div className='text-[15px] font-semibold cursor-pointer mt-1'>
                       {newQty[index]}
                     </div>
-                    <div onClick={() => increaseQuantity(item?.productVarientId?._id, index)} className='text-[25px] font-semibold cursor-pointer'>
+                    <div
+                      onClick={() =>
+                        increaseQuantity(item?.productVarientId?._id, index)
+                      }
+                      className='text-[25px] font-semibold cursor-pointer'
+                    >
                       +
                     </div>
                   </div>
                 </div>
 
-                {item?.productVarientId?.stock >= newQty ? <div className='bg-red-600 w-[10px] h-[10px] rounded-full'></div> : <div className='bg-red-600 w-[10px] h-[10px] rounded-full'></div>}
+                {item?.productVarientId?.stock >= newQty ? (
+                  <div className='bg-green-600 w-[10px] h-[10px] rounded-full'></div>
+                ) : (
+                  <div className='bg-green-600 w-[10px] h-[10px] rounded-full'></div>
+                )}
                 <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                   {item.quantity * item.productVarientId.salePrice}
                 </div>
@@ -192,28 +211,35 @@ const CartPage = () => {
             <div className=' w-[100%] h-[50%] flex flex-col justify-center items-center gap-4 border-b'>
               <div className='flex justify-between items-center w-[80%] '>
                 <div className='text-[#5F6C72] font-Playfair'>SubTotal</div>
-                <div className='text-[#191C1F] font-Playfair font-semibold'>₹ {subTotal}</div>
+                <div className='text-[#191C1F] font-Playfair font-semibold'>
+                  ₹ {subTotal}
+                </div>
               </div>
               <div className='flex justify-between items-center w-[80%] '>
                 <div className='text-[#5F6C72] font-Playfair'>Discount</div>
-                <div className='text-[#191C1F] font-Playfair font-semibold'>₹ 0</div>
+                <div className='text-[#191C1F] font-Playfair font-semibold'>
+                  ₹ 0
+                </div>
               </div>
             </div>
             <div className='flex justify-between items-center w-[80%] '>
-                <div className='text-[#5F6C72] font-Playfair'>Total</div>
-                <div className='text-[#191C1F] font-Playfair font-semibold'>₹ {subTotal}</div>
+              <div className='text-[#5F6C72] font-Playfair'>Total</div>
+              <div className='text-[#191C1F] font-Playfair font-semibold'>
+                ₹ {subTotal}
               </div>
-        
-              <Link className="w-[100%] flex justify-center"  to='/checkout'>
-              <div className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>PROCEED TO CHECKOUT</div>
-              </Link>
-          
+            </div>
+
+            <Link className='w-[100%] flex justify-center' to='/checkout'>
+              <div className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>
+                PROCEED TO CHECKOUT
+              </div>
+            </Link>
           </div>
         </div>
       </div>
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default CartPage;
+export default CartPage

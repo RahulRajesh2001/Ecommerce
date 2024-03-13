@@ -5,7 +5,7 @@
     import { useDispatch, useSelector } from 'react-redux'
     import { Link, useNavigate } from 'react-router-dom'
     import axios from 'axios'
-    import { baseUrl } from '../../../baseURL'
+    import { baseUrl } from '../../../baseURL.js'
     import SelectionBox from '../../components/selectionBox/SelectionBox'
 
     const OrderListing = () => {
@@ -24,7 +24,6 @@
             },
             })
             .then((res) => {
-            console.log(res.data.orders)
             setOrders(res.data.orders)
             })
         } catch (err) {
@@ -98,41 +97,46 @@
                 <Link to='/add-product'>ADD VARIANTS</Link>
                 </div>
 
-                <table className='table'>
-                <thead>
-                    <tr>
-                    <th>ID</th>
-                    <th></th>
-                    <th>DATE</th>
-                    <th></th>
-                    <th></th>
-                    <th>CUSTOMERS</th>
-                    <th></th>
-                    <th></th>
-                    <th>PAYMENT</th>
-                    <th>CHANGE STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map((order) => (
-                    <tr key={order._id}>
-                        <td>{order._id}</td>
-                        <td></td>
-                        <td>{formatDate(order.orderDate)}</td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                        <div>{order.user.name}</div>
-                        <div>{order.user.email}</div> 
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td>{order.orderedItems[0].paymentStatus}</td>
-                        <td><SelectionBox orderId={order._id} getState={getState} states={ ['Pending', 'Processing', 'Completed', 'Failed', 'Refunded']} /></td>
-                    </tr>
-                    ))}
-              </tbody>
-            </table>
+                {orders.length > 0 ? (
+  <table className='table'>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th></th>
+        <th>DATE</th>
+        <th></th>
+        <th></th>
+        <th>CUSTOMERS</th>
+        <th></th>
+        <th></th>
+        <th>PAYMENT</th>
+        <th>CHANGE STATUS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {orders.map((order) => (
+        <tr key={order._id}>
+          <td>{order._id}</td>
+          <td></td>
+          <td>{formatDate(order.orderDate)}</td>
+          <td></td>
+          <td></td>
+          <td>
+            <div>{order.user.name}</div>
+            <div>{order.user.email}</div>
+          </td>
+          <td></td>
+          <td></td>
+          <td>{order.orderedItems[0].paymentStatus}</td>
+          <td><SelectionBox orderId={order._id} getState={getState} states={ ['Pending', 'Processing', 'Completed', 'Failed', 'Refunded']} /></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+) : (
+  <div>Loading...</div>
+)}
+
             <nav>
               <ul className='pagination'>
                 <li className='page-item'>

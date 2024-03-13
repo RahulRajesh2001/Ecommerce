@@ -122,9 +122,10 @@ const ProductDetailsPage = () => {
             </div>
             <div className='flex gap-1'>
               <div className='text-[11px] text-[#5F6C72]'>Availability :</div>
-              <div className='text-[#2DB224] font-bold text-[10px]'>
-                In Stock
-              </div>
+              <div className={`font-bold text-[10px] ${productDetailsVariant.stock <= 0 ? 'text-red-600' : 'text-[#2DB224]'}`}>
+  {productDetailsVariant.stock <= 0 ? 'Out of stock' : 'In stock'}
+</div>
+
             </div>
             <div className='flex justify-between'>
               <div className='flex gap-1'>

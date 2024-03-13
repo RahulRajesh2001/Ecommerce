@@ -255,27 +255,36 @@ export const alphaSort= async (req, res) => {
 // api/v1/category
 // --- user
 export const searchProducts = async (req, res) => {
-  try {
-    const { searchQuery } = req.query;
+  const { searchQuery } = req.query;
+  console.log("this is my query", searchQuery);
 
-    const products = await Product.aggregate([
-      {
-        $match: { $search: searchQuery } 
-      },
-      {
-        $lookup: {
-          from: 'productvariants',
-          localField: '_id',
-          foreignField: 'productId',
-          as: 'variants',
+  try {
+      const regex = new RegExp(searchQuery, 'i');
+      console.log("this is my regex", regex);
+
+      const products = await Product.aggregate([
+        {
+            $match: {
+                $or: [
+                    { name: { $regex: regex } },
+                    { brand: { $regex: regex } },
+                ],
+            },
         },
-      },
+        {
+            $lookup: {
+                from: 'productvariants',
+                localField: '_id',
+                foreignField: 'productId',
+                as: 'variants',
+            },
+        },
     ]);
 
-    console.log("Search results:", products);
-    res.status(200).json({ message: "Search successful", products });
+      console.log("this is product", products);
+    res.json(products); 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Some error occurred. Try again!' });
+      console.error(err);
+      res.status(500).json({ message: 'Some error occurred. Try again!' });
   }
 };

@@ -1,20 +1,68 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../../components/navbar/Navbar'
 import BottomBar from '../../../components/bottombar/BottomBar'
 import SideBar from '../../../components/sidebarDashboard/SideBar.jsx'
 import Footer from '../../../components/footer/Footer'
 import { FaPlus } from 'react-icons/fa6'
 import FilledButton from '../../../components/buttons/filledbutton/FilledButton.jsx'
-import { MdBorderLeft } from "react-icons/md";
+import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { baseUrl } from '../../../../baseUrl.js'
+import { useNavigate } from 'react-router-dom'
 
 const OrderDetailsPage = () => {
+  const navigate=useNavigate()
+  const orderId=useSelector((state)=>state.order.orderId)
+const [id,setId]=useState(orderId)
+const [order,setOrder]=useState([])
+const [status,setStatus]=useState('')
+
+const token = localStorage.getItem('userToken')
+useEffect(() => {
+  axios
+    .get(`${baseUrl}/api/v1/orderDetails`, {
+      params:{id},
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then((res) => {
+      setOrder(res.data.order)
+      setStatus(res.data.order.orderedItems[0].orderStatus)
+      console.log(res.data.order.orderedItems[0].orderStatus,"stauts")
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}, [])
+
+
+//cancel order
+function cancelOrderHandle(){
+  axios
+  .get(`${baseUrl}/api/v1/cancelOrder`, {
+    params:{id},
+    headers: {
+      Authorization: token,
+    },
+  })
+  .then((res) => {
+    alert(res.data.message)
+    navigate('/orderHistory')
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+}
+
+
   return (
     <div>
       <Navbar />
       <BottomBar />
       <div className='h-screen flex items-center justify-evenly'>
         <SideBar />
-        <div className='h-[700px] w-[70%] rounded-md flex flex-col items-center border'>
+        <div className='h-[700px] w-[70%] rounded-md flex flex-col items-center border gap-4'>
           <div className='w-[100%] h-[60px] flex items-center justify-around border-b '>
             <div className='text-[16px] font-Playfair font-semibold '>
               ORDER DETAILS
@@ -26,13 +74,9 @@ const OrderDetailsPage = () => {
                 </div>
                 <FaPlus className='text-[10px] text-[#FA8232] mt-1 font-bold' />
               </div>
-              <div className='flex gap-2 justify-center items-center cursor-pointer'>
-                <FilledButton
-                  className='text-[12px] font-Playfair text-[#FA8232]'
-                  value={'CANCEL ORDER'}
-                  w={'100px'}
-                />
-              </div>
+              {status == "Cancelled" ? '' :<button onClick={cancelOrderHandle} className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[100px] rounded-sm bg-[#FA8232]'>
+                    Cancel
+              </button>}
               <div className='flex gap-2 justify-center items-center cursor-pointer'>
                 <FilledButton
                   className='text-[12px] font-Playfair text-[#FA8232]'
@@ -61,17 +105,66 @@ const OrderDetailsPage = () => {
               <div className='text-[#191C1F] font-semibold text-[15px]'>23 Jan, 2021</div>
               </div>
 
-            {/*order section three */}
-            <div className='bg-red-300 h-[50px] w-[80%] mt-5'>
-                        <div className='flex justify-center items-center'>
-                            <div className='w-[24%] h-[10px] bg-yellow-300'></div>
-                            <div className=''>
-                                <div>Order Placed</div>
-                                <MdBorderLeft />
-                            </div>
-                        </div>
+            {/*ordered product*/}
+
+            <div className=' h-[400px] w-[100%] overflow-auto flex flex-col gap-4'>
+              <div className='text-[20px] ml-10'>Products (02)</div>
+              <div className='h-[50px] bg-[#F2F4F5] w-[100%] flex'>
+            {/*second section left side */}
+            <div className='w-[40%] flex justify-center items-center'>
+              <div className='text-[#475156] text-[15px] font-Playfair'>
+                PRODUCTS
+              </div>
             </div>
-       
+            {/*second section right side */}
+            <div className='w-[60%] flex justify-evenly items-center'>
+              <div className='text-[#475156] text-[15px] font-Playfair'>
+                PRICE
+              </div>
+              <div className='text-[#475156] text-[15px] font-Playfair'>
+                QUANTITY
+              </div>
+              <div className='text-[#475156] text-[15px] font-Playfair'>
+                SUB-TOTAL
+              </div>
+            </div>
+          </div>
+
+
+          {/* {order.map((item) => (
+  <div
+    key={item._id}
+    className='w-[100%] flex justify-evenly items-center bg-[#FFFFFF] h-[80px]'
+  >
+    <div>{''}</div>
+
+    <div className='w-[40%] flex justify-evenly items-center '>
+      <img src={''} className='h-[50px] w-[50px]' />
+      <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+        {'nme'}
+      </div>
+    </div>
+    <div className='w-[70%]  flex justify-evenly items-center'>
+      <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+        {'hehe'}
+      </div>
+      <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+        <div className='text-[15px] font-semibold cursor-pointer mt-1'>
+          {''}
+
+        </div>
+      </div>
+      <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
+        {'subtotal'}
+      </div>
+    </div>
+  </div>
+))} */}
+
+
+
+
+            </div>
 
         </div>
       </div>
