@@ -15,6 +15,7 @@ const OrderDetailsPage = () => {
   const orderId=useSelector((state)=>state.order.orderId)
 const [id,setId]=useState(orderId)
 const [order,setOrder]=useState([])
+const [address,setAddress]=useState({})
 const [status,setStatus]=useState('')
 
 const token = localStorage.getItem('userToken')
@@ -27,6 +28,7 @@ useEffect(() => {
       },
     })
     .then((res) => {
+      setAddress(res.data.order.shippingAddress)
       setOrder(res.data.order.orderedItems)
       setStatus(res.data.order.orderedItems[0].orderStatus)
     })
@@ -34,6 +36,9 @@ useEffect(() => {
       console.log(err)
     })
 }, [])
+
+
+console.log('address',address)
 
 
 console.log("ehehe",order)
@@ -99,14 +104,13 @@ const calculateTotalPrice = (orderedItems) => {
           </div>
           {/*order section one */}
             <div className='w-[95%] h-[100px] bg-[#FDFAE7] border  mt-4 rounded-md flex items-center justify-between p-10'>
-                <div className='flex flex-col'>
-                    <div className='text-[#191C1F] text-[20px] font-semibold'>{order._id}</div>
+                <div className='flex flex-col gap-3'>
+                    <div className='text-[#191C1F] text-[20px] font-semibold'>{address.fullName}</div>
                     <div className='flex gap-2'>
-                    <div className='text-[#475156] font-semibold'></div>
+                    <div className='text-[#475156] font-semibold'>{address.address}</div>
                     </div>
                 </div>
-
-                <div className='text-[#2DA5F3] font-semibold text-[25px]'></div>
+                <div className='text-[#2DA5F3] font-semibold text-[20px]'>{address.pincode}</div>
             </div>
             {/*ordered product*/}
 

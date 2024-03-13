@@ -6,8 +6,8 @@ const SideBar = () => {
   const dashboard = [
     { name: 'Dashboard', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Order History', route: '/orderHistory', icon: 'IoMdSettings' },
-    { name: 'Track Order', route: '/profile', icon: 'IoMdSettings' },
-    { name: 'Shoppig Cart', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Track Order', route: '/orderHistory', icon: 'IoMdSettings' },
+    { name: 'Shoppig Cart', route: '/cart', icon: 'IoMdSettings' },
     { name: 'Whishlist', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Browsing History', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Setting', route: '/profile', icon: 'IoMdSettings' },
