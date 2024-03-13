@@ -27,15 +27,16 @@ useEffect(() => {
       },
     })
     .then((res) => {
-      setOrder(res.data.order)
+      setOrder(res.data.order.orderedItems)
       setStatus(res.data.order.orderedItems[0].orderStatus)
-      console.log(res.data.order.orderedItems[0].orderStatus,"stauts")
     })
     .catch((err) => {
       console.log(err)
     })
 }, [])
 
+
+console.log("ehehe",order)
 
 //cancel order
 function cancelOrderHandle(){
@@ -54,6 +55,16 @@ function cancelOrderHandle(){
     console.log(err)
   })
 }
+
+
+const calculateTotalPrice = (orderedItems) => {
+  let totalPrice = 0;
+  orderedItems.forEach((item) => {
+      totalPrice += item.price;
+  });
+  return totalPrice;
+};
+
 
 
   return (
@@ -89,26 +100,18 @@ function cancelOrderHandle(){
           {/*order section one */}
             <div className='w-[95%] h-[100px] bg-[#FDFAE7] border  mt-4 rounded-md flex items-center justify-between p-10'>
                 <div className='flex flex-col'>
-                    <div className='text-[#191C1F] text-[20px] font-semibold'>#96459761</div>
+                    <div className='text-[#191C1F] text-[20px] font-semibold'>{order._id}</div>
                     <div className='flex gap-2'>
-                    <div className='text-[#475156] font-semibold'>4 Products</div>
-                    <div className='text-[#475156] font-semibold'>.</div>
-                    <div className='text-[#475156] font-semibold'>Order Placed in 17 Jan, 2021 at 7:32 PM</div>
+                    <div className='text-[#475156] font-semibold'></div>
                     </div>
                 </div>
 
-                <div className='text-[#2DA5F3] font-semibold text-[25px]'>₹1199.00</div>
+                <div className='text-[#2DA5F3] font-semibold text-[25px]'></div>
             </div>
-            {/*order section two */}
-              <div className='w-[100%] ml-20 mt-4 flex gap-2'>
-              <div className='text-[#475156] font-semibold text-[14px]'>Order expected arrival </div>
-              <div className='text-[#191C1F] font-semibold text-[15px]'>23 Jan, 2021</div>
-              </div>
-
             {/*ordered product*/}
 
             <div className=' h-[400px] w-[100%] overflow-auto flex flex-col gap-4'>
-              <div className='text-[20px] ml-10'>Products (02)</div>
+              <div className='text-[20px] ml-10'>Products ({order.length})</div>
               <div className='h-[50px] bg-[#F2F4F5] w-[100%] flex'>
             {/*second section left side */}
             <div className='w-[40%] flex justify-center items-center'>
@@ -131,9 +134,9 @@ function cancelOrderHandle(){
           </div>
 
 
-          {/* {order.map((item) => (
+ {order.map((item) => (
   <div
-    key={item._id}
+    key={''}
     className='w-[100%] flex justify-evenly items-center bg-[#FFFFFF] h-[80px]'
   >
     <div>{''}</div>
@@ -141,25 +144,25 @@ function cancelOrderHandle(){
     <div className='w-[40%] flex justify-evenly items-center '>
       <img src={''} className='h-[50px] w-[50px]' />
       <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-        {'nme'}
+        {item.product}
       </div>
     </div>
     <div className='w-[70%]  flex justify-evenly items-center'>
       <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-        {'hehe'}
+        {item.price}
       </div>
       <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
         <div className='text-[15px] font-semibold cursor-pointer mt-1'>
-          {''}
+          {item.quantity}
 
         </div>
       </div>
       <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-        {'subtotal'}
+        {item.quantity * item.price}
       </div>
     </div>
   </div>
-))} */}
+))} 
 
 
 

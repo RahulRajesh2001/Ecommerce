@@ -93,10 +93,6 @@
             <Navbar />
             <div className='w-[98%] h-full rounded-lg flex justify-evenly'>
             <div className='w-[98%] h-full rounded-lg '>
-                <div className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair mb-2 a'>
-                <Link to='/add-product'>ADD VARIANTS</Link>
-                </div>
-
                 {orders.length > 0 ? (
   <table className='table'>
     <thead>

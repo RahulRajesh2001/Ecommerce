@@ -110,7 +110,7 @@ const CartPage = () => {
       })
   }
 
-  console.log('cartitems', cartItems)
+  console.log('cartitems', cartItems.length)
 
   return (
     <div>
@@ -159,7 +159,7 @@ const CartPage = () => {
                   onClick={() => removeCartItem(item?.productVarientId?._id)}
                   className='text-[25px] cursor-pointer'
                 />
-                <img src={headphone1} className='h-[50px] w-[50px]' />
+                <img src={item.productVarientId.images[0]} className='h-[50px] w-[50px]' />
                 <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                   {item.productVarientId.varientName}
                 </div>
@@ -229,11 +229,11 @@ const CartPage = () => {
               </div>
             </div>
 
-            <Link className='w-[100%] flex justify-center' to='/checkout'>
+           {cartItems.length >0 ?  <Link className='w-[100%] flex justify-center' to='/checkout'>
               <div className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>
                 PROCEED TO CHECKOUT
               </div>
-            </Link>
+            </Link> : <div className='text-red-600 font-Playfair font-semibold'>Cart Is Empty</div>}
           </div>
         </div>
       </div>
