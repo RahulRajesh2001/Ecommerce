@@ -31,6 +31,9 @@
         }
     }, [])
 
+
+    console.log(orders)
+
     const [currentPage, setCurrentPage] = useState(1)
     const recordPerPage = 8
     const firstIndex = (currentPage - 1) * recordPerPage
@@ -103,30 +106,42 @@
         <th></th>
         <th></th>
         <th>CUSTOMERS</th>
-        <th></th>
-        <th></th>
+        <th>QUANTITY</th>
+        <th>PRICE</th>
         <th>PAYMENT</th>
         <th>CHANGE STATUS</th>
       </tr>
     </thead>
     <tbody>
-      {orders.map((order) => (
-        <tr key={order._id}>
-          <td>{order._id}</td>
-          <td></td>
-          <td>{formatDate(order.orderDate)}</td>
-          <td></td>
-          <td></td>
-          <td>
-            <div>{order.user.name}</div>
-            <div>{order.user.email}</div>
-          </td>
-          <td></td>
-          <td></td>
-          <td>{order.orderedItems[0].paymentStatus}</td>
-          <td><SelectionBox orderId={order._id} getState={getState} states={ ['Pending', 'Processing', 'Completed', 'Failed', 'Refunded']} /></td>
-        </tr>
+    {orders.map((order) => (
+  <tr key={order._id}>
+    <td>{order._id}</td>
+    <td></td>
+    <td>{formatDate(order.orderDate)}</td>
+    <td></td>
+    <td></td>
+    <td>
+      <div>{order.shippingAddress.fullName}</div>
+      <div>{order.shippingAddress.address}</div>
+    </td>
+    <td>
+      {order.orderedItems.map((item) => (
+        <div key={item._id}>{item.quantity}</div>
       ))}
+    </td>
+    <td>
+      {order.orderedItems.map((item) => (
+        <div key={item._id}>{item.price}</div>
+      ))}
+    </td>
+    <td>{order.orderedItems[0].paymentStatus}</td>
+    <td>
+      <SelectionBox orderId={order._id} getState={getState} states={['Pending', 'Processing', 'Completed', 'Failed', 'Refunded']} />
+    </td>
+  </tr>
+))}
+
+
     </tbody>
   </table>
 ) : (

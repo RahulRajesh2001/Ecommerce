@@ -4,6 +4,7 @@ import ProductVariant from '../../model/productVarientModel.js';
 
 
 export const placeOrder = async (req, res) => {
+  console.log("this is order body",req.body)
   try {
     // Verify user authentication
     const token = req.headers.authorization;
@@ -29,7 +30,6 @@ export const placeOrder = async (req, res) => {
       totalAmount,
     });
 
-    console.log("this is order Item",orderedItems)
 
     const savedOrder = await newOrder.save();
 

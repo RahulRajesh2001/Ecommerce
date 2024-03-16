@@ -35,7 +35,6 @@ const CheckoutPage = () => {
     axios
       .get(`${baseUrl}/api/v1/chooseAddress`, { params: { id } })
       .then((res) => {
-        console.log('reponse form', res.data.address)
         setShippingAddress(res.data.address)
       })
       .catch((err) => {
@@ -58,7 +57,6 @@ const CheckoutPage = () => {
     axios
       .get(`${baseUrl}/api/v1/getCartItems`)
       .then((res) => {
-        console.log('cartItems', res.data.cart.products)
         setCartItems(res.data.cart.products)
         setSubTotal(() =>
           res.data.cart.products.reduce(
@@ -86,7 +84,7 @@ const CheckoutPage = () => {
       offers: [],
     })),
     deliveryDate: '',
-    payment: shippingAddress._id,
+    payment: '',
     paymentMethod: paymentMethod,
     shippingAddress: {
       street: shippingAddress.street,
@@ -102,26 +100,96 @@ const CheckoutPage = () => {
     totalAmount: subTotal,
   }
 
+  // Setting up Axios interceptor globally
+  axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('userToken')
+    if (token) {
+      config.headers.Authorization = token
+    }
+    return config
+  })
+
   const handleSubmit = () => {
     try {
-      axios.interceptors.request.use((config) => {
-        const token = localStorage.getItem('userToken')
-        if (token) {
-          config.headers.Authorization = token
-        }
-        return config
-      })
+      // Calculate total amount from orderedItems
+      const totalAmount = orderData.orderedItems.reduce((acc, item) => {
+        return acc + item.quantity * item.price
+      }, 0)
+
       axios
-        .post(`${baseUrl}/api/v1/placeOrder`, orderData)
-        .then((res) => {
-          alert(res.data.message)
-          navigate('/orderHistory')
+        .post(`${baseUrl}/api/v1/checkout`, { amount: totalAmount })
+        .then((paymentRes) => {
+          // Handle the response from the checkout API
+          if (paymentRes.status === 200) {
+            // If payment initiation is successful, get the payment key
+            axios
+              .get('http://localhost:3000/api/getkey')
+              .then((keyRes) => {
+                console.log('this is order id', paymentRes.data.order.id)
+                console.log('this is order paymnt', orderData.payment)
+                orderData.payment = paymentRes.data.order.id
+                const options = {
+                  key: keyRes.data.key,
+                  amount: paymentRes.data.order.amount,
+                  currency: 'INR',
+                  name: 'NEOM',
+                  description: 'Ecommerce web application',
+                  image:
+                    'https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg',
+                  order_id: paymentRes.data.order.id,
+                  callback_url:
+                    'http://localhost:3000/api/v1/paymentverification',
+                  prefill: {
+                    name: '',
+                    email: '',
+                    contact: '7510329871',
+                  },
+                  notes: {
+                    address: 'Razorpay Corporate Office',
+                  },
+                  theme: {
+                    color: '#121212',
+                  },
+                }
+
+                // Open Razorpay payment dialog
+                const razor = new Razorpay(options)
+                razor.open()
+
+                // Submit order after payment initiation
+                axios
+                  .post(`${baseUrl}/api/v1/placeOrder`, orderData)
+                  .then((res) => {
+                    if (res.status === 200) {
+                      alert(res.data.message)
+                      //If order placement is successful, handle the response
+                      // const orderId = res.data.order._id
+                      // const paymentData = {
+                      //   orderId: orderId,
+                      //   userId: res.data.order.userId,
+                      //   amount: res.data.order.totalAmount,
+                      //   status: 'Pending',
+                      //   transactionId: paymentRes.data.order.id,
+                      //   paymentMethod: res.data.order.paymentMethod,
+                      //   transactionDate: new Date(),
+                      // }
+                      // console.log('payment Data', paymentData)
+                    }
+                  })
+                  .catch((orderErr) => {
+                    console.error('Error placing order:', orderErr)
+                  })
+              })
+              .catch((keyErr) => {
+                console.error('Error getting key:', keyErr)
+              })
+          }
         })
-        .catch((err) => {
-          console.log(err)
+        .catch((paymentErr) => {
+          console.error('Error initiating payment:', paymentErr)
         })
     } catch (err) {
-      console.error(err)
+      console.error('Error:', err)
     }
   }
 
@@ -282,7 +350,7 @@ const CheckoutPage = () => {
             <div className=' w-[100%] h-[50%] flex flex-col justify-center items-center gap-4 border-b '>
               <div className='w-[100%] flex flex-col  justify-evenly items-center bg-[#FFFFFF] h-[50%] overflow-auto'>
                 {cartItems.map((item) => (
-                  <div className='flex justify-evenly w-[100%]'>
+                  <div key={item._id} className='flex justify-evenly w-[100%]'>
                     <div className='w-[100%] h-[100px] flex justify-evenly items-center '>
                       <img
                         src={item.productVarientId.images[0]}

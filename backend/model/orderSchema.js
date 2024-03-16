@@ -38,7 +38,9 @@ const OrderSchema = new Schema({
         required: true
     },
     deliveryDate: { type: Date, default: null },
-    payment: { type: mongoose.Types.ObjectId },
+    payment:{
+        type:String
+    },
     paymentMethod: {
         type: String,
         required: true,
