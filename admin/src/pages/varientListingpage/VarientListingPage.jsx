@@ -13,6 +13,7 @@ import {
   setProducts,
   setVarients,
 } from '../../../redux/reducers/ProductSlice.js'
+import ShowOfferModal from '../../components/showOffersModal/ShowOfferModal.jsx'
 
 const VarientListingPage = () => {
   const navigate = useNavigate()
@@ -103,10 +104,10 @@ const VarientListingPage = () => {
             <table className='table'>
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>IMG</th>
                   <th>NAME</th>
                   <th>SALE ₹</th>
+                  <th>OFFER</th>
                   <th>REGULAR ₹</th>
                   <th>STOCK</th>
                   <th>COLOR</th>
@@ -119,7 +120,6 @@ const VarientListingPage = () => {
                   (variant) =>
                     variant.isDeleted === false && (
                       <tr key={variant._id}>
-                        <td>{variant._id}</td>
                         <td>
                           <img
                             src={variant.images[0]}
@@ -128,6 +128,7 @@ const VarientListingPage = () => {
                         </td>
                         <td>{variant.varientName}</td>
                         <td>{variant.salePrice}</td>
+                        <td><ShowOfferModal/></td>
                         <td>{variant.regularPrice}</td>
                         <td>{variant.stock}</td>
                         <td>{variant.color}</td>

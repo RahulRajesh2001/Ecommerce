@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { loginSchema } from '../../../user/src/formValidationSchema/loginFormValidation';
 import axios from 'axios'
 import {baseUrl} from '../../baseURL.js'
-
+import Swal from 'sweetalert2';
 
 const LoginPage = () => {
   const navigate=useNavigate()
@@ -17,7 +17,10 @@ const LoginPage = () => {
           if(res.status ==200){
             localStorage.setItem('adminLogin',res.data.token)
           navigate('/')
-          alert(res.data.message)
+          Swal.fire({
+            title: res.data.message,
+            icon: "success"
+          });
           }else{
             alert(res.data.message)
           }

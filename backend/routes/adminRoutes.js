@@ -20,6 +20,7 @@ import {
   getProductVarients,
 } from '../controllers/adminController/productController.js'
 import { editPaymentStatus, getAllOrders } from '../controllers/adminController/orderController.js'
+import { createOffer, deleteOffer, getAllOffers } from '../controllers/adminController/offerController.js'
 
 const router = express.Router() 
 
@@ -40,5 +41,8 @@ router.get('/deleteVarient',verifyAdminToken, deleteVariant)
 router.post('/editProductVarient',verifyAdminToken,editProductVariant)
 router.get('/orders',verifyAdminToken,getAllOrders)
 router.put('/editPaymentStatus/:orderId',verifyAdminToken,editPaymentStatus)
+router.post('/createOffer',verifyAdminToken,createOffer)
+router.get('/getAllOffers',verifyAdminToken,getAllOffers)
+router.delete('/deleteOffer',verifyAdminToken,deleteOffer)
 
 export default router

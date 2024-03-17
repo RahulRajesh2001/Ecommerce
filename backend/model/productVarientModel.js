@@ -36,6 +36,9 @@ const productVariantSchema = new Schema({
     specification: {
         type:Array
     },
+    offers:{
+        type:Array
+    }
 });
 
 const ProductVariant = mongoose.model('ProductVariant', productVariantSchema);
