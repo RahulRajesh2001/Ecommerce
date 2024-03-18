@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    offers: []
+    offers: [],
+    offerId:null
 };
 
 const offersSlice = createSlice({
@@ -10,9 +11,12 @@ const offersSlice = createSlice({
     reducers: {
         setOffers: (state, action) => {
             state.offers = action.payload;
+        },
+        setOfferId:(state,action)=>{
+            state.offerId=action.payload
         }
     }
 });
 
-export const { setOffers } = offersSlice.actions; 
+export const { setOffers,setOfferId } = offersSlice.actions; 
 export default offersSlice.reducer;

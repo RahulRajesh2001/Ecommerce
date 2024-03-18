@@ -11,6 +11,7 @@ import {
 } from '../controllers/userController/authController.js'
 import {
   addReview,
+  addToWishlist,
   alphaSort,
   categorySort,
   getCategories,
@@ -21,6 +22,7 @@ import {
   priceSort,
   searchProducts,
   tagSort,
+  wishlistProducts,
 } from '../controllers/userController/productController.js'
 import { addShippingAddress, chooseShippingAddress, deleteShippingAddress, editShippingAddress, editUser, getShippingAddress, getUser } from '../controllers/userController/userController.js'
 import { addToCart, deleteFromCart, getCartItems } from '../controllers/userController/cartController.js'
@@ -59,5 +61,7 @@ router.post('/placeOrder',verifyToken,placeOrder)
 router.get('/orders',verifyToken,getAllOrders)
 router.get('/orderDetails',verifyToken,getOrderDetails)
 router.get('/cancelOrder',cancelOrder)
+router.get('/addToWishlist',verifyToken,addToWishlist)
+router.get('/getWishlistProducts',wishlistProducts)
 
 export default router

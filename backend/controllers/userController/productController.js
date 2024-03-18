@@ -2,6 +2,8 @@ import CATEGORY from '../../model/categoryModel.js'
 import Product from '../../model/productModel.js'
 import ProductVariant from '../../model/productVarientModel.js'
 import reviewModel from '../../model/reviewModel.js'
+import WishListModel from '../../model/wishlistModel.js'
+import jwt from 'jsonwebtoken'
 
 // GET
 // api/v1/products
@@ -286,5 +288,53 @@ export const searchProducts = async (req, res) => {
   } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Some error occurred. Try again!' });
+  }
+};
+
+
+// get
+// api/v1/addToWishlist
+// --- user
+export const addToWishlist = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const existingProduct = await WishListModel.findOneAndDelete({ productId: id });
+    if (existingProduct !== null) {
+      return res.status(200).json({ message: "Product removed from wishlist !" });
+    }
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ message: 'You are unauthorized. Please login to continue.' });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const product = new WishListModel({
+      userId,
+      productId: id
+    });
+
+    await product.save();
+
+    res.status(201).json({ message: "Product added in wishlist !" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Try again!' });
+  }
+};
+
+// get
+// api/v1/getAllProducts
+// --- user
+export const wishlistProducts = async (req, res) => {
+  try {
+    const products=await WishListModel.find()
+    if(!products){
+      return res.status(404).json({message:"Wishlist is empty!"})
+    }
+    res.status(201).json({ message: "Successfull" ,products});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Try again!' });
   }
 };

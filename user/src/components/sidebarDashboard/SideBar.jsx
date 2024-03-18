@@ -8,7 +8,7 @@ const SideBar = () => {
     { name: 'Order History', route: '/orderHistory', icon: 'IoMdSettings' },
     { name: 'Track Order', route: '/orderHistory', icon: 'IoMdSettings' },
     { name: 'Shoppig Cart', route: '/cart', icon: 'IoMdSettings' },
-    { name: 'Whishlist', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Whishlist', route: '/wishlist', icon: 'IoMdSettings' },
     { name: 'Browsing History', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Setting', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Wallet', route: '/profile', icon: 'IoMdSettings' },

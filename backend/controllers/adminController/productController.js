@@ -70,7 +70,7 @@ export const addProductVariant = async (req, res) => {
         const data = await cloudinary.uploader.upload(fileToUpload, {
           resource_type: 'auto',
         })
-        return data.url // Return the URL of the uploaded image
+        return data.url 
       } catch (error) {
         console.log(error)
         throw new Error('Internal Server Error (cloudinary)')

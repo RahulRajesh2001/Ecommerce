@@ -36,9 +36,10 @@ const productVariantSchema = new Schema({
     specification: {
         type:Array
     },
-    offers:{
-        type:Array
-    }
+    offers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Offer'
+    }]
 });
 
 const ProductVariant = mongoose.model('ProductVariant', productVariantSchema);

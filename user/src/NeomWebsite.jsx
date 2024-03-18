@@ -14,6 +14,7 @@ import OrderDetailsPage from './pages/orderPages/orderDetailsPage/OrderDetailsPa
 import CartPage from './pages/orderPages/cartpage/CartPage.jsx'
 import CheckoutPage from './pages/checkoutpage/CheckoutPage.jsx'
 import PaymentSuccessPage from './pages/paymentSuccessPage/PaymentSuccessPage.jsx'
+import WishListPage from './pages/wishListPage/WishListPage.jsx'
 
 const Protected = () => {
   const token = localStorage.getItem('userToken')
@@ -33,6 +34,7 @@ const NeomWebsite = () => {
           <Route exact path='/cart' element={<CartPage />} />
           <Route exact path='/checkout' element={<CheckoutPage />} />
           <Route exact path='/paymentsuccess' element={<PaymentSuccessPage/>} />
+          <Route exact path='/wishlist' element={<WishListPage/>} />
           <Route />
         </Route>
         <Route exact path='/' element={<HomePage />} />

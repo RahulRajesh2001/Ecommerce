@@ -8,10 +8,7 @@ import { FaRegEdit } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md'
 import axios from 'axios'
 import { baseUrl } from '../../../baseURL'
-import {
-  setProductVarientId,
-  setProducts,
-  setVarients,
+import {setProductVarientId,setVarients,
 } from '../../../redux/reducers/ProductSlice.js'
 import ShowOfferModal from '../../components/showOffersModal/ShowOfferModal.jsx'
 
@@ -90,6 +87,35 @@ const VarientListingPage = () => {
     navigate('/edit-productVarient')
   }
 
+  //getting offer id
+  const [added,setAdded]=useState(false)
+  const getOfferId=(id,varientId)=>{
+
+    console.log(id,varientId)
+    try{
+      const ids={
+        id,
+        varientId
+      }
+      axios
+      .post(`${baseUrl}/api/v1/admin/addOffer`, ids,{
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((res) => {
+        console.log(res)
+        setAdded(!added)
+        if (res.status == 200) {
+          alert(res.data.message)
+        }
+      })
+    }catch(err){
+
+    }
+  }
+  
+
   return (
     <div className='flex bg-[#F5F5F9] '>
       <SideBar />
@@ -128,7 +154,7 @@ const VarientListingPage = () => {
                         </td>
                         <td>{variant.varientName}</td>
                         <td>{variant.salePrice}</td>
-                        <td><ShowOfferModal/></td>
+                        <td><ShowOfferModal added={added} varientId={variant._id} getOfferId={getOfferId}/></td>
                         <td>{variant.regularPrice}</td>
                         <td>{variant.stock}</td>
                         <td>{variant.color}</td>

@@ -6,6 +6,7 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import axios from 'axios'
 import { baseUrl } from '../../../baseURL.js'
+import { MdDelete } from 'react-icons/md'
 
 const style = {
   position: 'absolute',
@@ -13,16 +14,19 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 600,
-  height: 700,
+  height: 800,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
 }
 
-const ShowOfferModal = () => {
+const ShowOfferModal = ({ getOfferId, varientId, added }) => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  //updateing the offers
+  const [update, setUpdate] = useState(false)
 
   const [offers, setOffers] = useState([])
 
@@ -43,7 +47,40 @@ const ShowOfferModal = () => {
       .catch((err) => {
         console.log(err)
       })
-  }, [open])
+  }, [open, update, added])
+
+  //get all added offers
+  const [addedOffer, setAddedOffer] = useState([])
+  useEffect(() => {
+    axios
+      .get(`${baseUrl}/api/v1/admin/getAllAddedOffers`, {
+        params: { varientId },
+      })
+      .then((res) => {
+        console.log(res.data.offers)
+        setAddedOffer(res.data.offers)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [open, update, added])
+
+  //delete offer
+  const handleDelete = (id) => {
+    try {
+      axios
+        .delete(`${baseUrl}/api/v1/admin/deleteAddedOffer`, {
+          params: { id, varientId },
+        })
+        .then((res) => {
+          alert(res.data.message)
+          setUpdate(!update)
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <div>
       <Button className='text-[#FFFF]' onClick={handleOpen}>
@@ -67,12 +104,12 @@ const ShowOfferModal = () => {
               <div className=' h-[50%]  overflow-auto '>
                 <div className='font-Playfair font-bold'>Offers</div>
                 {offers.map((offer) => (
-                  <div className=' border h-[50%] rounded-sm justify-center  flex flex-col '>
+                  <div className=' border h-[100px] rounded-sm justify-center  flex flex-col '>
                     <div
                       key={offer._id}
                       className=' w-[100%] flex justify-center items-center'
                     >
-                      <div className='w-[60%] '>
+                      <div className='w-[60%]'>
                         <div className='font-Josefin font-semibold text-[16px] ml-5'>
                           {offer.offerName}
                         </div>
@@ -86,19 +123,52 @@ const ShowOfferModal = () => {
                             ? `${offer.discountValue}%`
                             : `${offer.discountValue} ₹`}
                         </div>
+                        <div
+                          className='font-bold cursor-pointer'
+                          onClick={() => getOfferId(offer._id, varientId)}
+                        >
+                          Add
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className=' h-[50%]  overflow-auto bg-red-400' >
-              <div className='font-Playfair font-bold'>Offers Added</div>
-                    
+              <div className='w-[100%] h-[1px] bg-black'></div>
+
+              <div className=' h-[50%]  overflow-auto'>
+                <div className='font-Playfair font-bold'>Offers Added</div>
+
+                {addedOffer.map((offer) => (
+                  <div className=' border h-[100px] rounded-sm justify-center  flex flex-col '>
+                    <div
+                      key={offer._id}
+                      className=' w-[100%] flex justify-center items-center'
+                    >
+                      <div className='w-[60%]'>
+                        <div className='font-Josefin font-semibold text-[16px] ml-5'>
+                          {offer.offerName}
+                        </div>
+                        <div className='font-Josefin font-semibold text-[16px] ml-5'>
+                          {offer.offerType}
+                        </div>
+                      </div>
+                      <div className='w-[40%] flex justify-evenly items-center'>
+                        <div className='font-Josefin font-semibold text-[16px] ml-5'>
+                          {offer.discountType === 'Percentage'
+                            ? `${offer.discountValue}%`
+                            : `${offer.discountValue} ₹`}
+                        </div>
+                        <MdDelete
+                          className='text-[25px] cursor-pointer'
+                          onClick={() => handleDelete(offer._id)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-
-
             </div>
           </Box>
         </Fade>
