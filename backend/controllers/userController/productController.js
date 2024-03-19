@@ -338,3 +338,50 @@ export const wishlistProducts = async (req, res) => {
     res.status(500).json({ message: 'Some error occurred. Try again!' });
   }
 };
+
+// get
+// api/v1/getWishlistProduct
+// --- user
+//getting full products
+export const getWishlistProducts = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ message: 'You are unauthorized. Please login to continue.' });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userid = decoded.id;
+
+    const wishlistProducts=await WishListModel.find({userId:userid})
+    if(!wishlistProducts || wishlistProducts.length === 0){
+      return res.status(404).json({message:"Wishlist is empty!"})
+    }
+
+        // Extract productIds from wishlist
+        const productIds = wishlistProducts.map(wishlistItem => wishlistItem.productId);
+
+        // Fetch products matching the productIds from wishlist
+        const products = await Product.aggregate([
+          {
+            $match: {
+              _id: { $in: productIds }
+            }
+          },
+          {
+            $lookup: {
+              from: 'productvariants',
+              localField: '_id',
+              foreignField: 'productId',
+              as: 'variants',
+            },
+          },
+        ]);
+    
+        res.status(200).json({ message: "Successfully fetched wishlist products", products });
+
+    
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Try again!' });
+  }
+};

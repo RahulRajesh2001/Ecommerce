@@ -4,6 +4,7 @@ import emailReducer from '../reducers/otpSlice.js'
 import productDetailsReducer from '../reducers/productSlice.js'
 import cartReducer from '../reducers/cartSlice.js';
 import orderReducer from '../reducers/orderSlice.js'
+import wishListSlice from '../reducers/wishListSlice.js';
 
 
 export const store=configureStore({
@@ -12,6 +13,7 @@ export const store=configureStore({
         email:emailReducer,
         productDetails:productDetailsReducer,
         cart:cartReducer,
-        order:orderReducer
+        order:orderReducer,
+        wishlist:wishListSlice
     },
 })

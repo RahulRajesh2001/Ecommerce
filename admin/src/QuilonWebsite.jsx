@@ -12,6 +12,7 @@ import { Outlet } from 'react-router-dom'
 import EditProductVarient from './pages/editProductVarient/EditProductVarient.jsx'
 import OrderListing from './pages/orderlisting/OrderListing.jsx'
 import OfferListingPage from './pages/offerListingPage/OfferListingPage.jsx'
+import SalesReportPage from './pages/salesReportPage/SalesReportPage.jsx'
 
 const QuilonWebsite = () => {
   const Protected = () => {
@@ -33,6 +34,7 @@ const QuilonWebsite = () => {
           <Route path='/edit-productVarient' element={< EditProductVarient/>} />
           <Route path='/orders' element={<OrderListing/>} />
           <Route path='/offers' element={<OfferListingPage/>} />
+          <Route path='/sales-report' element={<SalesReportPage/>}/>
           <Route />
         </Route>
         <Route path='/login' element={<LoginPage/>} />

@@ -6,8 +6,7 @@ const Dashboard = () => {
   return (
     <div className='bg-[#F5F5F9] flex w-[100%]'>
        <SideBar/>
-        <Navbar/>
-
+        <Navbar/>  
     </div>
   )
 }

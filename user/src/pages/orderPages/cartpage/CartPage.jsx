@@ -30,7 +30,7 @@ const CartPage = () => {
       .get(`${baseUrl}/api/v1/getCartItems`)
       .then((res) => {
         if (res.data.cart) {
-          console.log(res.data.cart.products)
+          console.log("caaart",res.data.cart.products)
           dispatch(setCartProducts(res.data.cart?.products))
           setCartItems(res.data.cart.products)
           setNewQty(() => res.data.cart?.products.map((item) => item.quantity))
@@ -38,7 +38,7 @@ const CartPage = () => {
             res.data.cart.products.reduce(
               (acc, curr) =>
                 acc + curr.productVarientId.salePrice * curr.quantity,
-              0
+              0 
             )
           )
         } else {

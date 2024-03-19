@@ -9,7 +9,8 @@ import { FaHeart } from "react-icons/fa";
 import Swal from 'sweetalert2'
 
 
-const ShopCard = ({ shopPage }) => {
+const ShopCard = ({ shopPage}) => {
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -42,6 +43,7 @@ const ShopCard = ({ shopPage }) => {
 
  //adding wishlist
  const [addTowishlist,setAddtowishlist]=useState(false)
+ 
 const addToWishList = async (id) => {
   try {
     await axios.get(`${baseUrl}/api/v1/addToWishlist`, {
@@ -83,11 +85,18 @@ useEffect(()=>{
 
 
     const products = useSelector((store) => store.productDetails.products);
-  const renderProducts = shopPage === 'shopPage' ? products : featuredProducts;
+  let renderProducts = shopPage === 'shopPage' ? products : featuredProducts;
+
+
+if(shopPage==="wishlist"){
+  renderProducts=useSelector((state)=>state.wishlist.wishlist)
+
+}
 
   return (
     <div className='w-full flex flex-wrap items-center'>
       {renderProducts
+      
         .filter((product) => !product.isDeleted)
         .map((product, index) => (
           
@@ -96,7 +105,14 @@ useEffect(()=>{
             key={product._id}
             className='w-[160px] h-[250px] border px-5 py-5 mt-4 ml-2 cursor-pointer rounded-lg hover:scale-105 duration-300'
           >
-            <FaHeart className={`text-[15px] ${isInWishlist(product._id) ? 'text-red-500' : 'text-gray-500'}`} onClick={() => addToWishList(product._id)} />
+           <FaHeart 
+  className={`text-[15px] ${isInWishlist(product._id) ? 'text-red-500' : 'text-gray-500'}`} 
+  onClick={() => {
+    addToWishList(product._id);
+
+  }} 
+/>
+
             {product.variants && product.variants.length > 0 && (
               <>
                 <div>
