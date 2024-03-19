@@ -130,7 +130,7 @@ const BaseProducts = () => {
                             onClick={() => handleSetBaseProductId(product._id)}
                             className='w-[150px] h-[50px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair'
                           >
-                            ADD VARIANTS
+                          VARIANTS
                           </div>
                         </Link>
                       </td>

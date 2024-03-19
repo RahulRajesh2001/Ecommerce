@@ -1,26 +1,21 @@
 import React, { useState } from 'react'
-import OfferBar from '../../components/offerbar/OfferBar'
-import Navbar from '../../components/navbar/Navbar'
-import BottomBar from '../../components/bottombar/BottomBar'
-import Footer from '../../components/footer/Footer'
 import SignIn from '../../components/signin/SignIn'
 import SignUp from '../../components/signup/SignUp'
 
 const LoginSignupPage = () => {
   const [selectedTab, setSelectedTab] = useState('signin')
   return (
-    <div>
-      <OfferBar />
-      <Navbar />
-      <BottomBar />
+    <div className='h-screen flex justify-center items-center'>
       <div
         className={`flex justify-center items-center ${
-          selectedTab === 'signin' ? 'h-[500px]' : 'h-[700px]'
+          selectedTab === 'signin' ? 'h-[500px]' : 'ssm:h-[700px] '
         }`}
       >
         <div
-          className={`w-[330px] rounded-sm border border-[#E4E7E9] ${
-            selectedTab === 'signin' ? 'h-[400px]' : 'h-[500px]'
+          className={`vvsm:w-[300px] ssm:w-[330px]   rounded-sm border border-[#E4E7E9] ${
+            selectedTab === 'signin'
+              ? 'h-[400px]'
+              : 'vvsm:h-[450px] ssm:h-[500px]'
           }`}
         >
           {/*header */}
@@ -55,7 +50,6 @@ const LoginSignupPage = () => {
           )}
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

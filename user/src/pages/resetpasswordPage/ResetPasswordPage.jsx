@@ -34,16 +34,11 @@ const ResetPasswordPage = () => {
   }
 
   return (
-    <div>
-      <OfferBar />
-      <Navbar />
-      <BottomBar />
-      <div className='h-[450px] flex justify-center items-center '>
+      <div className='h-screen flex justify-center items-center '>
         <form className='flex flex-col justify-center items-center gap-4 w-[300px] h-[350px]  rounded-sm border border-[#E4E7E9]'>
           <div className='font-semibold text-[14px]'>Reset Password</div>
           <div className='w-[90%] text-[#5F6C72] text-[12px] flex justify-center'>
-            Lorem ipsum dolor sit amet consectetur ipsum dolor sit amet
-            consectetur{' '}
+            Reset you password using new password !
           </div>
           <div className='flex  flex-col gap-2 bg-red- w-[90%]'>
             <div className='flex justify-between'>
@@ -66,8 +61,6 @@ const ResetPasswordPage = () => {
           </button>
         </form>
       </div>
-      <Footer />
-    </div>
   )
 }
 

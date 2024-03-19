@@ -51,7 +51,7 @@ const SignIn = () => {
   return (
     <div>
       {/*signinbody*/}
-      <div className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
+      <div className='flex flex-col justify-center ml-[14px] mt-[10px] w-[90%] gap-2'>
         {/*From validation*/}
         <form className='flex justify-center flex-col'>
           {/*input box*/}

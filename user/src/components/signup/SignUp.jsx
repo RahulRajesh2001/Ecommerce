@@ -62,7 +62,7 @@ const SignUp = () => {
   return (
     <div>
       {/*signinbody*/}
-      <form className='flex flex-col justify-center ml-[20px] mt-[10px] w-[90%] gap-2'>
+      <form className='flex flex-col justify-center ml-[14px] mt-[10px] w-[90%] gap-2'>
         {/*input box*/}
 
         <div className='flex  flex-col gap-2 '>

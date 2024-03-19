@@ -222,15 +222,40 @@ export const deleteAddedOffer = async (req, res) => {
     if (!id) {
       return res.status(400).json({ message: 'Missing _id parameter' });
     }
-  //checking offer for the varient id is existing there
-  const offer=await OfferModel.find({id})
-  
-
 
     const productVariant = await ProductVariant.findById(varientId);
 
     if (!productVariant) {
       return res.status(404).json({ message: 'ProductVariant not found' });
+    }
+
+    const offers = await OfferModel.find({ _id: id });
+  
+    if (!offers) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+
+    let currentDiscount = 0;
+    for (const offer of offers) {
+    
+      if (offer._id.toString() === id) {
+        if (offer.discountType =='FixedAmount') {
+          currentDiscount = offer.discountValue;
+         
+        } else {
+          const discountAmount = (productVariant.salePrice * offer.discountValue) / 100;
+          currentDiscount = discountAmount;
+        }
+
+        productVariant.salePrice += currentDiscount;
+        await productVariant.save();
+
+
+        console.log(offer.productId)
+
+        offer.productId.pull(varientId); 
+        await offer.save();
+      }
     }
 
     productVariant.offers.pull(id);

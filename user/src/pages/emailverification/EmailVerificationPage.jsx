@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
-import OfferBar from '../../components/offerbar/OfferBar.jsx'
-import Navbar from '../../components/navbar/Navbar.jsx'
-import BottomBar from '../../components/bottombar/BottomBar.jsx'
-import Footer from '../../components/footer/Footer.jsx'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
@@ -86,59 +82,53 @@ const EmailVerificationPage = () => {
   })
 
   return (
-    <div>
-      <OfferBar />
-      <Navbar />
-      <BottomBar />
-      <div className='h-[450px] flex justify-center items-center '>
-        <form className='flex flex-col justify-center items-center gap-4 w-[300px] h-[280px]  rounded-sm border border-[#E4E7E9]'>
-          <div className='font-semibold text-[14px]'>
-            Verify Your Email Address
-          </div>
-          <div className='w-[90%] text-[#5F6C72] text-[12px] flex justify-center'>
-            Lorem ipsum dolor sit amet consectetur,{' '}
-          </div>
-          <div className='flex  flex-col gap-2 bg-red- w-[90%]'>
-            <div className='flex justify-between'>
-              <div className='text-[12px] font-semibold '>OTP</div>
-              <div
-                onClick={otpRegenerate}
-                className='text-[12px] font-semibold text-[#2DA5F3] cursor-pointer '
-              >
-                Resent OTP
-              </div>
-            </div>
-            <input
-              name='otp'
-              type='text'
-              className={`border h-[35px]  ${
-                formik.errors.otp ? 'outline-red-400' : 'outline-none'
-              }`}
-              value={formik.values.otp}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.errors.otp && formik.touched.otp && (
-              <p className='text-[10px] '>{formik.errors.otp}</p>
-            )}
-            <div className='flex gap-2'>
-              <div className='font-semibold text-[12px]'>Time Remaining : </div>
-              <div className='font-semibold text-[12px]'>
-                {timer.minutes}:
-                {timer.seconds < 10 ? `0${timer.seconds}` : timer.seconds}
-              </div>
+    <div className='h-screen flex justify-center items-center '>
+      <form className='flex flex-col justify-center items-center gap-4 w-[300px] h-[280px]  rounded-sm border border-[#E4E7E9]'>
+        <div className='font-semibold text-[14px]'>
+          Verify Your Email Address
+        </div>
+        <div className='w-[90%] text-[#5F6C72] text-[12px] flex justify-center'>
+          Lorem ipsum dolor sit amet consectetur,{' '}
+        </div>
+        <div className='flex  flex-col gap-2 bg-red- w-[90%]'>
+          <div className='flex justify-between'>
+            <div className='text-[12px] font-semibold '>OTP</div>
+            <div
+              onClick={otpRegenerate}
+              className='text-[12px] font-semibold text-[#2DA5F3] cursor-pointer '
+            >
+              Resent OTP
             </div>
           </div>
-          <button
-            onClick={formik.handleSubmit}
-            className='mt-2 font-Playfair bg-orange-500 w-[90%] h-[40px] rounded-md text-[#ffff] flex justify-center items-center '
-            type='submit'
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-      <Footer />
+          <input
+            name='otp'
+            type='text'
+            className={`border h-[35px]  ${
+              formik.errors.otp ? 'outline-red-400' : 'outline-none'
+            }`}
+            value={formik.values.otp}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.errors.otp && formik.touched.otp && (
+            <p className='text-[10px] '>{formik.errors.otp}</p>
+          )}
+          <div className='flex gap-2'>
+            <div className='font-semibold text-[12px]'>Time Remaining : </div>
+            <div className='font-semibold text-[12px]'>
+              {timer.minutes}:
+              {timer.seconds < 10 ? `0${timer.seconds}` : timer.seconds}
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={formik.handleSubmit}
+          className='mt-2 font-Playfair bg-orange-500 w-[90%] h-[40px] rounded-md text-[#ffff] flex justify-center items-center '
+          type='submit'
+        >
+          Submit
+        </button>
+      </form>
     </div>
   )
 }
