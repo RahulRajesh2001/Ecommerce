@@ -25,6 +25,7 @@ import {
 } from '../controllers/adminController/orderController.js'
 import {
   addOffer,
+  applyOffer,
   createOffer,
   deleteAddedOffer,
   deleteOffer,
@@ -57,5 +58,6 @@ router.delete('/deleteOffer', verifyAdminToken, deleteOffer)
 router.post('/addOffer', verifyAdminToken, addOffer)
 router.get('/getAllAddedOffers', verifyAdminToken, getAddedOffers)
 router.delete('/deleteAddedOffer',verifyAdminToken,deleteAddedOffer)
+router.get('/applyOffer',verifyAdminToken,applyOffer)
 
 export default router

@@ -39,14 +39,10 @@ const OfferSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
 },
-  // productId: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Product',
-  // }],
-  // categoryId:[ {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Category',
-  // }]
+  productId: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+  }],
 });
 
 const OfferModel = mongoose.model('Offer', OfferSchema);

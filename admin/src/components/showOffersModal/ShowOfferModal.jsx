@@ -65,6 +65,8 @@ const ShowOfferModal = ({ getOfferId, varientId, added }) => {
       })
   }, [open, update, added])
 
+
+
   //delete offer
   const handleDelete = (id) => {
     try {
@@ -80,6 +82,25 @@ const ShowOfferModal = ({ getOfferId, varientId, added }) => {
       console.log(err)
     }
   }
+
+  //for applyoffer
+  const applyOffer=()=>{
+    try {
+      axios
+        .get(`${baseUrl}/api/v1/admin/applyOffer`, {
+          params: {varientId },
+        })
+        .then((res) => {
+          console.log(res)
+          alert(res.data.message)
+          setUpdate(!update)
+          handleClose()
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
 
   return (
     <div>
@@ -168,7 +189,11 @@ const ShowOfferModal = ({ getOfferId, varientId, added }) => {
                     </div>
                   </div>
                 ))}
+                <div className='w-[100%] flex justify-center items-center '>
+                <button className='w-[100px] rounded-lg font-bold text-[#ffff] h-[50px] flex justify-center items-center bg-green-500 mt-3' onClick={()=>applyOffer()}>button</button>
               </div>
+              </div>
+              
             </div>
           </Box>
         </Fade>
