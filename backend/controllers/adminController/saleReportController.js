@@ -1,5 +1,6 @@
 import OrderModel from "../../model/orderSchema.js";
-
+import User from "../../model/userModel.js";
+import ProductVariantModel from "../../model/productVarientModel.js";
 
 async function getSalesData(startDate, endDate) {
   try {
@@ -81,6 +82,33 @@ export const getSales = async (req, res) => {
     endDate.setUTCHours(23, 59, 59, 999);
 
     const { salesData, totalSales, totalNumOrders } = await getSalesData(startDate, endDate);
+
+    const orders=await OrderModel.find()
+    console.log("allorders",orders)
+
+  // Populate user and product details for each order
+for (const entry of salesData) {
+
+  console.log(Date())
+
+  const orders = await OrderModel.find({
+    orderDate: {
+      $gte: new Date(entry.date),
+      $lte: new Date(entry.date + 'T23:59:59.999Z')
+    }
+  }).populate({
+    path: 'userId',
+    select: 'email name',
+    model: User,
+  }).populate({
+    path: 'orderedItems.product',
+    select: 'color images stock regularPrice isDeleted varientName salePrice specification offers',
+    model: ProductVariantModel,
+  });
+  console.log("Orders for", entry.date, ":", orders); 
+  entry.orders = orders;
+}
+
     res.status(200).json({ salesData, totalSales, totalNumOrders });
   } catch (err) {
     console.error(err);

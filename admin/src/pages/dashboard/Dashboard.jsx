@@ -6,9 +6,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import SaleChart from '../../components/chart/SaleChart.jsx'
 import axios from 'axios'
 import {baseUrl} from '../../../baseURL.js'
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setSalesReport } from '../../../redux/reducers/ProductSlice.js';
 
 
 const Dashboard = () => {
+  const dispatch=useDispatch()
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -20,6 +24,8 @@ const Dashboard = () => {
     axios.get(`${baseUrl}/api/v1/admin/getSales/?startDate=${formattedStartDate}&endDate=${formattedEndDate}`)
       .then((res) => {
         setTotal(res.data)
+        dispatch(setSalesReport(res.data))
+        console.log("total",res.data)
         console.log(res.data.salesData);
         setData(res.data.salesData)
       })
@@ -58,6 +64,9 @@ const Dashboard = () => {
             />
           </div>
           <button onClick={submitHandler} className=" bg-orange-400 font-semibold flex justify-center items-center text-[#ffff] rounded-lg h-[30px] w-[60px] ms-4 mt-3 px-5">Fetch</button>
+          <Link to={"/sales-report"}>
+          <button  className=" bg-orange-400 font-semibold flex justify-center items-center text-[#ffff] rounded-lg h-[30px] w-[60px] ms-4 mt-3 px-5">Report</button>
+          </Link>
         </div>
 
         <div className="flex justify-center items-center mt-2 ">
