@@ -13,6 +13,7 @@ import EditProductVarient from './pages/editProductVarient/EditProductVarient.js
 import OrderListing from './pages/orderlisting/OrderListing.jsx'
 import OfferListingPage from './pages/offerListingPage/OfferListingPage.jsx'
 import SalesReportPage from './pages/salesReportPage/SalesReportPage.jsx'
+import CuponListingPage from './pages/cuponListingPage/CuponListingPage.jsx'
 
 const QuilonWebsite = () => {
   const Protected = () => {
@@ -35,6 +36,7 @@ const QuilonWebsite = () => {
           <Route path='/orders' element={<OrderListing/>} />
           <Route path='/offers' element={<OfferListingPage/>} />
           <Route path='/sales-report' element={<SalesReportPage/>}/>
+          <Route path='/cupons' element={<CuponListingPage/>}/>
           <Route />
         </Route>
         <Route path='/login' element={<LoginPage/>} />

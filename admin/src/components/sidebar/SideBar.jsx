@@ -42,9 +42,13 @@ const SideBar = () => {
       </div>
       <div className='flex  items-center gap-4 w-[60%] ml-[10%]'>
         <div className='rounded-full bg-[#B4BDC6] w-[10px] h-[10px]'></div>
-        <div className='font-Playfair '>Logout</div>
+        <Link to="/cupons">
+        <div className='font-Playfair '>Cupons</div>
+        </Link>
       </div>
     </div>
+
+
   )
 }
 

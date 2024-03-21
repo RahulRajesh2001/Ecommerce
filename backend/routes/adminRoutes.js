@@ -32,6 +32,13 @@ import {
   getAddedOffers,
   getAllOffers,
 } from '../controllers/adminController/offerController.js'
+import {
+  createCupon,
+  deleteCupon,
+  getCupons,
+  updateCupon,
+} from '../controllers/adminController/cuponController.js'
+import { getSales } from '../controllers/adminController/saleReportController.js'
 
 const router = express.Router()
 
@@ -57,7 +64,12 @@ router.get('/getAllOffers', verifyAdminToken, getAllOffers)
 router.delete('/deleteOffer', verifyAdminToken, deleteOffer)
 router.post('/addOffer', verifyAdminToken, addOffer)
 router.get('/getAllAddedOffers', verifyAdminToken, getAddedOffers)
-router.delete('/deleteAddedOffer',verifyAdminToken,deleteAddedOffer)
-router.get('/applyOffer',verifyAdminToken,applyOffer)
+router.delete('/deleteAddedOffer', verifyAdminToken, deleteAddedOffer)
+router.get('/applyOffer', verifyAdminToken, applyOffer)
+router.post('/createCupon', verifyAdminToken, createCupon)
+router.get('/getCupons', verifyAdminToken, getCupons)
+router.delete('/deleteCupons', verifyAdminToken, deleteCupon)
+router.post('/updateCupon', verifyAdminToken, updateCupon)
+router.get('/getSales',getSales)
 
 export default router
