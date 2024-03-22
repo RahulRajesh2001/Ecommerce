@@ -11,7 +11,7 @@ const SideBar = () => {
     { name: 'Whishlist', route: '/wishlist', icon: 'IoMdSettings' },
     { name: 'Browsing History', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Setting', route: '/profile', icon: 'IoMdSettings' },
-    { name: 'Wallet', route: '/profile', icon: 'IoMdSettings' },
+    { name: 'Wallet', route: '/wallet', icon: 'IoMdSettings' },
     { name: 'Cupons', route: '/profile', icon: 'IoMdSettings' },
     { name: 'Log-out', route: '/profile', icon: 'IoMdSettings' },
   ]

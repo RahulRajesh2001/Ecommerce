@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 import OrderModel from '../../model/orderSchema.js'
 import ProductVariant from '../../model/productVarientModel.js'
+import Wallet from '../../model/walletModel.js'
+import TransactionModel from '../../model/transactionModel.js'
 
 export const placeOrder = async (req, res) => {
   console.log('this is order body', req.body)
@@ -117,56 +119,55 @@ export const getOrderDetails = async (req, res) => {
 }
 
 // GET
-// api/v1/cancelOrder
+// api/v1/changeOrderStatus
 // --- users
-export const cancelOrder = async (req, res) => {
+export const changeOrderStatus = async (req, res) => {
   try {
     const { id } = req.query
+    const { Status } = req.body
 
-    const order = await OrderModel.findByIdAndUpdate(
+    const updatedOrder = await OrderModel.findOneAndUpdate(
       { _id: id },
-      { $set: { 'orderedItems.$[].orderStatus': 'Cancelled' } },
+      { $set: { 'orderedItems.$[].orderStatus': Status } },
       { new: true }
-    )
+    ).populate('userId payment')
 
-    if (!order) {
-      return res.status(400).json({ message: 'No order details!' })
+    if (!updatedOrder) {
+      return res.status(404).json({ error: 'Order not found' })
     }
 
-    console.log(order.orderedItems[0].orderStatus)
+    if (
+      (updatedOrder.orderedItems[0].orderStatus === 'Cancelled' ||
+        updatedOrder.orderedItems[0].orderStatus === 'Returned') &&
+      updatedOrder.paymentMethod === 'RazorPay'
+    ) {
+      let wallet = await Wallet.findOne({ user: updatedOrder.userId._id })
+      if (!wallet) {
+        wallet = new Wallet({ user: updatedOrder.userId._id })
+      }
 
-    return res
+      wallet.balance +=
+        updatedOrder.totalAmount * updatedOrder.orderedItems[0].quantity
+
+      const refundTransaction = new TransactionModel({
+        type: 'Refund',
+        amount: updatedOrder.totalAmount,
+        orderId: id,
+      })
+
+      wallet.transactions.push(refundTransaction)
+
+      await Promise.all([wallet.save(), refundTransaction.save()])
+    }
+
+    res
       .status(200)
-      .json({ message: 'Order cancelled successfully!', order })
+      .json({
+        message: 'Order status updated successfully',
+        order: updatedOrder,
+      })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some error occurred. Please try again!' })
-    throw err
-  }
-}
-
-export const returnOrder = async (req, res) => {
-  try {
-    const { id } = req.query
-
-    const order = await OrderModel.findByIdAndUpdate(
-      { _id: id },
-      { $set: { 'orderedItems.$[].orderStatus': 'Returned' } },
-      { new: true }
-    )
-
-    if (!order) {
-      return res.status(400).json({ message: 'No order details!' })
-    }
-
-    console.log(order.orderedItems[0].orderStatus)
-
-    return res
-      .status(200)
-      .json({ message: 'Order Returned successfully!', order })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Some error occurred. Please try again!' })
-    throw err
   }
 }

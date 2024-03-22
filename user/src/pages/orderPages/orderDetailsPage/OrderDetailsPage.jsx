@@ -21,7 +21,7 @@ const OrderDetailsPage = () => {
   useEffect(() => {
     axios
       .get(`${baseUrl}/api/v1/orderDetails`, {
-        params: { id },
+        params: {id},
         headers: {
           Authorization: token,
         },
@@ -37,42 +37,30 @@ const OrderDetailsPage = () => {
   }, [])
 
 
-  //cancel order
-  function cancelOrderHandle() {
+  // Cancel order
+function changeOrderStatus(orderStatus) {
+  try {
     axios
-      .get(`${baseUrl}/api/v1/cancelOrder`, {
-        params: { id },
-        headers: {
-          Authorization: token,
-        },
-      })
+      .put(`${baseUrl}/api/v1/changeOrderStatus`, 
+        { Status: orderStatus },
+        { params: { id },
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
       .then((res) => {
-        alert(res.data.message)
-        navigate('/orderHistory')
+        setStatus(res.data.order.orderedItems[0].orderStatus)
       })
       .catch((err) => {
-        console.log(err)
-      })
+        console.error(err);
+      });
+  } catch (err) {
+    console.error(err);
   }
+}
 
-  //return  order
-  function returnOrderHandle() {
-    console.log(id)
-    axios
-      .get(`${baseUrl}/api/v1/returnOrder`, {
-        params: { id },
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((res) => {
-        alert(res.data.message)
-        navigate('/orderHistory')
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+
 
   const calculateTotalPrice = (orderedItems) => {
     let totalPrice = 0
@@ -104,7 +92,7 @@ const OrderDetailsPage = () => {
                 ''
               ) : (
                 <button
-                  onClick={() => cancelOrderHandle()}
+                  onClick={() => changeOrderStatus('Cancelled')}
                   className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[100px] h-[40px] font-bold rounded-lg bg-[#FA8232] '
                 >
                   Cancel
@@ -114,7 +102,7 @@ const OrderDetailsPage = () => {
                 ''
               ) : (
                 <button
-                  onClick={() => returnOrderHandle()}
+                  onClick={()=>changeOrderStatus('Returned')}
                   className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[100px] h-[40px] font-bold rounded-lg bg-[#FA8232]'
                 >
                   Return

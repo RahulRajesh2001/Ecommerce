@@ -36,7 +36,6 @@ export const getAllOrders = async (req, res) => {
 // api/v1/admin/editPaymentStatus
 // --- admin
 export const editPaymentStatus = async (req, res) => {
-   
     try {
         const { orderId } = req.params;
         const { paymentStatus} = req.body;
@@ -70,3 +69,5 @@ export const editPaymentStatus = async (req, res) => {
         res.status(500).json({ message: 'Some error occurred. Try again!' });
       }
   }
+
+

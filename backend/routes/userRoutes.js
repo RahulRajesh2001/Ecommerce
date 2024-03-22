@@ -40,12 +40,12 @@ import {
   getCartItems,
 } from '../controllers/userController/cartController.js'
 import {
-  cancelOrder,
+  changeOrderStatus,
   getAllOrders,
   getOrderDetails,
   placeOrder,
-  returnOrder,
 } from '../controllers/userController/orderController.js'
+import { getWalletHistory } from '../controllers/adminController/walletController.js'
 
 const router = express.Router()
 router.get('/getProducts', getProducts)
@@ -79,10 +79,11 @@ router.get('/chooseAddress', chooseShippingAddress)
 router.post('/placeOrder', verifyToken, placeOrder)
 router.get('/orders', verifyToken, getAllOrders)
 router.get('/orderDetails', verifyToken, getOrderDetails)
-router.get('/cancelOrder', cancelOrder)
+router.put('/changeOrderStatus', changeOrderStatus)
 router.get('/addToWishlist', verifyToken, addToWishlist)
 router.get('/getWishlistProducts', wishlistProducts)
 router.get('/getWishlistFullProducts', verifyToken, getWishlistProducts)
-router.get('/returnOrder', verifyToken, returnOrder)
+router.get('/getWalletHistory', verifyToken,getWalletHistory)
+
 
 export default router
