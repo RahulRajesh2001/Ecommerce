@@ -116,83 +116,81 @@ const CheckoutPage = () => {
         return acc + item.quantity * item.price
       }, 0)
 
-      if(paymentMethod==='Razorpay'){
+      if (paymentMethod === 'RazorPay') {
         axios
-        .post(`${baseUrl}/api/v1/checkout`, { amount: totalAmount })
-        .then((paymentRes) => {
-          // Handle the response from the checkout API
-          if (paymentRes.status === 200) {
-            // If payment initiation is successful, get the payment key
-            axios
-              .get('http://localhost:3000/api/getkey')
-              .then((keyRes) => {
-                console.log('this is order id', paymentRes.data.order.id)
-                console.log('this is order paymnt', orderData.payment)
-                orderData.payment = paymentRes.data.order.id
-                const options = {
-                  key: keyRes.data.key,
-                  amount: paymentRes.data.order.amount,
-                  currency: 'INR',
-                  name: 'NEOM',
-                  description: 'Ecommerce web application',
-                  image:
-                    'https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg',
-                  order_id: paymentRes.data.order.id,
-                  callback_url:
-                    'http://localhost:3000/api/v1/paymentverification',
-                  prefill: {
-                    name: '',
-                    email: '',
-                    contact: '7510329871',
-                  },
-                  notes: {
-                    address: 'Razorpay Corporate Office',
-                  },
-                  theme: {
-                    color: '#121212',
-                  },
-                }
+          .post(`${baseUrl}/api/v1/checkout`, { amount: totalAmount })
+          .then((paymentRes) => {
+            // Handle the response from the checkout API
+            if (paymentRes.status === 200) {
+              // If payment initiation is successful, get the payment key
+              axios
+                .get('http://localhost:3000/api/getkey')
+                .then((keyRes) => {
+                  console.log('this is order id', paymentRes.data.order.id)
+                  console.log('this is order paymnt', orderData.payment)
+                  orderData.payment = paymentRes.data.order.id
+                  const options = {
+                    key: keyRes.data.key,
+                    amount: paymentRes.data.order.amount,
+                    currency: 'INR',
+                    name: 'NEOM',
+                    description: 'Ecommerce web application',
+                    image:
+                      'https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg',
+                    order_id: paymentRes.data.order.id,
+                    callback_url:
+                      'http://localhost:3000/api/v1/paymentverification',
+                    prefill: {
+                      name: '',
+                      email: '',
+                      contact: '7510329871',
+                    },
+                    notes: {
+                      address: 'Razorpay Corporate Office',
+                    },
+                    theme: {
+                      color: '#121212',
+                    },
+                  }
 
-                // Open Razorpay payment dialog
-                const razor = new Razorpay(options)
-                razor.open()
+                  // Open Razorpay payment dialog
+                  const razor = new Razorpay(options)
+                  razor.open()
 
-                // Submit order after payment initiation
-                axios
-                  .post(`${baseUrl}/api/v1/placeOrder`, orderData)
-                  .then((res) => {
-                    if (res.status === 200) {
-                      alert(res.data.message)
-                    }
-                  })
-                  .catch((orderErr) => {
-                    console.error('Error placing order:', orderErr)
-                  })
-              })
-              .catch((keyErr) => {
-                console.error('Error getting key:', keyErr)
-              })
-          }
-        })
-        .catch((paymentErr) => {
-          console.error('Error initiating payment:', paymentErr)
-        })
-
-      }else{
+                  // Submit order after payment initiation
+                  axios
+                    .post(`${baseUrl}/api/v1/placeOrder`, orderData)
+                    .then((res) => {
+                      if (res.status === 200) {
+                        alert(res.data.message)
+                      }
+                    })
+                    .catch((orderErr) => {
+                      console.error('Error placing order:', orderErr)
+                    })
+                })
+                .catch((keyErr) => {
+                  console.error('Error getting key:', keyErr)
+                })
+            }
+          })
+          .catch((paymentErr) => {
+            console.error('Error initiating payment:', paymentErr)
+          })
+      } else {
         axios
-        .post(`${baseUrl}/api/v1/placeOrder`, orderData)
-        .then((res) => {
-          console.log(res)
-          if (res.status === 201) {
-            alert(res.data.message)
-          }
-        })
-        .catch((orderErr) => {
-          console.error('Error placing order:', orderErr)
-        })
+          .post(`${baseUrl}/api/v1/placeOrder`, orderData)
+          .then((res) => {
+            console.log(res)
+            if (res.status === 201) {
+              alert(res.data.message)
+              navigate('/orderHistory')
+            }
+          })
+          .catch((orderErr) => {
+            console.error('Error placing order:', orderErr)
+          })
       }
-
-      
     } catch (err) {
       console.error('Error:', err)
     }
@@ -335,29 +333,31 @@ const CheckoutPage = () => {
               </div>
 
               <div className='flex gap-3'>
-              <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-                <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
-                <div className='font-Playfair text-[18px]'>
-                  Cash on Delivery
+                <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
+                    ₹
+                  </div>
+                  <div className='font-Playfair text-[18px]'>
+                    Cash on Delivery
+                  </div>
+                  <input
+                    onChange={() => setPaymentMethod('Cash On Delivery')}
+                    className='h-5 w-5'
+                    type='radio'
+                  />
                 </div>
-                <input
-                  onChange={() => setPaymentMethod('Cash On Delivery')}
-                  className='h-5 w-5'
-                  type='radio'
-                />
-              </div>
 
-              <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-                <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
-                <div className='font-Playfair text-[18px]'>
-                  Razorpay
+                <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
+                    ₹
+                  </div>
+                  <div className='font-Playfair text-[18px]'>Razorpay</div>
+                  <input
+                    onChange={() => setPaymentMethod('RazorPay')}
+                    className='h-5 w-5'
+                    type='radio'
+                  />
                 </div>
-                <input
-                  onChange={() => setPaymentMethod('Razorpay')}
-                  className='h-5 w-5'
-                  type='radio'
-                />
-              </div>
               </div>
             </div>
           </div>

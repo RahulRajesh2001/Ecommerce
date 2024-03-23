@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './invoice.css'
 import Icon from '../../assets/Icon.png'
 import { useSelector } from 'react-redux'
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const Invoice = () => {
   const salesReport = useSelector((state) => state.products.salesReport)
@@ -32,11 +34,22 @@ const Invoice = () => {
   const subtotal = data.reduce((total, item) => total + item.price, 0)
   console.log('data', data)
 
+  const handleDownload = () => {
+    const input = document.getElementById('order_invoice');
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, 0);
+      pdf.save(`invoice_${ 'unknown'}.pdf`);
+    });
+  }
+
   return (
     <div className='flex justify-center items-center'>
       <div className='order-invoice my-5 '>
         <div className='row d-flex justify-content-center mb-5'>
-          <button className='btn btn-success col-md-5 w-[200px] font-semibold font-Josefin'>
+          <button onClick={()=>handleDownload()} className='btn btn-success col-md-5 w-[200px] font-semibold font-Josefin'>
             <i className='fa fa-print'></i> Download Invoice
           </button>
         </div>
@@ -93,7 +106,7 @@ const Invoice = () => {
                   <tr key={index}>
                     <td className='service'>{index + 1}</td>
                     <td className='w-[50px] h-[50px] '>
-                      <div className='mr-[50%]'>{order.quantity}</div>
+                      <div className='mr-[50%]'>{order?.quantity}</div>
                     </td>
                     <td className='desc'>
                       {/*one product */}
@@ -113,12 +126,12 @@ const Invoice = () => {
                           <div className='font-Playfair font-bold text-[16px] flex flex-col'>
                             Product Details
                           </div>
-                          <div className='border-b-2 border-[#121212]'>
+                          <div>
                             <div className='font-Playfair text-[15px] mt-2'>
-                              name : {order.product.varientName}
+                              name : {order?.product.varientName}
                             </div>
                             <div className='font-Playfair text-[15px]'>
-                              ₹ : {order.product.salePrice}
+                              ₹ : {order?.product.salePrice}
                             </div>
                           </div>
                           <div>
@@ -127,7 +140,7 @@ const Invoice = () => {
                             </div>
                             <div>
                               <div className='font-Playfair text-[15px]'>
-                                Payment : {order.paymentStatus}
+                                Payment : {order?.paymentStatus}
                               </div>
                               <div className='font-Playfair text-[15px]'>
                                 Order : {order.orderStatus}
