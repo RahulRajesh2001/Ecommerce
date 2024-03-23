@@ -116,7 +116,8 @@ const CheckoutPage = () => {
         return acc + item.quantity * item.price
       }, 0)
 
-      axios
+      if(paymentMethod==='Razorpay'){
+        axios
         .post(`${baseUrl}/api/v1/checkout`, { amount: totalAmount })
         .then((paymentRes) => {
           // Handle the response from the checkout API
@@ -162,18 +163,6 @@ const CheckoutPage = () => {
                   .then((res) => {
                     if (res.status === 200) {
                       alert(res.data.message)
-                      //If order placement is successful, handle the response
-                      // const orderId = res.data.order._id
-                      // const paymentData = {
-                      //   orderId: orderId,
-                      //   userId: res.data.order.userId,
-                      //   amount: res.data.order.totalAmount,
-                      //   status: 'Pending',
-                      //   transactionId: paymentRes.data.order.id,
-                      //   paymentMethod: res.data.order.paymentMethod,
-                      //   transactionDate: new Date(),
-                      // }
-                      // console.log('payment Data', paymentData)
                     }
                   })
                   .catch((orderErr) => {
@@ -188,6 +177,22 @@ const CheckoutPage = () => {
         .catch((paymentErr) => {
           console.error('Error initiating payment:', paymentErr)
         })
+
+      }else{
+        axios
+        .post(`${baseUrl}/api/v1/placeOrder`, orderData)
+        .then((res) => {
+          console.log(res)
+          if (res.status === 201) {
+            alert(res.data.message)
+          }
+        })
+        .catch((orderErr) => {
+          console.error('Error placing order:', orderErr)
+        })
+      }
+
+      
     } catch (err) {
       console.error('Error:', err)
     }
@@ -329,6 +334,7 @@ const CheckoutPage = () => {
                 PAYMENT
               </div>
 
+              <div className='flex gap-3'>
               <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
                 <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
                 <div className='font-Playfair text-[18px]'>
@@ -339,6 +345,19 @@ const CheckoutPage = () => {
                   className='h-5 w-5'
                   type='radio'
                 />
+              </div>
+
+              <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+                <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
+                <div className='font-Playfair text-[18px]'>
+                  Razorpay
+                </div>
+                <input
+                  onChange={() => setPaymentMethod('Razorpay')}
+                  className='h-5 w-5'
+                  type='radio'
+                />
+              </div>
               </div>
             </div>
           </div>

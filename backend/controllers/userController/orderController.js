@@ -75,15 +75,15 @@ export const placeOrder = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-    const token = req.headers.authorization
+        const token = req.headers.authorization
 
-    console.log('this is token', token)
+        console.log('this is token', token)
 
-    if (!token) {
-      return res
-        .status(401)
-        .json({ message: 'You are unauthorized. Please login to continue.' })
-    }
+        if (!token) {
+          return res
+            .status(401)
+            .json({ message: 'You are unauthorized. Please login to continue.' })
+        }
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const userId = decoded.id
 

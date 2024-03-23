@@ -7,7 +7,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl.js'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const OrderDetailsPage = () => {
   const navigate = useNavigate()
@@ -108,6 +108,13 @@ function changeOrderStatus(orderStatus) {
                   Return
                 </button>
               )}
+              <Link to={"/invoice"}> 
+              <button
+                  className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[100px] h-[40px] font-bold rounded-lg bg-green-500'
+                >
+                  Invoice
+                </button>
+              </Link>
             </div>
           </div>
           {/*order section one */}

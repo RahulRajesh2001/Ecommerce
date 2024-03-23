@@ -18,6 +18,8 @@
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.7",
     "formik": "^2.4.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "multi-range-slider-react": "^2.0.7",
     "passport-google-oauth20": "^2.0.0",
     "react": "^18.2.0",
