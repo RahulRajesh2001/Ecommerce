@@ -16,6 +16,7 @@ import ReactImageMagnify from 'react-image-magnify'
 import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
+import Swal from 'sweetalert2'
 
 const ProductDetailsPage = () => {
   const productDetails = useSelector(
@@ -52,14 +53,22 @@ const ProductDetailsPage = () => {
       .post(`${baseUrl}/api/v1/addToCart`, requestData)
       .then((res) => {
         if (res.status === 200) {
-          console.log(res.data.message)
-          alert(res.data.message)
+          Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
         } else {
-          alert(res.data.message)
+          Swal.fire({
+            text: res.data.message,
+            icon: "error"
+          });
         }
       })
       .catch((err) => {
-        console.log(err)
+        Swal.fire({
+          text: err.response.data.message,
+          icon: "error"
+        });
       })
   }
 

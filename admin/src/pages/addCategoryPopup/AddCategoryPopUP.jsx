@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setCategory } from '../../../redux/reducers/CategorySlice.js';
 import {categorySchema} from '../../../formValidation/categorySchema.js'
 import {useFormik} from 'formik'
+import Swal from 'sweetalert2'
 
 const style = {
   position: 'absolute',
@@ -60,6 +61,10 @@ const dispatch=useDispatch()
         })
             .then((res) => {
                 if (res.status === 200) {
+                  Swal.fire({
+                    text: res.data.message,
+                    icon: "success"
+             });
                   dispatch(setCategory(res.data.categories))
                     handleClose()  
                 }

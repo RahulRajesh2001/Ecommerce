@@ -6,8 +6,14 @@ const PaymentSuccessPage = () => {
   const reference = searchParams.length > 0 ? searchParams[0].get('reference') : null;
 
   return (
-    <div className='bg-red-500 w-[100px] h-[100px]'>
-      PaymentSuccessPage : {reference}
+    <div className='flex justify-center items-center h-screen flex-col gap-10'>
+      <div className='w-[100px] h-[100px] bg-green-300 rounded-full flex justify-center items-center font-Josefin font-semibold text-[20px]'>
+        Success
+      </div>
+      <div>
+        <div className='font-Playfair'>id : {reference} </div>
+      </div>
+    
     </div>
   );
 }

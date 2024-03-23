@@ -12,6 +12,7 @@ import SelectionBox from '../selectionBox/SelectionBox.jsx';
 import { shippingAddressSchema } from '../../formValidationSchema/shippgingAddressSchema.js';
 import {baseUrl} from '../../../baseUrl.js'
 import { setShippingAddress } from '../../../redux/reducers/userSlice.js';
+import Swal from 'sweetalert2';
 
 const style = {
   position: 'absolute',
@@ -85,11 +86,17 @@ const getState=(state)=>{
 
       axios.post(`${baseUrl}/api/v1/add-address`,shippingAddress).then((res)=>{
         if(res.status ==200){
-          alert(res.data.message)
+          Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
           dispatch(setShippingAddress(res.data.remainingAddresses))
           resetForm()
         }else{
-          alert(res.data.message)
+          Swal.fire({
+            text: res.data.message,
+            icon: "error"
+          });
         }
       }).catch((err)=>{
         console.log(err)
@@ -304,7 +311,7 @@ const getState=(state)=>{
                 type='submit'
                 className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer mt-4'
               >
-                Edit
+                Add
               </button>
               </div>
             </form>

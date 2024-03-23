@@ -7,9 +7,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl'
 import ChooseAddresss from '../../components/chooseAddress/ChooseAddresss'
+import Swal from 'sweetalert2'
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
+  const [cartItems, setCartItems] = useState([])
   const [id, setAddressId] = useState('')
   const [update, setUpdate] = useState(false)
   //taking choosen address id
@@ -18,12 +20,6 @@ const CheckoutPage = () => {
     setUpdate(!update)
   }
 
-  //payment status in checkout page
-  const [paymentStatus, setPaymentStatus] = useState({})
-
-  //shipping addres in checkout page
-  const [shippingAddress, setShippingAddress] = useState({})
-
   axios.interceptors.request.use((config) => {
     const token = localStorage.getItem('userToken')
     if (token) {
@@ -31,6 +27,31 @@ const CheckoutPage = () => {
     }
     return config
   })
+
+  //apply cupon
+  const[cupon,setCupon]=useState('')
+  const applyCupon = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${baseUrl}/api/v1/applyCupon`, {
+        cupon: cupon,
+        cartItems: cartItems 
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+ 
+
+
+  //payment status in checkout page
+  const [paymentStatus, setPaymentStatus] = useState({})
+
+  //shipping addres in checkout page
+  const [shippingAddress, setShippingAddress] = useState({})
+
+
   useEffect(() => {
     axios
       .get(`${baseUrl}/api/v1/chooseAddress`, { params: { id } })
@@ -43,7 +64,7 @@ const CheckoutPage = () => {
   }, [update])
 
   //scart items in checkout page
-  const [cartItems, setCartItems] = useState([])
+
   const [subTotal, setSubTotal] = useState('')
 
   axios.interceptors.request.use((config) => {
@@ -162,7 +183,10 @@ const CheckoutPage = () => {
                     .post(`${baseUrl}/api/v1/placeOrder`, orderData)
                     .then((res) => {
                       if (res.status === 200) {
-                        alert(res.data.message)
+                        Swal.fire({
+                          text: res.data.message,
+                          icon: "success"
+                        });
                       }
                     })
                     .catch((orderErr) => {
@@ -183,7 +207,10 @@ const CheckoutPage = () => {
           .then((res) => {
             console.log(res)
             if (res.status === 201) {
-              alert(res.data.message)
+              Swal.fire({
+                text: res.data.message,
+                icon: "success"
+              });
               navigate('/orderHistory')
             }
           })
@@ -332,33 +359,34 @@ const CheckoutPage = () => {
                 PAYMENT
               </div>
 
-              <div className='flex gap-3'>
-                <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
-                    ₹
-                  </div>
-                  <div className='font-Playfair text-[18px]'>
-                    Cash on Delivery
-                  </div>
-                  <input
-                    onChange={() => setPaymentMethod('Cash On Delivery')}
-                    className='h-5 w-5'
-                    type='radio'
-                  />
-                </div>
 
-                <div className=' w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
-                    ₹
-                  </div>
-                  <div className='font-Playfair text-[18px]'>Razorpay</div>
-                  <input
-                    onChange={() => setPaymentMethod('RazorPay')}
-                    className='h-5 w-5'
-                    type='radio'
-                  />
-                </div>
-              </div>
+
+              <div className='flex gap-3'>
+  <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+    <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
+    <div className='font-Playfair text-[18px]'>Cash on Delivery</div>
+    <input
+      onChange={() => setPaymentMethod('Cash On Delivery')}
+      className='h-5 w-5'
+      type='radio'
+      name='paymentMethod' // Add name attribute for grouping
+      defaultChecked // This line sets it as default selected
+    />
+  </div>
+
+  <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+    <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
+    <div className='font-Playfair text-[18px]'>Razorpay</div>
+    <input
+      onChange={() => setPaymentMethod('RazorPay')}
+      className='h-5 w-5'
+      type='radio'
+      name='paymentMethod' 
+    />
+  </div>
+</div>
+
+
             </div>
           </div>
         </div>
@@ -410,6 +438,11 @@ const CheckoutPage = () => {
                 ₹{subTotal}
               </div>
             </div>
+
+            <form onSubmit={applyCupon} className='flex gap-4'>
+              <input onChange={(e)=>setCupon(e.target.value)} type="text" className='border outline-none w-[200px]' />
+              <button type='submit' className='bg-blue-400 rounded-lg w-[50px] h-[30px] text-[#fff] font-semibold '>Apply</button>
+            </form>
 
             <Link className='w-[100%] flex justify-center' to='/checkout'>
               <div

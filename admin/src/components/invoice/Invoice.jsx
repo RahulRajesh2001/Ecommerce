@@ -96,7 +96,7 @@ const Invoice = () => {
                     TOTAL DISCOUNT
                   </th>
                   <th className='font-Playfair font-semibold '>
-                    TOTAL CUPON DISCONT
+                    TOTAL CUPON DISCOUNT
                   </th>
                   <th className='font-Playfair font-semibold '>TOTAL AMOUNT</th>
                 </tr>
@@ -109,31 +109,35 @@ const Invoice = () => {
                       <div className='mr-[50%]'>{order?.quantity}</div>
                     </td>
                     <td className='desc'>
-                      {/*one product */}
+                      {/* One product */}
                       <div className='flex flex-col gap-3 '>
                         <div>
                           <div className='font-Playfair font-bold text-[16px]'>
                             User Details
                           </div>
                           <div className='font-Playfair text-[15px]'>
-                            name : {Ordered[0].shippingAddress.fullName}
+                            name : {Ordered[0]?.shippingAddress.fullName}
                           </div>
                           <div>
-                            Address : {Ordered[0].shippingAddress.address}
+                            Address : {Ordered[0]?.shippingAddress.address}
                           </div>
                         </div>
                         <div>
                           <div className='font-Playfair font-bold text-[16px] flex flex-col'>
                             Product Details
                           </div>
-                          <div>
-                            <div className='font-Playfair text-[15px] mt-2'>
-                              name : {order?.product.varientName}
+                          {order.product ? (
+                            <div>
+                              <div className='font-Playfair text-[15px] mt-2'>
+                                name : {order.product.varientName}
+                              </div>
+                              <div className='font-Playfair text-[15px]'>
+                                ₹ : {order.product.salePrice}
+                              </div>
                             </div>
-                            <div className='font-Playfair text-[15px]'>
-                              ₹ : {order?.product.salePrice}
-                            </div>
-                          </div>
+                          ) : (
+                            <div>No product details available</div>
+                          )}
                           <div>
                             <div className='font-Playfair font-bold text-[16px]'>
                               Order Details

@@ -9,6 +9,7 @@ import EditCategory from '../editCategory/EditCategory'
 import  {setCategory} from  '../../../redux/reducers/CategorySlice.js'
 import {useDispatch} from 'react-redux'
 import { useSelector } from 'react-redux'
+import Swal from 'sweetalert2'
 
 const CategoryList = () => {
     const dispatch=useDispatch()
@@ -70,8 +71,12 @@ const CategoryList = () => {
       Authorization: token,
     },
   }).then((res)=>{
-    alert(res.data.message)
     dispatch(setCategory(res.data.categories))
+    Swal.fire({
+      text: res.data.message,
+      icon: "success"
+});
+   
    })
 
   }

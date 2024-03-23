@@ -80,9 +80,15 @@ const BaseProducts = () => {
       .then((res) => {
         dispatch(setBaseProducts(res.data.savedProduct))
         if (res.status == 200) {
-          alert(res.data.message)
+           Swal.fire({
+                 text: res.data.message,
+                 icon: "success"
+          });
         } else {
-          alert(res.data.message)
+           Swal.fire({
+                 text: res.data.message,
+                 icon: "error"
+          });
         }
       })
   }

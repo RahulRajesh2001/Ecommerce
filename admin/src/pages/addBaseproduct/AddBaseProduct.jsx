@@ -11,6 +11,7 @@ import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { setBaseProducts } from '../../../redux/reducers/BaseProductSlice.js'
 import CategoryDropdown from '../../components/categoryDropdown/CategoryDropdown.jsx'
+import Swal from 'sweetalert2'
 
 const style = {
   position: 'absolute',
@@ -59,10 +60,16 @@ const AddBaseProduct = () => {
             })
             .then((res) => {
               dispatch(setBaseProducts(res.data.products))
-              if (res.status == 200) {
-                alert(res.data.message)
+              if (res.status == 201) {
+                 Swal.fire({
+                 text: res.data.message,
+                 icon: "success"
+          });
               } else {
-                alert(res.data.message)
+                 Swal.fire({
+                text: res.data.message,
+                 icon: "error"
+          });
               }
             })
         } catch (err) {

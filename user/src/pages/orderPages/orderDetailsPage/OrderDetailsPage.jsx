@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl.js'
 import { Link, useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const OrderDetailsPage = () => {
   const navigate = useNavigate()
@@ -50,6 +51,10 @@ function changeOrderStatus(orderStatus) {
         }
       )
       .then((res) => {
+        Swal.fire({
+          text: res.data.message,
+          icon: "success"
+        });
         setStatus(res.data.order.orderedItems[0].orderStatus)
       })
       .catch((err) => {

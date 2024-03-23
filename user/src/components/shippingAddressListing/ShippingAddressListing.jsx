@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setShippingAddress } from '../../../redux/reducers/userSlice.js'
 import { baseUrl } from '../../../baseUrl.js'
 import EditShippingAddress from '../ediShippingAddress/EditShippingAddress.jsx'
+import Swal from 'sweetalert2'
 
 const ShippingAddressListing = () => {
   const dispatch = useDispatch()
@@ -42,10 +43,16 @@ const ShippingAddressListing = () => {
       .delete(`${baseUrl}/api/v1/deleteShippingAddress?id=${id}`)
       .then((res) => {
         if (res.status === 200) {
-          alert(res.data.message)
+          Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
           dispatch(setShippingAddress(res.data.existingAddresses))
         } else {
-          alert(res.data.message)
+          Swal.fire({
+            text: res.data.message,
+            icon: "error"
+          });
         }
       })
       .catch((err) => {
@@ -56,14 +63,14 @@ const ShippingAddressListing = () => {
 
 
   return (
-    <div className=' w-[100%] h-[300px] flex flex-col justify-center items-center gap-2  mt-[50px] '>
-      <div className='flex justify-around w-[100%] items-center '>
+    <div className=' w-[100%] h-[300px] flex flex-col justify-center items-center gap-2  mt-[30px]  border-t-2  '>
+      <div className='flex justify-around w-[50%] items-center '>
         <div className='flex font-semibold text-[18px] '>Shippig Address</div>
         <div className='cursor-pointer '>
           <AddShippingAddress />
         </div>
       </div>
-      <div className='overflow-auto w-[100%] flex flex-col gap-2'>
+      <div className='overflow-auto w-[80%] flex flex-col gap-2  ml-[100px]'>
         {/*Address part*/}
         {addresses.length > 0 ? (
           addresses.map((address) => (

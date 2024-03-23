@@ -8,6 +8,7 @@ import axios from 'axios'
 import { baseUrl } from '../../../baseURL.js'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const AddProductPage = () => {
   const navigate = useNavigate()
@@ -119,10 +120,16 @@ const AddProductPage = () => {
         .then((res) => {
           if (res.status == 200) {
             navigate('/varients')
-            alert(res.data.message)
+             Swal.fire({
+                 text: res.data.message,
+                 icon: "success"
+          });
           } else {
             navigate('/base-products')
-            alert(res.data.message)
+             Swal.fire({
+                 text: res.data.message,
+                 icon: "error"
+          });
           }
         })
     } catch (err) {

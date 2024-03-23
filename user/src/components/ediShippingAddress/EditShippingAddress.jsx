@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import SelectionBox from '../selectionBox/SelectionBox.jsx'
 import { shippingAddressSchema } from '../../formValidationSchema/shippgingAddressSchema.js'
 import { baseUrl } from '../../../baseUrl.js'
-import { setShippingAddress } from '../../../redux/reducers/userSlice.js'
+import { setShippingAddress } from '../../../redux/reducers/userSlice.js';
+import Swal from 'sweetalert2'
 
 const style = {
   position: 'absolute',
@@ -99,11 +100,17 @@ const EditShippingAddress = ({ id }) => {
         .put(`${baseUrl}/api/v1/editShippingAddress`, shippingAddress)
         .then((res) => {
           if (res.status == 200) {
-            alert(res.data.message)
+            Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
             dispatch(setShippingAddress(res.data.remainingAddresses))
             resetForm()
           } else {
-            alert(res.data.message)
+            Swal.fire({
+            text: res.data.message,
+            icon: "error"
+          });
           }
         })
         .catch((err) => {

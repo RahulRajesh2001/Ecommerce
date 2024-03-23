@@ -4,6 +4,7 @@ import axios from 'axios';
 import { baseUrl } from '../../../baseUrl.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../../redux/reducers/userSlice.js';
+import Swal from 'sweetalert2'
 
 const AccountSetting = () => {
   const dispatch = useDispatch();
@@ -41,11 +42,16 @@ const AccountSetting = () => {
           Authorization: token,
         },
       });
-      console.log("Response from server:", res);
       if (res.status === 200) {
-        alert(res.data.message);
+        Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
       } else {
-        alert(res.data.message);
+        Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
       }
     } catch (err) {
       console.error('Error editing user:', err);

@@ -13,7 +13,7 @@ const ProfilePage = () => {
       <div className='w-[20%]'>
       <SideBar/>
       </div>
-       <div className='w-[60%]  gap-5'>
+       <div className='w-[60%]  gap-5 border flex justify-center flex-col items-center'>
        <AccountSetting/>
         <ShippingAddressListing/>
        </div>

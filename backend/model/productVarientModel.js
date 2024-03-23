@@ -39,6 +39,10 @@ const productVariantSchema = new Schema({
     offers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Offer'
+    }],
+   cupon: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CUPON'
     }]
 });
 
