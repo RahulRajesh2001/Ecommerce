@@ -38,18 +38,13 @@ const Navbar = () => {
             <div className='flex gap-5'>
               {/*icons part*/}
               <div className='flex gap-3 justify-center items-center'>
-                <div className='text-[#ffff] text-[12px]'>Follow us : </div>
+                <div className='text-[#ffff] text-[12px] vvsm:hidden md:block'>Follow us : </div>
                 <RiFacebookCircleFill className='text-[#ffff]' />
                 <FaYoutube className='text-[#ffff]' />
                 <AiFillInstagram className='text-[#ffff]' />
                 <FaLinkedin className='text-[#ffff]' />
               </div>
               <div className='bg-[#77878F] h-[20px] w-[1px]'></div>
-              {/*language part*/}
-              <div className='flex justify-center items-center gap-1 text-[#ffff]'>
-                <div className='text-[12px]'>Eng </div>
-                <MdKeyboardArrowDown className='text-[#ffff]' />
-              </div>
             </div>
           </div>
         </div>

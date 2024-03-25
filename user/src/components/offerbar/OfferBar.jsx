@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaArrowRight } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
 const OfferBar = () => {
   return (
@@ -19,12 +20,14 @@ const OfferBar = () => {
       </div>
       {/*leftside*/}
       <div>
+        <Link to={"/shop"}>
         <div className='w-[100px] h-[30px] bg-[#F3DE6D] flex justify-center items-center gap-2'>
           <div className='text-[12px] font-bold'>SHOP NOW</div>
           <div>
             <FaArrowRight className='text-[10px]' />
           </div>
         </div>
+        </Link>
       </div>
     </div>
   )

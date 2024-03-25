@@ -28,20 +28,7 @@ const CheckoutPage = () => {
     return config
   })
 
-  //apply cupon
-  const[cupon,setCupon]=useState('')
-  const applyCupon = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${baseUrl}/api/v1/applyCupon`, {
-        cupon: cupon,
-        cartItems: cartItems 
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
  
 
 
@@ -82,7 +69,7 @@ const CheckoutPage = () => {
         setSubTotal(() =>
           res.data.cart.products.reduce(
             (acc, curr) =>
-              acc + curr.productVarientId.salePrice * curr.quantity,
+              acc + curr.productVarientId.salePrice-amount * curr.quantity,
             0
           )
         )
@@ -94,6 +81,7 @@ const CheckoutPage = () => {
 
   //order placing in checkout page
   const [paymentMethod, setPaymentMethod] = useState('')
+  const [amount,setAmount]=useState('')
 
   const orderData = {
     orderedItems: cartItems.map((item) => ({
@@ -120,6 +108,26 @@ const CheckoutPage = () => {
     coupons: null,
     totalAmount: subTotal,
   }
+
+
+  //apply cupon
+  const[cupon,setCupon]=useState('')
+  const applyCupon = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${baseUrl}/api/v1/applyCupon`, {
+        cupon: cupon,
+        varientId: orderData.orderedItems.map(item => item.product)
+      })
+      if(response.status==200){
+        console.log(response.data.amount)
+        setAmount(response.data.amount)
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Setting up Axios interceptor globally
   axios.interceptors.request.use((config) => {
@@ -422,7 +430,7 @@ const CheckoutPage = () => {
               <div className='flex justify-between items-center w-[80%] '>
                 <div className='text-[#5F6C72] font-Playfair'>SubTotal</div>
                 <div className='text-[#191C1F] font-Playfair font-semibold'>
-                  ₹{subTotal}
+                  ₹{subTotal-amount}
                 </div>
               </div>
               <div className='flex justify-between items-center w-[80%] '>
@@ -435,12 +443,14 @@ const CheckoutPage = () => {
             <div className='flex justify-between items-center w-[80%] '>
               <div className='text-[#5F6C72] font-Playfair'>Total</div>
               <div className='text-[#191C1F] font-Playfair font-semibold'>
-                ₹{subTotal}
+                ₹{subTotal-amount}
               </div>
             </div>
 
             <form onSubmit={applyCupon} className='flex gap-4'>
-              <input onChange={(e)=>setCupon(e.target.value)} type="text" className='border outline-none w-[200px]' />
+         
+              <input placeholder='Apply Coupon' onChange={(e)=>setCupon(e.target.value)} type="text" className='border outline-none w-[200px]' />
+             
               <button type='submit' className='bg-blue-400 rounded-lg w-[50px] h-[30px] text-[#fff] font-semibold '>Apply</button>
             </form>
 

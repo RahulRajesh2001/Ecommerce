@@ -101,25 +101,22 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th></th>
         <th>DATE</th>
-        <th></th>
-        <th></th>
         <th>CUSTOMERS</th>
         <th>QUANTITY</th>
         <th>PRICE</th>
+        <th>ORDER STATUS</th>
         <th>PAYMENT</th>
         <th>CHANGE STATUS</th>
+
+        
       </tr>
     </thead>
     <tbody>
-    {orders.map((order) => (
-  <tr key={order._id}>
-    <td>{order._id}</td>
-    <td></td>
+    {orders.map((order,index) => (
+  <tr key={index}>
+    <td>{index+1}</td>
     <td>{formatDate(order.orderDate)}</td>
-    <td></td>
-    <td></td>
     <td>
       <div>{order.shippingAddress.fullName}</div>
       <div>{order.shippingAddress.address}</div>
@@ -134,10 +131,12 @@
         <div key={item._id}>{item.price}</div>
       ))}
     </td>
+    <td>{order.orderedItems[0].orderStatus}</td>
     <td>{order.orderedItems[0].paymentStatus}</td>
     <td>
       <SelectionBox orderId={order._id} getState={getState} states={['Pending', 'Processing', 'Completed', 'Failed', 'Refunded']} />
     </td>
+
   </tr>
 ))}
 
