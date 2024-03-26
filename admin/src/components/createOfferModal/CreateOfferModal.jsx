@@ -3,7 +3,6 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
 import { baseUrl } from '../../../baseURL.js'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
@@ -15,6 +14,7 @@ import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { offerSchema } from '../../../formValidation/offerSchema.js'
 import { setOffers } from '../../../redux/reducers/OfferSlice.js'
+import Swal from 'sweetalert2'
 
 const style = {
   position: 'absolute',
@@ -26,12 +26,14 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
+  borderRadius: 5,
 }
 
+//taking admin token from local storage
 const token = localStorage.getItem('adminLogin')
 
-const CreateOfferModal = ({triggered}) => {
-    const [created,setCreated]=useState(false)
+const CreateOfferModal = ({ triggered }) => {
+  const [created, setCreated] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [open, setOpen] = React.useState(false)
@@ -67,9 +69,9 @@ const CreateOfferModal = ({triggered}) => {
   } = useFormik({
     initialValues: {
       offerName: '',
-  description: '',
-  validFrom: new Date().toISOString().split('T')[0], 
-  validUntil: new Date().toISOString().split('T')[0],
+      description: '',
+      validFrom: new Date().toISOString().split('T')[0],
+      validUntil: new Date().toISOString().split('T')[0],
     },
     validationSchema: offerSchema,
     onSubmit: (values) => {
@@ -79,8 +81,8 @@ const CreateOfferModal = ({triggered}) => {
         discountValue: values.discountValue,
         validFrom: values.validFrom,
         validUntil: values.validUntil,
-        offerType:offerType,
-        discountType:discountType
+        offerType: offerType,
+        discountType: discountType,
       }
 
       axios
@@ -94,21 +96,32 @@ const CreateOfferModal = ({triggered}) => {
             dispatch(setOffers(res.data.offers))
             setCreated(!created)
             triggered(created)
+            Swal.fire({
+              text: res.data.message,
+              icon: "success"
+            });
             resetForm()
             handleClose()
           }
         })
         .catch((error) => {
+          Swal.fire({
+            text: error.response.data.message,
+            icon: "error"
+          });
           console.error('Error adding category:', error)
         })
     },
   })
 
-
-
   return (
     <div>
-      <Button onClick={handleOpen}>Add Offer</Button>
+      <button
+        className='w-[100px] h-[40px] bg-[#696CFF] font-Playfair text-[#ffff] font-semibold rounded-lg mb-1 '
+        onClick={handleOpen}
+      >
+        Add Offer
+      </button>
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'
@@ -266,14 +279,22 @@ const CreateOfferModal = ({triggered}) => {
                 </Box>
               </div>
 
-              <button
-                onClick={() => console.log('dfalsdhfdaf')}
-                type='submit'
-                disabled={isSubmitting}
-                className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'
-              >
-                ADD
-              </button>
+              <div className='flex'>
+                <button
+                  type='submit'
+                  disabled={isSubmitting}
+                  className='w-[100px] h-[40px] flex justify-center items-center bg-[#696CFF] text-[#ffff] rounded-md mr-5 font-Playfair cursor-pointer'
+                >
+                  ADD
+                </button>
+
+                <button
+                  onClick={() => handleClose()}
+                  className='w-[100px] h-[40px] flex justify-center items-center bg-[#FFFF] border-2 text-[#1c1c1c] rounded-md mr-5 font-Playfair cursor-pointer'
+                >
+                  CLOSE
+                </button>
+              </div>
             </form>
           </Box>
         </Fade>

@@ -10,6 +10,7 @@ import  {setCategory} from  '../../../redux/reducers/CategorySlice.js'
 import {useDispatch} from 'react-redux'
 import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
+import ShowCategoryOffer from '../../components/showCategoryOffers/ShowCategoryOffer.jsx'
 
 const CategoryList = () => {
     const dispatch=useDispatch()
@@ -96,23 +97,19 @@ const CategoryList = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>--</th>
                 <th>CATEGORIES</th>
-                <th>TOTAL PRODUCTS</th>
-                <th>---</th>
-                <th>---</th>
+                <th>DESCRIPTION</th>
+                <th>OFFERS</th>
                 <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {productCategory.map((category) => (
+              {productCategory.map((category,index) => (
                     category.isDeleted==false ? <tr key={category._id}>
-                    <td>{category._id}</td>
-                    <td></td>
+                    <td>{index+1}</td>
                     <td>{category.title}</td>
                     <td>{category.description}</td>
-                    <td></td>
-                    <td></td>
+                    <td><ShowCategoryOffer categoryId={category._id}/></td>
                     <td className='flex gap-4'>
                      <div className='mt-2'>
                      <EditCategory id={category._id}/>

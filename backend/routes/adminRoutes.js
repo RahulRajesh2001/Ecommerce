@@ -25,12 +25,14 @@ import {
 } from '../controllers/adminController/orderController.js'
 import {
   addOffer,
+  applyCategoryOffer,
   applyOffer,
   createOffer,
   deleteAddedOffer,
   deleteOffer,
   getAddedOffers,
   getAllOffers,
+  getCatoryAppliedOffer,
 } from '../controllers/adminController/offerController.js'
 import {
   createCupon,
@@ -71,5 +73,7 @@ router.get('/getCupons', verifyAdminToken, getCupons)
 router.delete('/deleteCupons', verifyAdminToken, deleteCupon)
 router.post('/updateCupon', verifyAdminToken, updateCupon)
 router.get('/getSales',getSales)
+router.post('/applyCategoryOffer', verifyAdminToken, applyCategoryOffer)
+router.get('/getAppliedOffer', verifyAdminToken, getCatoryAppliedOffer)
 
 export default router

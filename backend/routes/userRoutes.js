@@ -88,4 +88,5 @@ router.get('/getWalletHistory', verifyToken,getWalletHistory)
 router.post('/applyCupon',verifyToken,ApplyCupons)
 
 
+
 export default router

@@ -12,7 +12,11 @@ const categorySchema = new Schema({
     isDeleted:{
         type:Boolean,
         default:false
-    }
+    },
+    appliedOffers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Offer'
+    }]
 
 })
 
