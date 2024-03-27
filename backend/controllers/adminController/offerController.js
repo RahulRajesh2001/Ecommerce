@@ -361,13 +361,14 @@ export const applyCategoryOffer = async (req, res) => {
               { new: true }
             )
           }
-          res.status(200).json({ message: 'Offer applied Successfully' })
+ 
           await productVariant.save()
         }
       }
     })
 
     await Promise.all(promises)
+    res.status(200).json({ message: 'Offer applied Successfully' })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some error occurred. Try again!' })
@@ -394,12 +395,8 @@ export const getCatoryAppliedOffer = async (req, res) => {
       const categoryOffer = await OfferModel.find({ _id: categoryOfferId })
       if (categoryOffer) {
         return res.status(200).json({ message: 'Successfull', categoryOffer })
-      } else {
-        return res.status(400).json({ message: 'No categories applied' })
-      }
-    } else {
-      return res.status(400).json({ message: 'No categories applied' })
-    }
+      } 
+    } 
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some error occurred. Try again!' })
@@ -412,9 +409,46 @@ export const getCatoryAppliedOffer = async (req, res) => {
 
 export const deleteAppliedCategoryOffer = async (req, res) => {
   try {
-    const {id}=req.query;
-    
-   
+    const { id, categoryid } = req.query
+
+    const productVarients = await ProductVariant.find({ offers: id })
+
+    if (!productVarients || productVarients.length == 0) {
+      return res
+        .status(404)
+        .json({
+          message: 'No ProductVariants found with the specified offer ID.',
+        })
+    }
+    //fetching the offer
+    const offer = await OfferModel.findById(id)
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found.' })
+    }
+
+    //iterating through each varient
+    for (const productVariant of productVarients) {
+      let discount = 0
+      if (offer.discountType === 'FixedAmount') {
+        discount = offer.discountValue
+      } else {
+        discount = (productVariant.salePrice * offer.discountValue) / 100
+      }
+      productVariant.salePrice += discount
+
+      // Pull the offer ID from the offers array
+      const index = productVariant.offers.indexOf(id)
+      if (index !== -1) {
+        productVariant.offers.splice(index, 1)
+      }
+      await productVariant.save()
+    }
+
+    console.log('this is id', id)
+    await CATEGORY.findByIdAndUpdate(categoryid, {
+      $pull: { appliedOffers: id },
+    })
+    res.status(200).json({ message: 'Offer deleted successfully' })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some error occurred. Try again!' })

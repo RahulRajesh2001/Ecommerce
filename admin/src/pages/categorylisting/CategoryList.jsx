@@ -18,6 +18,8 @@ const CategoryList = () => {
     const productCategory =useSelector((state)=>state.category.category)
 
 
+
+
   const [currentPage, setCurrentPage] = useState(1)
   const categoriesPerPage = 12
   const indexOfLastCategory = currentPage * categoriesPerPage
@@ -61,7 +63,7 @@ const CategoryList = () => {
     } catch (err) {
       console.log(err)
     }
-  }, [])
+  }, [status])
 
 
   //category delete

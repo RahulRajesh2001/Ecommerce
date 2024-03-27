@@ -29,6 +29,7 @@ import {
   applyOffer,
   createOffer,
   deleteAddedOffer,
+  deleteAppliedCategoryOffer,
   deleteOffer,
   getAddedOffers,
   getAllOffers,
@@ -75,5 +76,6 @@ router.post('/updateCupon', verifyAdminToken, updateCupon)
 router.get('/getSales',getSales)
 router.post('/applyCategoryOffer', verifyAdminToken, applyCategoryOffer)
 router.get('/getAppliedOffer', verifyAdminToken, getCatoryAppliedOffer)
+router.delete('/deleteAppliedCategoryOffer',verifyAdminToken,deleteAppliedCategoryOffer)
 
 export default router
