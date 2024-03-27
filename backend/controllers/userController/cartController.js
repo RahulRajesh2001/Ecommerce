@@ -21,6 +21,10 @@ export const addToCart = async (req, res) => {
     if (!productVariant) {
       return res.status(404).json({ message: 'Product variant not found.' });
     }
+    
+    if(productVariant.stock <=0){
+      return res.status(400).json({ message: 'Product is Out off Stock ,Please Try again later' });
+    }
 
     if (quantity > productVariant.stock) {
       return res.json({ message: 'Insufficient Stock!' });

@@ -5,7 +5,6 @@ import Wallet from '../../model/walletModel.js'
 import TransactionModel from '../../model/transactionModel.js'
 
 export const placeOrder = async (req, res) => {
-  console.log('this is order body', req.body)
   try {
     // Verify user authentication
     const token = req.headers.authorization
@@ -28,6 +27,22 @@ export const placeOrder = async (req, res) => {
       coupons,
       totalAmount,
     } = req.body
+
+    let insufficientStock = false
+
+    for (const item of orderedItems) {
+      const productVariant = await ProductVariant.findOne({ _id: item.product })
+      if (!productVariant || productVariant.stock < item.quantity) {
+        insufficientStock = true
+        break
+      }
+    }
+
+    if (insufficientStock) {
+      return res
+        .status(400)
+        .json({ message: 'Insufficient Stock to Purchase!' })
+    }
 
     // Create new order document
     const newOrder = new OrderModel({
@@ -75,15 +90,15 @@ export const placeOrder = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-        const token = req.headers.authorization
+    const token = req.headers.authorization
 
-        console.log('this is token', token)
+    console.log('this is token', token)
 
-        if (!token) {
-          return res
-            .status(401)
-            .json({ message: 'You are unauthorized. Please login to continue.' })
-        }
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: 'You are unauthorized. Please login to continue.' })
+    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const userId = decoded.id
 
@@ -160,12 +175,10 @@ export const changeOrderStatus = async (req, res) => {
       await Promise.all([wallet.save(), refundTransaction.save()])
     }
 
-    res
-      .status(200)
-      .json({
-        message: 'Order status updated successfully',
-        order: updatedOrder,
-      })
+    res.status(200).json({
+      message: 'Order status updated successfully',
+      order: updatedOrder,
+    })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some error occurred. Please try again!' })

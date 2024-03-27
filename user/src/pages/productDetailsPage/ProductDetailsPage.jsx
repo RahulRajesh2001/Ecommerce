@@ -5,11 +5,7 @@ import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
 import { FaStar } from 'react-icons/fa'
 import SelectButton from '../../components/buttons/selecButton/SelectButton'
-import CounterButton from '../../components/buttons/counterbutton/CounterButton'
-import FilledButton from '../../components/buttons/filledbutton/FilledButton'
-import OutlineButton from '../../components/buttons/oulineButton/OutlineButton'
 import { IoMdHeartEmpty } from 'react-icons/io'
-import { MdOutlineCompareArrows } from 'react-icons/md'
 import ProductDetail from '../../components/productdeatil/ProductDetail'
 import { useSelector } from 'react-redux'
 import ReactImageMagnify from 'react-image-magnify'
@@ -17,16 +13,16 @@ import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
 import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
 
 const ProductDetailsPage = () => {
+  const navigate = useNavigate()
   const productDetails = useSelector(
     (state) => state.productDetails.productDetails
   )
   const productDetailsVariant = productDetails?.variants?.[0] || {}
 
   const [productId, setProductId] = useState(productDetailsVariant?._id || '')
-
-  console.log("productvid form detjal",productId)
 
   const [image, setImage] = useState(0)
 
@@ -45,9 +41,9 @@ const ProductDetailsPage = () => {
 
     const requestData = {
       productVarientId: productId,
-      quantity:1,
+      quantity: 1,
     }
-    console.log("handle submit",requestData)
+    console.log('handle submit', requestData)
 
     axios
       .post(`${baseUrl}/api/v1/addToCart`, requestData)
@@ -55,20 +51,21 @@ const ProductDetailsPage = () => {
         if (res.status === 200) {
           Swal.fire({
             text: res.data.message,
-            icon: "success"
-          });
+            icon: 'success',
+          })
+          navigate('/cart')
         } else {
           Swal.fire({
             text: res.data.message,
-            icon: "error"
-          });
+            icon: 'error',
+          })
         }
       })
       .catch((err) => {
         Swal.fire({
           text: err.response.data.message,
-          icon: "error"
-        });
+          icon: 'error',
+        })
       })
   }
 
@@ -121,44 +118,53 @@ const ProductDetailsPage = () => {
                   <FaStar key={index} className='text-[#FA8232] text-[16px]' />
                 ))}
               </div>
-              <div className='text-[10px] font-bold'>4.7 Star Rating</div>
-              <div className='text-[#5F6C72] text-[10px]'>
-                (21,671 User feedback)
-              </div>
+              <div className='text-[12px] font-bold'>4.7 Star Rating</div>
             </div>
-            <div className='font-semibold text-[15px]'>
+            <div className='font-semibold text-[16px]'>
               {productDetails.name}
             </div>
             <div className='flex gap-1'>
-              <div className='text-[11px] text-[#5F6C72]'>Availability :</div>
-              <div className={`font-bold text-[10px] ${productDetailsVariant.stock <= 0 ? 'text-red-600' : 'text-[#2DB224]'}`}>
-  {productDetailsVariant.stock <= 0 ? 'Out of stock' : 'In stock'}
-</div>
+              <div className='text-[12px] text-[#5F6C72]'>Availability :</div>
+              <div
+                className={`font-bold text-[12px] ${
+                  productDetailsVariant.stock <= 0
+                    ? 'text-red-600'
+                    : 'text-[#2DB224]'
+                }`}
+              >
+                {productDetailsVariant.stock <= 0 ? 'Out of stock' : 'In stock'}
+              </div>
+            </div>
 
-            </div>
-            <div className='flex justify-between'>
-              <div className='flex gap-1'>
-                <div className='text-[11px] text-[#5F6C72]'>Brand :</div>
-                <div className='text-[#191C1F] font-bold text-[10px]'>
-                  {productDetails.brand}
-                </div>
-              </div>
-              <div className='flex gap-1 mr-[100px]'>
-                <div className='text-[11px] text-[#5F6C72]'>Category :</div>
-                <div className='text-[#191C1F] font-bold text-[10px]'>
-                  {productDetails.category}
-                </div>
+            <div className='flex gap-1'>
+              <div className='text-[12px] text-[#5F6C72]'>Stock :</div>
+              <div className={'font-bold text-[12px]'}>
+                {productDetailsVariant.stock}
               </div>
             </div>
+
+            <div className='flex gap-1'>
+              <div className='text-[12px] text-[#5F6C72]'>Brand :</div>
+              <div className='text-[#191C1F] font-bold text-[12px]'>
+                {productDetails.brand}
+              </div>
+            </div>
+            <div className='flex gap-1 mr-[150px]'>
+              <div className='text-[12px] text-[#5F6C72]'>Category :</div>
+              <div className='text-[#191C1F] font-bold text-[12px]'>
+                {productDetails.category}
+              </div>
+            </div>
+
             <div className='flex gap-3 items-center'>
               <div className='font-bold text-[#2DA5F3] text-[15px]'>
-                ₹ {productDetailsVariant.salePrice}
+                ₹ {Math.round(productDetailsVariant.salePrice)}
               </div>
               <div className='text-[#77878F] text-[14px]'>
                 <strike>₹{productDetailsVariant.regularPrice}</strike>
               </div>
-              <div className='w-[50px] h-[20px] bg-[#F3DE6D] flex justify-center items-center'>
-                <div className='font-bold text-[10px]'>21% OFF</div>
+              <div className='w-[60px] h-[20px] bg-[#F3DE6D] flex justify-center items-center'>
+                <div className='font-bold text-[11px]'>21% OFF</div>
               </div>
             </div>
             <div className='bg-[#E4E7E9] h-[1px] w-[100%] mt-2'></div>
@@ -166,7 +172,7 @@ const ProductDetailsPage = () => {
               <div className='flex  items-center justify-center gap-1'>
                 <div className='text-[12px] font-semibold'>Color :</div>
                 <div className='flex justify-center items-center mt-1 gap-2 '>
-                  <div className='text-[#191C1F] font-bold text-[10px]'>
+                  <div className='text-[#191C1F] font-bold text-[12px]'>
                     {productDetailsVariant.color}
                   </div>
                 </div>
@@ -181,11 +187,16 @@ const ProductDetailsPage = () => {
                 />
               ))}
             </div>
-            <div className='mt-5 flex justify-around items-center gap-2'>
-              <div onClick={handleSubmit}>
-                <FilledButton value='ADD TO CART' w='300px' link='/cart' />
-              </div>
-              <OutlineButton />
+            <div className='flex gap-5 justify-center items-center'>
+              <button
+                onClick={handleSubmit}
+                className='bg-[#FA8232] w-[200px] h-[40px] rounded-lg text-[#ffff] font-Playfair text-[15px]'
+              >
+                ADD TO CART
+              </button>
+              <button className='border-2 border-[#FA8232] rounded-lg h-[40px] w-[100px] font-Playfair text-[15px]'>
+                BUY NOW
+              </button>
             </div>
 
             {/*wishlist section*/}
@@ -195,10 +206,6 @@ const ProductDetailsPage = () => {
                 <div className='text-[#475156] text-[12px]'>
                   Add to Wishlist
                 </div>
-              </div>
-              <div className='flex items-center gap-2'>
-                <MdOutlineCompareArrows className='text-[#475156] text-[15px]' />
-                <div className='text-[#475156] text-[12px]'>Add to Compare</div>
               </div>
             </div>
           </div>

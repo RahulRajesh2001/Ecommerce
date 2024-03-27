@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 
         const BottomBar = () => {
         return (
-            <div className='w-[100%] h-[40px] bg-[#fffff] flex justify-around items-center shadow border-b border-gray-300'>
-                <div className='flex gap-3'>
+            <div className=' w-[100%] h-[40px] bg-[#fffff] flex justify-around items-center shadow border-b border-gray-300 '>
+                <div className='flex gap-3 '>
                     {/*left side*/}
                 <div className='flex items-center justify-center gap-2 hover:bg-[#F2F4F5]  h-[40px] w-[100px] hover:cursor-pointer'>
                     <div className='text-[10px]'>All Category </div>

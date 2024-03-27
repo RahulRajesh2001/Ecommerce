@@ -44,6 +44,10 @@ const CheckoutPage = () => {
       .get(`${baseUrl}/api/v1/chooseAddress`, { params: { id } })
       .then((res) => {
         setShippingAddress(res.data.address)
+        Swal.fire({
+          text: res.data.message,
+          icon: "success"
+        });
       })
       .catch((err) => {
         console.log(err)
@@ -198,16 +202,25 @@ const CheckoutPage = () => {
                       }
                     })
                     .catch((orderErr) => {
-                      console.error('Error placing order:', orderErr)
+                      Swal.fire({
+                        text: orderErr.response.data.message,
+                        icon: "error"
+                      });
                     })
                 })
                 .catch((keyErr) => {
-                  console.error('Error getting key:', keyErr)
+                  Swal.fire({
+                    text: keyErr.response.data.message,
+                    icon: "error"
+                  });
                 })
             }
           })
           .catch((paymentErr) => {
-            console.error('Error initiating payment:', paymentErr)
+            Swal.fire({
+              text: paymentErr.response.data.message,
+              icon: "error"
+            });
           })
       } else {
         axios
@@ -223,7 +236,10 @@ const CheckoutPage = () => {
             }
           })
           .catch((orderErr) => {
-            console.error('Error placing order:', orderErr)
+            Swal.fire({
+              text:orderErr.response.data.message,
+              icon: "error"
+            });
           })
       }
     } catch (err) {

@@ -130,7 +130,7 @@ if(shopPage==="wishlist"){
                   <div className='text-[#191C1F] text-[12px]'>{product.name}</div>
                 </div>
                 <div className='text-[#2DA5F3] font-semibold text-[14px] mt-2'>
-                  ₹{product.variants[0].salePrice}
+                  ₹{Math.round(product.variants[0].salePrice)}
                 </div>
               </>
             )}

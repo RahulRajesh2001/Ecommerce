@@ -192,8 +192,8 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                {item?.productVarientId?.stock >= newQty ? (
-                  <div className='bg-green-600 w-[10px] h-[10px] rounded-full'></div>
+                {item?.productVarientId?.stock <=0? (
+                  <div className='bg-red-600 w-[10px] h-[10px] rounded-full'></div>
                 ) : (
                   <div className='bg-green-600 w-[10px] h-[10px] rounded-full'></div>
                 )}

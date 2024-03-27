@@ -50,9 +50,9 @@ const Navbar = () => {
         </div>
 
         {/*bottom*/}
-        <div className='bg-[#1B6392] w-[100%] h-[60px] flex justify-around items-center'>
+        <div className='bg-[#1B6392] w-[100%] h-[60px] flex justify-between  items-center'>
           {/*bottom_left*/}
-          <div className='flex items-center gap-2 '>
+          <div className='flex items-center gap-2 vvsm:ml-10 md:ml-32'>
             <Link to='/shop'>
               <div>
                 <NeomIcon />
@@ -60,16 +60,9 @@ const Navbar = () => {
             </Link>
           </div>
           {/*bottom_center*/}
-          <div className='relative '>
-            <input
-              type='text'
-              placeholder='search for anything....'
-              className='outline-none rounded-sm vvsm:w-[150px] sm:w-[300px] md:w-[450px] placeholder:text-[#77878F] placeholder:text-[12px]  px-5   h-[30px]'
-            />
-            <IoIosSearch className='vvsm:hidden sm:block absolute top-[7px] right-[10px] hover:cursor-pointer' />
-          </div>
+
           {/*bottom_right*/}
-          <div className='flex vvsm:gap-2 sm:gap-5 justify-items-center items-center'>
+          <div className='flex vvsm:gap-2 sm:gap-5 justify-items-center items-center vvsm:mr-10 md:mr-32'>
             <Link to='/cart'>
               <FiShoppingCart className='text-[#ffff] text-[15px] hover:cursor-pointer' />
             </Link>
