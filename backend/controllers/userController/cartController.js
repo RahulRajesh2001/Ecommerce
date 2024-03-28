@@ -99,7 +99,7 @@ export const getCartItems = async (req, res) => {
     const cart=await CartModel.findOne({userId}).populate({
       path:'products.productVarientId',
       model:"ProductVariant",
-      select:'varientName images salePrice regularPrice productId stock'
+      select:'varientName images salePrice regularPrice productId stock offers cupon'
     })
     res.status(200).json({message:"Succesfull",cart})
 

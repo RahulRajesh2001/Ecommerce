@@ -3,7 +3,6 @@ import Navbar from '../../../components/navbar/Navbar'
 import BottomBar from '../../../components/bottombar/BottomBar'
 import Footer from '../../../components/footer/Footer'
 import { IoMdRemoveCircleOutline } from 'react-icons/io'
-import headphone1 from '../../../assets/headphone1.png'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl'
 import { useDispatch } from 'react-redux'
@@ -16,6 +15,7 @@ const CartPage = () => {
   const [update, setUpdate] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [subTotal, setSubTotal] = useState(0)
+  const [totalDiscountValue, setTotalDiscountValue] = useState(0)
 
   useEffect(() => {
     axios.interceptors.request.use((config) => {
@@ -30,9 +30,44 @@ const CartPage = () => {
       .get(`${baseUrl}/api/v1/getCartItems`)
       .then((res) => {
         if (res.data.cart) {
-          console.log("caaart",res.data.cart.products)
           dispatch(setCartProducts(res.data.cart?.products))
           setCartItems(res.data.cart.products)
+
+          let totalDiscountValue = 0;
+          const promises = [];
+          
+          res.data.cart.products.forEach((item) => {
+              const id = item.productVarientId.offers[0];
+              if (id) {
+                  promises.push(
+                      axios.get(`${baseUrl}/api/v1/getOffer`, {
+                          params: { id }
+                      }).then((res) => {
+                          const offerData = res.data.offer;
+                          console.log(offerData);
+                          if (offerData && offerData.discountValue) {
+                              let applyDiscount = 0;
+                              if (offerData.discountType === 'FixedAmount') {
+                                  applyDiscount = offerData.discountValue;
+                              } else {
+                                  const discountAmount = (item.productVarientId.salePrice * offerData.discountValue) / 100;
+                                  applyDiscount = discountAmount;
+                              }
+                              console.log("Apply Discount:", applyDiscount);
+                              totalDiscountValue += applyDiscount;
+                              setTotalDiscountValue(totalDiscountValue);
+                          }
+                      }).catch((error) => {
+                          console.error(error);
+                      })
+                  );
+              }
+          });
+          
+          Promise.all(promises).then(() => {
+              console.log("Apply :", totalDiscountValue);
+          });
+          
           setNewQty(() => res.data.cart?.products.map((item) => item.quantity))
           setSubTotal(() =>
             res.data.cart.products.reduce(
@@ -103,14 +138,13 @@ const CartPage = () => {
         params: { productVarientId: id },
       })
       .then((res) => {
+
         setUpdate(!update)
       })
       .catch((err) => {
         console.log(err)
       })
   }
-
-  console.log('cartitems', cartItems.length)
 
   return (
     <div>
@@ -166,7 +200,7 @@ const CartPage = () => {
               </div>
               <div className='w-[70%]  flex justify-evenly items-center'>
                 <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                  {item.productVarientId.salePrice}
+                  {Math.round(item.productVarientId.salePrice)}
                 </div>
                 <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                   <div className='w-[100px] h-[50px] border flex justify-evenly items-center'>
@@ -198,7 +232,7 @@ const CartPage = () => {
                   <div className='bg-green-600 w-[10px] h-[10px] rounded-full'></div>
                 )}
                 <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                  {item.quantity * item.productVarientId.salePrice}
+                  {item.quantity * Math.round(item.productVarientId.salePrice)}
                 </div>
               </div>
             </div>
@@ -212,20 +246,20 @@ const CartPage = () => {
               <div className='flex justify-between items-center w-[80%] '>
                 <div className='text-[#5F6C72] font-Playfair'>SubTotal</div>
                 <div className='text-[#191C1F] font-Playfair font-semibold'>
-                  ₹ {subTotal}
+                  ₹ {Math.round(subTotal)}
                 </div>
               </div>
               <div className='flex justify-between items-center w-[80%] '>
-                <div className='text-[#5F6C72] font-Playfair'>Discount</div>
+                <div className='text-[#5F6C72] font-Playfair'>Offer Applied</div>
                 <div className='text-[#191C1F] font-Playfair font-semibold'>
-                  ₹ 0
+                  ₹ { totalDiscountValue}
                 </div>
               </div>
             </div>
             <div className='flex justify-between items-center w-[80%] '>
               <div className='text-[#5F6C72] font-Playfair'>Total</div>
               <div className='text-[#191C1F] font-Playfair font-semibold'>
-                ₹ {subTotal}
+                ₹ {Math.round(subTotal)-totalDiscountValue}
               </div>
             </div>
 
