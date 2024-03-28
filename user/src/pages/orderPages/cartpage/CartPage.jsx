@@ -33,47 +33,53 @@ const CartPage = () => {
           dispatch(setCartProducts(res.data.cart?.products))
           setCartItems(res.data.cart.products)
 
-          let totalDiscountValue = 0;
-          const promises = [];
-          
+          let totalDiscountValue = 0
+          const promises = []
+
           res.data.cart.products.forEach((item) => {
-              const id = item.productVarientId.offers[0];
-              if (id) {
-                  promises.push(
-                      axios.get(`${baseUrl}/api/v1/getOffer`, {
-                          params: { id }
-                      }).then((res) => {
-                          const offerData = res.data.offer;
-                          console.log(offerData);
-                          if (offerData && offerData.discountValue) {
-                              let applyDiscount = 0;
-                              if (offerData.discountType === 'FixedAmount') {
-                                  applyDiscount = offerData.discountValue;
-                              } else {
-                                  const discountAmount = (item.productVarientId.salePrice * offerData.discountValue) / 100;
-                                  applyDiscount = discountAmount;
-                              }
-                              console.log("Apply Discount:", applyDiscount);
-                              totalDiscountValue += applyDiscount;
-                              setTotalDiscountValue(totalDiscountValue);
-                          }
-                      }).catch((error) => {
-                          console.error(error);
-                      })
-                  );
-              }
-          });
-          
+            const id = item.productVarientId.offers[0]
+            if (id) {
+              promises.push(
+                axios
+                  .get(`${baseUrl}/api/v1/getOffer`, {
+                    params: { id },
+                  })
+                  .then((res) => {
+                    const offerData = res.data.offer
+                    console.log(offerData)
+                    if (offerData && offerData.discountValue) {
+                      let applyDiscount = 0
+                      if (offerData.discountType === 'FixedAmount') {
+                        applyDiscount = offerData.discountValue
+                      } else {
+                        const discountAmount =
+                          (item.productVarientId.salePrice *
+                            offerData.discountValue) /
+                          100
+                        applyDiscount = discountAmount
+                      }
+                      console.log('Apply Discount:', applyDiscount)
+                      totalDiscountValue += applyDiscount
+                      setTotalDiscountValue(totalDiscountValue)
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error)
+                  })
+              )
+            }
+          })
+
           Promise.all(promises).then(() => {
-              console.log("Apply :", totalDiscountValue);
-          });
-          
+            console.log('Apply :', totalDiscountValue)
+          })
+
           setNewQty(() => res.data.cart?.products.map((item) => item.quantity))
           setSubTotal(() =>
             res.data.cart.products.reduce(
               (acc, curr) =>
                 acc + curr.productVarientId.salePrice * curr.quantity,
-              0 
+              0
             )
           )
         } else {
@@ -138,7 +144,6 @@ const CartPage = () => {
         params: { productVarientId: id },
       })
       .then((res) => {
-
         setUpdate(!update)
       })
       .catch((err) => {
@@ -193,7 +198,10 @@ const CartPage = () => {
                   onClick={() => removeCartItem(item?.productVarientId?._id)}
                   className='text-[25px] cursor-pointer'
                 />
-                <img src={item.productVarientId.images[0]} className='h-[50px] w-[50px]' />
+                <img
+                  src={item.productVarientId.images[0]}
+                  className='h-[50px] w-[50px]'
+                />
                 <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                   {item.productVarientId.varientName}
                 </div>
@@ -226,7 +234,7 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                {item?.productVarientId?.stock <=0? (
+                {item?.productVarientId?.stock <= 0 ? (
                   <div className='bg-red-600 w-[10px] h-[10px] rounded-full'></div>
                 ) : (
                   <div className='bg-green-600 w-[10px] h-[10px] rounded-full'></div>
@@ -250,24 +258,32 @@ const CartPage = () => {
                 </div>
               </div>
               <div className='flex justify-between items-center w-[80%] '>
-                <div className='text-[#5F6C72] font-Playfair'>Offer Applied</div>
+                <div className='text-[#5F6C72] font-Playfair'>
+                  Offer Applied
+                </div>
                 <div className='text-[#191C1F] font-Playfair font-semibold'>
-                  ₹ { totalDiscountValue}
+                  ₹ {totalDiscountValue}
                 </div>
               </div>
             </div>
             <div className='flex justify-between items-center w-[80%] '>
               <div className='text-[#5F6C72] font-Playfair'>Total</div>
               <div className='text-[#191C1F] font-Playfair font-semibold'>
-                ₹ {Math.round(subTotal)-totalDiscountValue}
+                ₹ {Math.round(subTotal) - totalDiscountValue}
               </div>
             </div>
 
-           {cartItems.length >0 ?  <Link className='w-[100%] flex justify-center' to='/checkout'>
-              <div className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>
-                PROCEED TO CHECKOUT
+            {cartItems.length > 0 ? (
+              <Link className='w-[100%] flex justify-center' to='/checkout'>
+                <div className='w-[80%] h-[70px] bg-[#FA8232] font-Playfair text-[#ffff] font-semibold flex justify-center items-center cursor-pointer'>
+                  PROCEED TO CHECKOUT
+                </div>
+              </Link>
+            ) : (
+              <div className='text-red-600 font-Playfair font-semibold'>
+                Cart Is Empty
               </div>
-            </Link> : <div className='text-red-600 font-Playfair font-semibold'>Cart Is Empty</div>}
+            )}
           </div>
         </div>
       </div>

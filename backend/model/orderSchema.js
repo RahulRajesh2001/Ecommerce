@@ -68,7 +68,7 @@ const OrderSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  coupons: { type: mongoose.Schema.Types.ObjectId },
+  coupons:{type:String},
   totalAmount: { type: Number, required: true },
 })
 

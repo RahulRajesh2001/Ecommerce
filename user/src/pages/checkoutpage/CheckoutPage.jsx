@@ -8,12 +8,14 @@ import axios from 'axios'
 import { baseUrl } from '../../../baseUrl'
 import ChooseAddresss from '../../components/chooseAddress/ChooseAddresss'
 import Swal from 'sweetalert2'
+import { CiCircleRemove } from 'react-icons/ci'
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const [cartItems, setCartItems] = useState([])
   const [id, setAddressId] = useState('')
   const [update, setUpdate] = useState(false)
+  const [offerAmount, setOfferAmount] = useState(0)
   //taking choosen address id
   const chooseAddress = (id) => {
     setAddressId(id)
@@ -28,16 +30,8 @@ const CheckoutPage = () => {
     return config
   })
 
-  
- 
-
-
-  //payment status in checkout page
-  const [paymentStatus, setPaymentStatus] = useState({})
-
   //shipping addres in checkout page
   const [shippingAddress, setShippingAddress] = useState({})
-
 
   useEffect(() => {
     axios
@@ -46,11 +40,14 @@ const CheckoutPage = () => {
         setShippingAddress(res.data.address)
         Swal.fire({
           text: res.data.message,
-          icon: "success"
-        });
+          icon: 'success',
+        })
       })
       .catch((err) => {
-        console.log(err)
+        Swal.fire({
+          text:err.data.message,
+          icon: 'error',
+        })
       })
   }, [update])
 
@@ -65,15 +62,57 @@ const CheckoutPage = () => {
     }
     return config
   })
+
   useEffect(() => {
     axios
       .get(`${baseUrl}/api/v1/getCartItems`)
       .then((res) => {
         setCartItems(res.data.cart.products)
+        let totalDiscountValue = 0
+        const promises = []
+
+        res.data.cart.products.forEach((item) => {
+          const id = item.productVarientId.offers[0]
+          if (id) {
+            promises.push(
+              axios
+                .get(`${baseUrl}/api/v1/getOffer`, {
+                  params: { id },
+                })
+                .then((res) => {
+                  const offerData = res.data.offer
+                  console.log(offerData)
+                  if (offerData && offerData.discountValue) {
+                    let applyDiscount = 0
+                    if (offerData.discountType === 'FixedAmount') {
+                      applyDiscount = offerData.discountValue
+                    } else {
+                      const discountAmount =
+                        (item.productVarientId.salePrice *
+                          offerData.discountValue) /
+                        100
+                      applyDiscount = discountAmount
+                    }
+                    console.log('Apply Discount:', applyDiscount)
+                    totalDiscountValue += applyDiscount
+                  }
+                })
+                .catch((error) => {
+                  console.error(error)
+                })
+            )
+          }
+        })
+
+        Promise.all(promises).then(() => {
+          console.log('Apply :', totalDiscountValue)
+          setOfferAmount(totalDiscountValue)
+        })
+
         setSubTotal(() =>
           res.data.cart.products.reduce(
             (acc, curr) =>
-              acc + curr.productVarientId.salePrice-amount * curr.quantity,
+              acc + curr.productVarientId.salePrice - amount * curr.quantity,
             0
           )
         )
@@ -85,16 +124,20 @@ const CheckoutPage = () => {
 
   //order placing in checkout page
   const [paymentMethod, setPaymentMethod] = useState('')
-  const [amount,setAmount]=useState('')
+  const [amount, setAmount] = useState('')
+  const [cuponAmount, setCuponAmount] = useState(0)
+  const [couponData, setCouponData] = useState(null)
 
   const orderData = {
     orderedItems: cartItems.map((item) => ({
       product: item.productVarientId._id,
       quantity: item.quantity,
-      price: item.productVarientId.salePrice * item.quantity,
+      price:
+        item.productVarientId.salePrice * item.quantity -
+        (offerAmount + cuponAmount),
       orderStatus: 'Pending',
       paymentStatus: 'Pending',
-      offers: [],
+      offers: item.productVarientId.offers,
     })),
     deliveryDate: '',
     payment: '',
@@ -109,29 +152,46 @@ const CheckoutPage = () => {
       fullName: shippingAddress.name,
     },
     orderDate: new Date(),
-    coupons: null,
-    totalAmount: subTotal,
+    coupons: couponData,
+    totalAmount: subTotal - (offerAmount + cuponAmount),
   }
 
 
   //apply cupon
-  const[cupon,setCupon]=useState('')
-  const applyCupon = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${baseUrl}/api/v1/applyCupon`, {
-        cupon: cupon,
-        varientId: orderData.orderedItems.map(item => item.product)
-      })
-      if(response.status==200){
-        console.log(response.data.amount)
-        setAmount(response.data.amount)
+  const [cupon, setCupon] = useState('')
+  if (orderData.coupons == null) {
+    var applyCupon = async (e) => {
+      e.preventDefault()
+      try {
+        await axios
+          .post(`${baseUrl}/api/v1/applyCupon`, {
+            cupon: cupon,
+            total: orderData.totalAmount,
+          })
+          .then((res) => {
+            setCuponAmount(res.data.CuponAmount)
+            setCouponData(res.data.cupon)
+            Swal.fire({
+              text: res.data.message,
+              icon: 'success',
+            })
+          })
+      } catch (error) {
+        Swal.fire({
+          text: error.response.data.message,
+          icon: 'success',
+        })
       }
-      console.log(response);
-    } catch (error) {
-      console.log(error);
     }
-  };
+  }
+
+  //to remove cupon
+  const handleRemoveCupon = () => {
+    setCouponData(null)
+    setCuponAmount(0)
+  }
+
+  console.log('cupon name', orderData.coupons)
 
   // Setting up Axios interceptor globally
   axios.interceptors.request.use((config) => {
@@ -156,7 +216,7 @@ const CheckoutPage = () => {
             // Handle the response from the checkout API
             if (paymentRes.status === 200) {
               // If payment initiation is successful, get the payment key
-              axios
+            axios
                 .get('http://localhost:3000/api/getkey')
                 .then((keyRes) => {
                   console.log('this is order id', paymentRes.data.order.id)
@@ -197,32 +257,32 @@ const CheckoutPage = () => {
                       if (res.status === 200) {
                         Swal.fire({
                           text: res.data.message,
-                          icon: "success"
-                        });
+                          icon: 'success',
+                        })
                       }
                     })
                     .catch((orderErr) => {
                       Swal.fire({
                         text: orderErr.response.data.message,
-                        icon: "error"
-                      });
+                        icon: 'error',
+                      })
                     })
                 })
                 .catch((keyErr) => {
                   Swal.fire({
                     text: keyErr.response.data.message,
-                    icon: "error"
-                  });
+                    icon: 'error',
+                  })
                 })
             }
           })
           .catch((paymentErr) => {
             Swal.fire({
               text: paymentErr.response.data.message,
-              icon: "error"
-            });
+              icon: 'error',
+            })
           })
-      } else {
+      } else if(paymentMethod === 'Cash On Delivery') {
         axios
           .post(`${baseUrl}/api/v1/placeOrder`, orderData)
           .then((res) => {
@@ -230,16 +290,16 @@ const CheckoutPage = () => {
             if (res.status === 201) {
               Swal.fire({
                 text: res.data.message,
-                icon: "success"
-              });
+                icon: 'success',
+              })
               navigate('/orderHistory')
             }
           })
           .catch((orderErr) => {
             Swal.fire({
-              text:orderErr.response.data.message,
-              icon: "error"
-            });
+              text: orderErr.response.data.message,
+              icon: 'error',
+            })
           })
       }
     } catch (err) {
@@ -266,6 +326,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Full Name</div>
                     <input
+                    readOnly
                       id='name'
                       type='text'
                       placeholder='name'
@@ -276,6 +337,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Address</div>
                     <input
+                    readOnly
                       id='address'
                       type='text'
                       value={shippingAddress.address}
@@ -290,6 +352,7 @@ const CheckoutPage = () => {
                       Region/State
                     </div>
                     <input
+                    readOnly
                       id='state'
                       type='text'
                       value={shippingAddress.region}
@@ -300,6 +363,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>City</div>
                     <input
+                    readOnly
                       id='city'
                       type='text'
                       value={shippingAddress.city}
@@ -312,6 +376,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Pincode</div>
                     <input
+                    readOnly
                       id='pincode'
                       type='number'
                       placeholder='pincode'
@@ -324,6 +389,7 @@ const CheckoutPage = () => {
                       Phone Number 1
                     </div>
                     <input
+                    readOnly
                       id='phone1'
                       type='number'
                       placeholder='phone1'
@@ -338,6 +404,7 @@ const CheckoutPage = () => {
                       Phone Number 2
                     </div>
                     <input
+                    readOnly
                       id='phone2'
                       type='number'
                       placeholder='phone2'
@@ -348,6 +415,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Steet</div>
                     <input
+                    readOnly
                       id='street'
                       type='text'
                       placeholder='street'
@@ -360,6 +428,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Landmark</div>
                     <input
+                    readOnly
                       id='landmark'
                       type='text'
                       placeholder='landmark'
@@ -383,34 +452,35 @@ const CheckoutPage = () => {
                 PAYMENT
               </div>
 
-
-
               <div className='flex gap-3'>
-  <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-    <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
-    <div className='font-Playfair text-[18px]'>Cash on Delivery</div>
-    <input
-      onChange={() => setPaymentMethod('Cash On Delivery')}
-      className='h-5 w-5'
-      type='radio'
-      name='paymentMethod' // Add name attribute for grouping
-      defaultChecked // This line sets it as default selected
-    />
-  </div>
+                <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
+                    ₹
+                  </div>
+                  <div className='font-Playfair text-[18px]'>
+                    Cash on Delivery
+                  </div>
+                  <input
+                    onChange={() => setPaymentMethod('Cash On Delivery')}
+                    className='h-5 w-5'
+                    type='radio'
+                    name='paymentMethod'
+                  />
+                </div>
 
-  <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-    <div className='font-Josefin text-[35px] text-[#FA8232]'>₹</div>
-    <div className='font-Playfair text-[18px]'>Razorpay</div>
-    <input
-      onChange={() => setPaymentMethod('RazorPay')}
-      className='h-5 w-5'
-      type='radio'
-      name='paymentMethod' 
-    />
-  </div>
-</div>
-
-
+                <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
+                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
+                    ₹
+                  </div>
+                  <div className='font-Playfair text-[18px]'>Razorpay</div>
+                  <input
+                    onChange={() => setPaymentMethod('RazorPay')}
+                    className='h-5 w-5'
+                    type='radio'
+                    name='paymentMethod'
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -446,28 +516,54 @@ const CheckoutPage = () => {
               <div className='flex justify-between items-center w-[80%] '>
                 <div className='text-[#5F6C72] font-Playfair'>SubTotal</div>
                 <div className='text-[#191C1F] font-Playfair font-semibold'>
-                  ₹{subTotal-amount}
+                  ₹{subTotal}
                 </div>
               </div>
               <div className='flex justify-between items-center w-[80%] '>
                 <div className='text-[#5F6C72] font-Playfair'>Discount</div>
                 <div className='text-[#191C1F] font-Playfair font-semibold'>
-                  ₹ 0
+                  ₹{offerAmount}
+                </div>
+              </div>
+              <div className='flex justify-between items-center w-[90%] '>
+                <div className='text-[#191C1F] flex justify-center '>
+                  <CiCircleRemove
+                    className='text-[20px] cursor-pointer'
+                    onClick={() => handleRemoveCupon()}
+                  />
+                </div>
+                <div className='text-[#5F6C72] font-Playfair'>
+                  Cupon Applied
+                </div>
+                <div className='text-[#191C1F] font-Playfair font-semibold'>
+                  {orderData.coupons}
+                </div>
+                <div className='text-[#191C1F] font-Playfair font-semibold'>
+                  {cuponAmount}
                 </div>
               </div>
             </div>
             <div className='flex justify-between items-center w-[80%] '>
               <div className='text-[#5F6C72] font-Playfair'>Total</div>
               <div className='text-[#191C1F] font-Playfair font-semibold'>
-                ₹{subTotal-amount}
+                ₹{subTotal - (offerAmount + cuponAmount)}
               </div>
             </div>
 
             <form onSubmit={applyCupon} className='flex gap-4'>
-         
-              <input placeholder='Apply Coupon' onChange={(e)=>setCupon(e.target.value)} type="text" className='border outline-none w-[200px]' />
-             
-              <button type='submit' className='bg-blue-400 rounded-lg w-[50px] h-[30px] text-[#fff] font-semibold '>Apply</button>
+              <input
+                placeholder='Apply Coupon'
+                onChange={(e) => setCupon(e.target.value)}
+                type='text'
+                className='border outline-none w-[200px]'
+              />
+
+              <button
+                type='submit'
+                className='bg-blue-400 rounded-lg w-[70px] h-[35px]  text-[#fff]  font-semibold '
+              >
+                Apply
+              </button>
             </form>
 
             <Link className='w-[100%] flex justify-center' to='/checkout'>

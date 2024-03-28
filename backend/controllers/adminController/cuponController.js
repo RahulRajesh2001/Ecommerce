@@ -7,6 +7,7 @@ import CuponModel from "../../model/cuponModel.js";
 export const createCupon = async (req, res) => {
     try {
       const {cuponCode,cuponName,description,discountValue,validFrom,validUntil,discountType,usagelimit}=req.body;
+      console.log("this si usage limit",usagelimit)
       const cupon= new CuponModel({
         code:cuponCode,
         cuponName,
@@ -15,7 +16,7 @@ export const createCupon = async (req, res) => {
         validFrom,
         validUntil,
         discountType,
-        usagelimit
+        usageLimit:usagelimit
       })
       
       await cupon.save()
