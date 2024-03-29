@@ -29,13 +29,13 @@ const WalletPage = () => {
   return (
     <div>
       <Navbar />
-      <div className='h-screen  flex justify-center items-center gap-10 '>
+      <div className='h-screen  flex justify-center items-center gap-10  '>
         <div className='w-[20%] '>
           <SideBar />
         </div>
-        <div className='w-[60%]  gap-5'>
-          <div className='w-[80%]  h-[500px] '>
-            <div className='font-Playfair text-[25px] font-semibold ml-10'>Wallet</div>
+        <div className='w-[60%]  gap-5 border rounded-lg '>
+          <div className='w-[100%]   h-[500px] '>
+            <div className='font-Playfair text-[25px] font-semibold ml-10 pt-5'>Wallet</div>
 
             <div className='flex flex-col gap-4 mt-5'>
                 <div className='flex justify-around'>

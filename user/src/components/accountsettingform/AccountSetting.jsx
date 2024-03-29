@@ -60,8 +60,8 @@ const AccountSetting = () => {
   };
 
   return (
-    <div className='w-[100%] h-[200px] flex flex-col justify-center items-center gap-5'>
-      <div className='flex font-semibold text-[18px]'>Account Setting</div>
+    <div className='w-[100%] h-[200px] flex flex-col justify-center items-center gap-5 '>
+      <div className='flex font-semibold text-[18px]'>Account Settings</div>
       <form onSubmit={handleSubmit} className='flex gap-10 mt-5 justify-center items-center'>
         <div className='flex flex-col gap-2'>
           <div className='text-[12px] font-semibold'>Full Name</div>
@@ -83,7 +83,7 @@ const AccountSetting = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <button  type='submit' className='mt-5 bg-orange-500 rounded-md w-[50px] h-[30px] text-[#ffff]'>
+        <button  type='submit' className='mt-5 bg-orange-500 rounded-md w-[50px] h-[30px] font-semibold text-[#ffff]'>
           Edit
         </button>
       </form>

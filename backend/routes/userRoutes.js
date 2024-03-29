@@ -46,7 +46,7 @@ import {
   placeOrder,
 } from '../controllers/userController/orderController.js'
 import { getWalletHistory } from '../controllers/adminController/walletController.js'
-import { ApplyCupons } from '../controllers/userController/cuponController.js'
+import { ApplyCupons} from '../controllers/userController/cuponController.js'
 import { getOfferDetails } from '../controllers/userController/offerController.js'
 
 const router = express.Router()
@@ -88,6 +88,8 @@ router.get('/getWishlistFullProducts', verifyToken, getWishlistProducts)
 router.get('/getWalletHistory', verifyToken,getWalletHistory)
 router.post('/applyCupon',verifyToken,ApplyCupons)
 router.get('/getOffer',verifyToken,getOfferDetails)
+
+
 
 
 export default router

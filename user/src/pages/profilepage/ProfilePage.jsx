@@ -4,21 +4,23 @@ import Footer from '../../components/footer/Footer.jsx'
 import SideBar from '../../components/sidebarDashboard/SideBar.jsx'
 import AccountSetting from '../../components/accountsettingform/AccountSetting.jsx'
 import ShippingAddressListing from '../../components/shippingAddressListing/ShippingAddressListing.jsx'
+import BottomBar from '../../components/bottombar/BottomBar.jsx'
 
 const ProfilePage = () => {
   return (
-    <div >
-      <Navbar/>
+    <div>
+      <Navbar />
+      <BottomBar />
       <div className='h-screen  flex justify-center items-center gap-10'>
-      <div className='w-[20%]'>
-      <SideBar/>
+        <div className='w-[20%]'>
+          <SideBar />
+        </div>
+        <div className='w-[60%]  gap-5 border flex justify-center flex-col items-center rounded-lg'>
+          <AccountSetting />
+          <ShippingAddressListing />
+        </div>
       </div>
-       <div className='w-[60%]  gap-5 border flex justify-center flex-col items-center'>
-       <AccountSetting/>
-        <ShippingAddressListing/>
-       </div>
-      </div>
-      <Footer/>
+      <Footer />
     </div>
   )
 }

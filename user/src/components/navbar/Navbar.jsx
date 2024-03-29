@@ -66,7 +66,9 @@ const Navbar = () => {
             <Link to='/cart'>
               <FiShoppingCart className='text-[#ffff] text-[15px] hover:cursor-pointer' />
             </Link>
+            <Link to={"/wishlist"}>
             <CiHeart className='text-[#ffff] text-[20px] hover:cursor-pointer' />
+            </Link>
             <Link to={token ? '/profile' : '/loginSignup'}>
               <IoPersonOutline
                 className='text-[#ffff] text-[16px] hover:cursor-pointer'

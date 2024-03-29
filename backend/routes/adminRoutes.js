@@ -16,8 +16,10 @@ import {
   editBaseProduct,
   editProductVariant,
   getAllCategories,
+  getBaseProductById,
   getBaseProducts,
   getProductVarients,
+  topTenProductVariants,
 } from '../controllers/adminController/productController.js'
 import {
   editPaymentStatus,
@@ -77,5 +79,8 @@ router.get('/getSales',getSales)
 router.post('/applyCategoryOffer', verifyAdminToken, applyCategoryOffer)
 router.get('/getAppliedOffer', verifyAdminToken, getCatoryAppliedOffer)
 router.delete('/deleteAppliedCategoryOffer',verifyAdminToken,deleteAppliedCategoryOffer)
+router.get('/topTenProducts',verifyAdminToken,topTenProductVariants)
+router.get('/getBaseProduct',verifyAdminToken,getBaseProductById)
+
 
 export default router

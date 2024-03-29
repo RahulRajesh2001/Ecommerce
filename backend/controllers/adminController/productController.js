@@ -2,6 +2,7 @@ import Product from '../../model/productModel.js'
 import ProductVariant from '../../model/productVarientModel.js'
 import cloudinary from 'cloudinary'
 import CATEGORY from '../../model/categoryModel.js'
+import OrderModel from '../../model/orderSchema.js'
 
 //cloudinary configaration
 cloudinary.config({
@@ -129,6 +130,23 @@ export const getProductVarients = async (req, res) => {
     const id=req.query.id;
     const productVarients = await ProductVariant.find({productId:id})
     res.status(200).json({ message: 'Successfull ! ', productVarients })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
+  }
+}
+
+// Get
+// api/v1/admin/getBaseProducts
+// --- admin
+export const getBaseProductById = async (req, res) => {
+  try {
+    const {id}=req.query;
+    console.log("thisis isijsi",id)
+    const products = await Product.find({_id:id})
+    console.log("thisis isijsi",products)
+    res.status(200).json({ message: 'Successfull ! ', products })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Some Error occured .. Try again !' })
@@ -384,5 +402,36 @@ export const editProductVariant = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Some error occurred. Please try again!' });
     throw err;
+  }
+};
+
+// Get
+// api/v1/admin/topTenProducts
+// --- admin
+export const topTenProductVariants = async (req, res) => {
+  try {
+    const topProductVariants = await OrderModel.aggregate([
+      {
+        $unwind: "$orderedItems"
+      },
+      {
+        $group: {
+          _id: "$orderedItems.product",
+          totalQuantitySold: { $sum: "$orderedItems.quantity" }
+        }
+      },
+      {
+        $sort: { totalQuantitySold: -1 }
+      },
+      {
+        $limit: 10
+      }
+    ]);
+
+    const populatedTopProductVariants = await ProductVariant.populate(topProductVariants, { path: "_id" });
+    res.status(200).json(populatedTopProductVariants);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Please try again!' });
   }
 };

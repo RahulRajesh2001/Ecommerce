@@ -84,12 +84,9 @@ export const getSales = async (req, res) => {
     const { salesData, totalSales, totalNumOrders } = await getSalesData(startDate, endDate);
 
     const orders=await OrderModel.find()
-    console.log("allorders",orders)
 
   // Populate user and product details for each order
 for (const entry of salesData) {
-
-  console.log(Date())
 
   const orders = await OrderModel.find({
     orderDate: {
@@ -105,7 +102,6 @@ for (const entry of salesData) {
     select: 'color images stock regularPrice isDeleted varientName salePrice specification offers',
     model: ProductVariantModel,
   });
-  console.log("Orders for", entry.date, ":", orders); 
   entry.orders = orders;
 }
 

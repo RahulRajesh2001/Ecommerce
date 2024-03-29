@@ -9,6 +9,8 @@ import { baseUrl } from '../../../baseURL.js'
 import { useDispatch } from 'react-redux'
 import { setSalesReport } from '../../../redux/reducers/ProductSlice.js'
 import { Link } from 'react-router-dom'
+import acer from '../../assets/acer.png'
+import electronics from '../../assets/electronics.jpeg'
 
 const Dashboard = () => {
   const dispatch = useDispatch()
@@ -17,8 +19,8 @@ const Dashboard = () => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState({})
 
+  const token=localStorage.getItem('adminLogin')
   useEffect(() => {
-
     const fetchDefaultData = () => {
       const defaultStartDate = new Date()
       const defaultEndDate = new Date()
@@ -32,6 +34,7 @@ const Dashboard = () => {
   }, [])
 
   const fetchSalesData = (formattedStartDate, formattedEndDate) => {
+
     axios
       .get(
         `${baseUrl}/api/v1/admin/getSales/?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
@@ -82,6 +85,60 @@ const Dashboard = () => {
     const formattedEndDate = endDate.toISOString()
     fetchSalesData(formattedStartDate, formattedEndDate)
   }
+
+//top 10 product
+const [topTenProduct,setTopTenProduct]=useState([])
+useEffect(()=>{
+  try{
+    axios.get(`${baseUrl}/api/v1/admin/topTenProducts`,{
+      headers:{
+        Authorization:token
+      }
+    }).then((res)=>{
+      console.log(res.data)
+      setTopTenProduct(res.data)
+    })
+  }catch(err){
+    console.log(err)
+  }
+},[])
+
+
+
+const [brand, setBrand] = useState([]);
+const [category, setCategory] = useState([]);
+
+useEffect(() => {
+  const fetchBrandAndCategoryNames = async () => {
+    try {
+      const newBrandNames = [];
+      const newCategoryNames = [];
+      for (const product of topTenProduct) {
+        const id = product._id.productId;
+        const response = await axios.get(`${baseUrl}/api/v1/admin/getBaseProduct`, {
+          params: { id },
+          headers: {
+            Authorization: token
+          }
+        });
+        const brandName = response.data.products[0].brand;
+        const categoryName = response.data.products[0].category;
+        if (!newBrandNames.includes(brandName)) {
+          newBrandNames.push(brandName);
+        }
+        if (!newCategoryNames.includes(categoryName)) {
+          newCategoryNames.push(categoryName);
+        }
+      }
+      setBrand(newBrandNames);
+      setCategory(newCategoryNames);
+    } catch (error) {
+      console.error('Error fetching brand and category names:', error);
+    }
+  };
+
+  fetchBrandAndCategoryNames();
+}, [topTenProduct]);
 
   return (
     <div className='bg-[#F5F5F9] flex w-[100%]'>
@@ -184,7 +241,53 @@ const Dashboard = () => {
         <div className='h-[480px] w-[100%] flex justify-center items-center'>
           <SaleChart salesData={data} />
         </div>
-        <div className='mb-5'></div>
+        <div className=' w-[100%] h-[500px] flex justify-evenly items-center'>
+          <div className='flex flex-col justify-center items-center gap-3 '>
+            <div className='font-Playfair font-semibold'>TOP 10 PRODUCTS</div>
+            <div className=' w-[300px]  h-[400px] flex flex-col  gap-2 overflow-auto'>
+              {topTenProduct.map((product)=>(
+                <div key={product._id} className='h-[20%] flex justify-evenly items-center'>
+                <div className=' w-[60px] h-[60px] rounded-lg border'>
+                  <img src={product._id.images[0]} className='rounded-lg h-full'/>
+                </div>
+                <div className='font-Playfair'>{product._id.varientName}</div>
+                <div className='font-Playfair'>{product.totalQuantitySold} - Products Sold</div>
+              </div>
+              ))}
+            </div>
+          </div>
+
+          <div className='flex flex-col justify-center items-center gap-3 '>
+            <div className='font-Playfair font-semibold'>TOP 10 BRANDS</div>
+            <div className=' w-[300px]  h-[400px] flex flex-col  gap-2 overflow-auto'>
+              {brand.map((item,index)=>(
+                <div key={index} className='h-[20%] flex justify-evenly items-center'>
+                <div className=' w-[60px] h-[60px] rounded-lg border'>
+                  <img src={acer} className='rounded-lg h-full'/>
+                </div>
+                <div className='font-Playfair'>{item}</div>
+
+              </div>
+              ))}
+            </div>
+          </div>
+
+          <div className='flex flex-col justify-center items-center gap-3 '>
+            <div className='font-Playfair font-semibold'>TOP 10 CATEGORIES</div>
+            <div className=' w-[300px]  h-[400px] flex flex-col  gap-2 overflow-auto'>
+              {category.map((item,index)=>(
+                <div key={index} className='h-[20%] flex justify-evenly items-center'>
+                <div className=' w-[60px] h-[60px] rounded-lg border'>
+                  <img src={electronics} className='rounded-lg h-full'/>
+                </div>
+                <div className='font-Playfair'>{item}</div>
+
+              </div>
+              ))}
+            </div>
+          </div>
+        
+        </div>
       </div>
     </div>
   )

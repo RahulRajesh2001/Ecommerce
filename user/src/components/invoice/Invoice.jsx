@@ -12,6 +12,7 @@ const Invoice = () => {
   const [id, setId] = useState(orderId);
   const [order, setOrder] = useState({});
   const [orderedItems, setOrderedItems] = useState([]);
+  const [cupon,setCoupon]=useState('')
   
   useEffect(() => {
     axios
@@ -22,15 +23,21 @@ const Invoice = () => {
         },
       })
       .then((res) => {
-        console.log("order", res.data.order.shippingAddress);
+        console.log(res.data.order)
+        console.log(res.data.order.coupons)
+        setCoupon(res.data.order.coupons)
         setOrder(res.data.order.shippingAddress);
-        setOrderedItems(res.data.order.orderedItems);
-        console.log("orderedItems", orderedItems);
+        setOrderedItems(res.data.order.orderedItems)
+        
+      }).then((res)=>{
+        console.log("cupon",res)
       })
       .catch((err) => {
         console.log(err);
       });
   }, [id, token]);
+
+  
   
   const total = orderedItems.reduce((accumulator, order) => accumulator + order.price, 0);
 
@@ -94,6 +101,13 @@ const Invoice = () => {
                    <td className="total">₹ {product.price}</td>
                  </tr>
                ))}
+
+<tr>
+                  <td colSpan="4">
+                    <b>CUPON APPLIED</b>
+                  </td>
+                  <td className="total">₹ {total}</td>
+                </tr>
 
                 <tr>
                   <td colSpan="4">

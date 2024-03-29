@@ -7,32 +7,36 @@ import jsPDF from 'jspdf';
 
 const Invoice = () => {
   const salesReport = useSelector((state) => state.products.salesReport)
-  console.log('raw', salesReport.salesData)
 
-  let Orders = []
-  salesReport.salesData.forEach((orders) => {
-    Orders.push(orders.orders)
-  })
-  console.log('Orders', Orders)
 
-  let Ordered = []
-  Orders.forEach((element) => {
-    console.log('element', element.length)
-    if (element.length > 0) {
-      Ordered.push(element[0])
+  console.log(salesReport)
+let orders=[]
+
+  salesReport.salesData.map((item)=>{
+    console.log(item.orders.length)
+    if(item.orders.length>0){
+      orders.push(item.orders)
     }
+    
   })
-  console.log('Ordered', Ordered)
+let Orders=[]
+  
+  orders.map((item)=>{
+    item.map((order)=>{
+      
+      Orders.push(order)
+    })
+  })
 
-  const [data, setData] = useState([])
+  console.log("mappppppa",Orders)
+  
+  let subtotal=0
+  Orders.map((item)=>{
+    subtotal=subtotal+item.totalAmount
+  })
 
-  useEffect(() => {
-    const orderedItems = Ordered.map((item) => item.orderedItems).flat()
-    console.log('orderedItems', orderedItems)
-    setData(orderedItems)
-  }, [])
-  const subtotal = data.reduce((total, item) => total + item.price, 0)
-  console.log('data', data)
+
+  console.log(subtotal)
 
   const handleDownload = () => {
     const input = document.getElementById('order_invoice');
@@ -44,6 +48,8 @@ const Invoice = () => {
       pdf.save(`invoice_${ 'unknown'}.pdf`);
     });
   }
+
+
 
   return (
     <div className='flex justify-center items-center'>
@@ -93,20 +99,22 @@ const Invoice = () => {
                     ORDER DETAILS
                   </th>
                   <th className='font-Playfair font-semibold '>
-                    TOTAL DISCOUNT
+                    
                   </th>
                   <th className='font-Playfair font-semibold '>
-                    TOTAL CUPON DISCOUNT
+                    
                   </th>
                   <th className='font-Playfair font-semibold '>TOTAL AMOUNT</th>
                 </tr>
               </thead>
               <tbody>
-                {data.map((order, index) => (
+                {Orders.map((order, index) => (
                   <tr key={index}>
                     <td className='service'>{index + 1}</td>
                     <td className='w-[50px] h-[50px] '>
-                      <div className='mr-[50%]'>{order?.quantity}</div>
+                      <div className='mr-[50%]'>{order.orderedItems.map((item)=>(
+                       item.quantity
+                      ))}</div>
                     </td>
                     <td className='desc'>
                       {/* One product */}
@@ -116,47 +124,50 @@ const Invoice = () => {
                             User Details
                           </div>
                           <div className='font-Playfair text-[15px]'>
-                            name : {Ordered[0]?.shippingAddress.fullName}
+                            name : {order.shippingAddress.fullName}
                           </div>
                           <div>
-                            Address : {Ordered[0]?.shippingAddress.address}
+                            Address : {order.shippingAddress.address}
                           </div>
                         </div>
                         <div>
                           <div className='font-Playfair font-bold text-[16px] flex flex-col'>
                             Product Details
                           </div>
-                          {order.product ? (
-                            <div>
-                              <div className='font-Playfair text-[15px] mt-2'>
-                                name : {order.product.varientName}
-                              </div>
-                              <div className='font-Playfair text-[15px]'>
-                                ₹ : {order.product.salePrice}
-                              </div>
-                            </div>
-                          ) : (
-                            <div>No product details available</div>
-                          )}
+                          
+                           {order.orderedItems.map((item)=>(
+                             <div>
+                             <div className='font-Playfair text-[15px] mt-2'>
+                               name :{item.product.varientName}
+                             </div>
+                             <div className='font-Playfair text-[15px]'>
+                               ₹ : {item.product.salePrice}
+                             </div>
+                           </div>
+                           ))}
+                         {order.orderedItems.map((item)=>(
                           <div>
                             <div className='font-Playfair font-bold text-[16px]'>
                               Order Details
                             </div>
                             <div>
                               <div className='font-Playfair text-[15px]'>
-                                Payment : {order?.paymentStatus}
+                                Payment : {item.paymentStatus}
                               </div>
                               <div className='font-Playfair text-[15px]'>
-                                Order : {order.orderStatus}
+                                Order : {item.orderStatus}
                               </div>
                             </div>
                           </div>
+))}
+
                         </div>
                       </div>
                     </td>
                     <td className='desc'></td>
                     <td className='desc'></td>
-                    <td className='desc'>{order.price}</td>
+                    <td className='desc'>{order.totalAmount}</td>
+                  <td></td>
                   </tr>
                 ))}
 
@@ -166,6 +177,7 @@ const Invoice = () => {
                   </td>
                   <td></td>
                   <td className='total'>₹ {subtotal}</td>
+                  <td></td>
                 </tr>
 
                 <tr>

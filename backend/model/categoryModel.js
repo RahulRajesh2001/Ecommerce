@@ -1,25 +1,25 @@
-import mongoose, { Schema } from "mongoose";
+    import mongoose, { Schema } from "mongoose";
 
-const categorySchema = new Schema({
-    title:{
-        type:String,
-        required:true
-    },
-    description:{
-        type:String,
-        required:true
-    },
-    isDeleted:{
-        type:Boolean,
-        default:false
-    },
-    appliedOffers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Offer'
-    }]
+    const categorySchema = new Schema({
+        title:{
+            type:String,
+            required:true
+        },
+        description:{
+            type:String,
+            required:true
+        },
+        isDeleted:{
+            type:Boolean,
+            default:false
+        },
+        appliedOffers: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Offer'
+        }]
 
-})
+    })
 
-const CATEGORY=mongoose.model('CATEGORY',categorySchema);
+    const CATEGORY=mongoose.model('CATEGORY',categorySchema);
 
-export default CATEGORY
+    export default CATEGORY

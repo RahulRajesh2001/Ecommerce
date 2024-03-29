@@ -30,3 +30,19 @@ export const ApplyCupons = async (req, res) => {
     res.status(500).json({ message: 'Some Error occurred. Try again!' });
   }
 };
+
+
+// GET
+// api/v1/getCuponDetails
+// --- users
+// export const getCuponDetails= async (req, res) => {
+//   try {
+    
+//     const {cupon}=req.query;
+//     console.log(cupon)
+   
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Some Error occurred. Try again!' });
+//   }
+// };
