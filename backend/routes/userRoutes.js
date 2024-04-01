@@ -46,12 +46,12 @@ import {
   placeOrder,
 } from '../controllers/userController/orderController.js'
 import { getWalletHistory } from '../controllers/adminController/walletController.js'
-import { ApplyCupons} from '../controllers/userController/cuponController.js'
+import { ApplyCupons } from '../controllers/userController/cuponController.js'
 import { getOfferDetails } from '../controllers/userController/offerController.js'
 
 const router = express.Router()
-router.get('/getProducts', getProducts)
-router.get('/getProductDetails', verifyToken, getProductDetails)
+router.get('/getProducts', verifyToken, getProducts)
+router.get('/getProductDetails/:id', verifyToken, getProductDetails)
 router.post('/login', login)
 router.post('/register', register)
 router.post('/otp-generation', OTPGeneration)
@@ -85,11 +85,8 @@ router.put('/changeOrderStatus', changeOrderStatus)
 router.get('/addToWishlist', verifyToken, addToWishlist)
 router.get('/getWishlistProducts', wishlistProducts)
 router.get('/getWishlistFullProducts', verifyToken, getWishlistProducts)
-router.get('/getWalletHistory', verifyToken,getWalletHistory)
-router.post('/applyCupon',verifyToken,ApplyCupons)
-router.get('/getOffer',verifyToken,getOfferDetails)
-
-
-
+router.get('/getWalletHistory', verifyToken, getWalletHistory)
+router.post('/applyCupon', verifyToken, ApplyCupons)
+router.get('/getOffer', verifyToken, getOfferDetails)
 
 export default router

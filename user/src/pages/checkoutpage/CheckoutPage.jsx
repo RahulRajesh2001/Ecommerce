@@ -469,8 +469,8 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className='w-[200px] h-[150px] flex justify-center items-center flex-col gap-4 border'>
-                  <div className='font-Josefin text-[35px] text-[#FA8232]'>
-                    ₹
+                  <div className='font-Josefin text-[35px] text-blue-600'>
+                    R
                   </div>
                   <div className='font-Playfair text-[18px]'>Razorpay</div>
                   <input

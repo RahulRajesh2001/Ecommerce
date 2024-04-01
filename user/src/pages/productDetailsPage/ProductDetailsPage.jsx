@@ -7,44 +7,62 @@ import { FaStar } from 'react-icons/fa'
 import SelectButton from '../../components/buttons/selecButton/SelectButton'
 import { IoMdHeartEmpty } from 'react-icons/io'
 import ProductDetail from '../../components/productdeatil/ProductDetail'
-import { useSelector } from 'react-redux'
 import ReactImageMagnify from 'react-image-magnify'
 import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
 import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
 import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate()
-  const productDetails = useSelector(
-    (state) => state.productDetails.productDetails
-  )
-  const productDetailsVariant = productDetails?.variants?.[0] || {}
+  //mounting axios interceptor
+  axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('userToken')
+    if (token) {
+      config.headers.Authorization = token
+    }
+    return config
+  })
+  //taking id from params
+  const { id } = useParams()
+  //state for fetched product
+  const [product, setProduct] = useState([])
+  const [productVarient, setProductVarient] = useState([])
+  const [currentProductVarient, setCurrentProductVarient] = useState()
+  useEffect(() => {
+    try {
+      axios
+        .get(`${baseUrl}/api/v1/getProductDetails/${id}`, { params: { id } })
+        .then((res) => {
+          setProduct(res.data?.product)
+          setProductVarient(res.data.product.variants)
+          setCurrentProductVarient(res.data.product.variants[0])
+        })
+    } catch (err) {}
+  }, [id])
 
-  const [productId, setProductId] = useState(productDetailsVariant?._id || '')
+  //handleVarient
 
+  const handleVarient = (id) => {
+    productVarient.map((item) => {
+      if (item._id === id) {
+        setCurrentProductVarient(item)
+      }
+    })
+  }
+
+  //for handling image
   const [image, setImage] = useState(0)
-
   const handleImage = (index) => {
     setImage(index)
   }
 
   const handleSubmit = () => {
-    axios.interceptors.request.use((config) => {
-      const token = localStorage.getItem('userToken')
-      if (token) {
-        config.headers.Authorization = token
-      }
-      return config
-    })
-
     const requestData = {
-      productVarientId: productId,
+      productVarientId: currentProductVarient?._id,
       quantity: 1,
     }
-    console.log('handle submit', requestData)
-
     axios
       .post(`${baseUrl}/api/v1/addToCart`, requestData)
       .then((res) => {
@@ -80,18 +98,35 @@ const ProductDetailsPage = () => {
           { label: 'Product Details' },
         ]}
       />
-      <div className='h-[900px]'>
-        <div className='flex justify-center gap-8'>
+      <div className='h-[1000px]'>
+        <div className='w-[100%] h-[50px] flex justify-end items-center'>
+          <div className='flex gap-2 mr-10'>
+            {productVarient.map((item, index) => (
+              <div
+                onClick={() => handleVarient(item._id)}
+                key={item._id}
+                className={`w-[100px] h-[50px] flex justify-center items-center font-Playfair text-[15px] ${
+                  currentProductVarient._id == item._id
+                    ? 'border-b-2 border-[#FA8232]'
+                    : 'border-none'
+                } cursor-pointer`}
+              >
+                Varient {index + 1}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className='flex justify-center gap-32 '>
           <div className='flex flex-col justify-center items-center mb-12'>
-            <div className='w-[400px] h-[300px] mt-5'>
+            <div className='w-[400px] h-[300px] mt-5 '>
               <ReactImageMagnify
                 smallImage={{
                   alt: 'Wristwatch by Ted Baker London',
                   isFluidWidth: true,
-                  src: productDetailsVariant.images?.[image] || '',
+                  src: currentProductVarient?.images?.[image] || '',
                 }}
                 largeImage={{
-                  src: productDetailsVariant.images?.[image] || '',
+                  src: currentProductVarient?.images?.[image] || '',
                   width: 700,
                   height: 1300,
                 }}
@@ -99,7 +134,7 @@ const ProductDetailsPage = () => {
               />
             </div>
             <div className='flex gap-3'>
-              {productDetailsVariant.images?.map((image, index) => (
+              {currentProductVarient?.images?.map((image, index) => (
                 <div key={index}>
                   <img
                     src={image}
@@ -120,48 +155,48 @@ const ProductDetailsPage = () => {
               </div>
               <div className='text-[12px] font-bold'>4.7 Star Rating</div>
             </div>
-            <div className='font-semibold text-[16px]'>
-              {productDetails.name}
-            </div>
+            <div className='font-semibold text-[16px]'>{''}</div>
             <div className='flex gap-1'>
               <div className='text-[12px] text-[#5F6C72]'>Availability :</div>
               <div
                 className={`font-bold text-[12px] ${
-                  productDetailsVariant.stock <= 0
+                  currentProductVarient?.stock <= 0
                     ? 'text-red-600'
                     : 'text-[#2DB224]'
                 }`}
               >
-                {productDetailsVariant.stock <= 0 ? 'Out of stock' : 'In stock'}
+                {currentProductVarient?.stock <= 0
+                  ? 'Out of stock'
+                  : 'In stock'}
               </div>
             </div>
 
             <div className='flex gap-1'>
               <div className='text-[12px] text-[#5F6C72]'>Stock :</div>
               <div className={'font-bold text-[12px]'}>
-                {productDetailsVariant.stock}
+                {currentProductVarient?.stock}
               </div>
             </div>
 
             <div className='flex gap-1'>
               <div className='text-[12px] text-[#5F6C72]'>Brand :</div>
               <div className='text-[#191C1F] font-bold text-[12px]'>
-                {productDetails.brand}
+                {product.brand}
               </div>
             </div>
             <div className='flex gap-1 mr-[150px]'>
               <div className='text-[12px] text-[#5F6C72]'>Category :</div>
               <div className='text-[#191C1F] font-bold text-[12px]'>
-                {productDetails.category}
+                {product.category}
               </div>
             </div>
 
             <div className='flex gap-3 items-center'>
               <div className='font-bold text-[#2DA5F3] text-[15px]'>
-                ₹ {Math.round(productDetailsVariant.salePrice)}
+                ₹ {Math.round(currentProductVarient?.salePrice)}
               </div>
               <div className='text-[#77878F] text-[14px]'>
-                <strike>₹{productDetailsVariant.regularPrice}</strike>
+                <strike>₹{currentProductVarient?.regularPrice}</strike>
               </div>
               <div className='w-[60px] h-[20px] bg-[#F3DE6D] flex justify-center items-center'>
                 <div className='font-bold text-[11px]'>21% OFF</div>
@@ -173,13 +208,13 @@ const ProductDetailsPage = () => {
                 <div className='text-[12px] font-semibold'>Color :</div>
                 <div className='flex justify-center items-center mt-1 gap-2 '>
                   <div className='text-[#191C1F] font-bold text-[12px]'>
-                    {productDetailsVariant.color}
+                    {currentProductVarient?.color}
                   </div>
                 </div>
               </div>
             </div>
             <div className='flex justify-between'>
-              {productDetailsVariant.specification?.map((element, index) => (
+              {currentProductVarient?.specification?.map((element, index) => (
                 <SelectButton
                   key={index}
                   head={element.specName}
@@ -213,8 +248,9 @@ const ProductDetailsPage = () => {
         {/*bottomside*/}
         <div className='flex justify-center'>
           <ProductDetail
-            id={productDetails._id}
-            productDetailsDescription={productDetails.description}
+            id={currentProductVarient?._id}
+            productDetailsDescription={product?.description}
+            productSpecification={currentProductVarient?.specification}
           />
         </div>
       </div>

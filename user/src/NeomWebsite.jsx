@@ -33,7 +33,7 @@ const NeomWebsite = () => {
       <Routes>
         <Route element={<Protected />}>
           <Route exact path='/shop' element={<ShopPage />} />
-          <Route exact path='/details' element={<ProductDetailsPage />} />
+          <Route exact path='/getProductDetails/:id' element={<ProductDetailsPage />} />
           <Route exact path='/profile' element={<ProfilePage />} />
           <Route exact path='/orderHistory' element={<OrderHistoryPage />} />
           <Route exact path='/orderDetails' element={<OrderDetailsPage />} />

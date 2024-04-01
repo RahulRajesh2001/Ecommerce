@@ -21,19 +21,7 @@ const ShopCard = ({ shopPage, isAddedToWishlist }) => {
   //handleDetails
   const handleDetails = async (id) => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/getProductDetails`, {
-        params: { id },
-        headers: {
-          Authorization: `${token}`,
-        },
-      })
-
-      if (response.status === 200) {
-        dispatch(setProductDetails(response.data.product))
-        navigate('/details')
-      } else {
-        navigate('/shop')
-      }
+      navigate(`/getProductDetails/${id}`)
     } catch (err) {
       console.log(err)
     }
@@ -110,7 +98,7 @@ const ShopCard = ({ shopPage, isAddedToWishlist }) => {
             />
 
             {product.variants && product.variants.length > 0 && (
-              <>
+              <div onClick={() => handleDetails(product._id)}>
                 <div>
                   <img
                     src={product.variants[0].images[0]}
@@ -126,7 +114,7 @@ const ShopCard = ({ shopPage, isAddedToWishlist }) => {
                   <FaStar />
                   <div className='text-[#77878F] text-[13px]'>(738)</div>
                 </div>
-                <div onClick={() => handleDetails(product._id)}>
+                <div >
                   <div className='text-[#191C1F] text-[12px]'>
                     {product.name}
                   </div>
@@ -134,7 +122,7 @@ const ShopCard = ({ shopPage, isAddedToWishlist }) => {
                 <div className='text-[#2DA5F3] font-semibold text-[14px] mt-2'>
                   ₹{Math.round(product.variants[0].salePrice)}
                 </div>
-              </>
+              </div>
             )}
           </div>
         ))}
