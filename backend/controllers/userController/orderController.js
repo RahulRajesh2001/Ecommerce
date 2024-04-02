@@ -134,53 +134,37 @@ export const getOrderDetails = async (req, res) => {
 }
 
 // GET
-// api/v1/changeOrderStatus
+// api/v1/orderDetails
 // --- users
+
 export const changeOrderStatus = async (req, res) => {
   try {
-    const { id } = req.query
-    const { Status } = req.body
-
-    const updatedOrder = await OrderModel.findOneAndUpdate(
-      { _id: id },
-      { $set: { 'orderedItems.$[].orderStatus': Status } },
-      { new: true }
-    ).populate('userId payment')
-
-    if (!updatedOrder) {
-      return res.status(404).json({ error: 'Order not found' })
+    const { id, orderStatus, OrderedItemId } = req.body;
+    if (!id) {
+      return res.status(400).json({ message: "Missing Parameter: id" });
+    }
+    if (!orderStatus) {
+      return res.status(400).json({ message: "Missing Parameter: orderStatus" });
     }
 
-    if (
-      (updatedOrder.orderedItems[0].orderStatus === 'Cancelled' ||
-        updatedOrder.orderedItems[0].orderStatus === 'Returned') &&
-      updatedOrder.paymentMethod === 'RazorPay'
-    ) {
-      let wallet = await Wallet.findOne({ user: updatedOrder.userId._id })
-      if (!wallet) {
-        wallet = new Wallet({ user: updatedOrder.userId._id })
-      }
-
-      wallet.balance +=
-        updatedOrder.totalAmount * updatedOrder.orderedItems[0].quantity
-
-      const refundTransaction = new TransactionModel({
-        type: 'Refund',
-        amount: updatedOrder.totalAmount,
-        orderId: id,
-      })
-
-      wallet.transactions.push(refundTransaction)
-
-      await Promise.all([wallet.save(), refundTransaction.save()])
+    const order = await OrderModel.findOne({ _id: id });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found!" });
     }
 
-    res.status(200).json({
-      message: 'Order status updated successfully',
-      order: updatedOrder,
-    })
+    const ItemToUpdate=order.orderedItems.find(item=>item._id.toString()===OrderedItemId)
+   
+    if (!ItemToUpdate) {
+      return res.status(404).json({ message: "Item not found in the order!" });
+    }
+
+    ItemToUpdate.orderStatus = orderStatus;
+    await order.save();
+    res.status(200).json({ message: "Order status updated successfully!" });
+
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Some error occurred. Please try again!' })
+    console.error(err);
+    res.status(500).json({ message: 'Some Error occurred. Please try again!' });
+    throw err;
   }
-}
+};

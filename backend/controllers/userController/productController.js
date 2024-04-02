@@ -62,6 +62,28 @@ export const getProductDetails = async (req, res) => {
   }
 }
 
+// GET
+// api/v1/productVarientDetails
+// --- users
+export const getProductVarientDetails = async (req, res) => {
+  try {
+    const {id}=req.query;
+    if(!id){
+      return res.status(404).json({message:"Missing Parameter !"})
+    }
+    const product=await ProductVariant.findOne({_id:id})
+    if(!product){
+      return res.status(404).json({message:"Product Not found!"})
+    }
+    res.status(200).json({message:"Successfull",product})
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Some Error occured .. Try again !' })
+    throw err
+  }
+}
+
+
 
 // post
 // api/v1/addReview

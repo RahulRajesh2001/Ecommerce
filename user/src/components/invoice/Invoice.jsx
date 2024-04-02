@@ -5,14 +5,17 @@ import { useSelector } from 'react-redux';
 import { baseUrl } from '../../../baseUrl.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useParams } from 'react-router-dom';
 
 const Invoice = () => {
   const token = localStorage.getItem('userToken');
-  const orderId = useSelector((state) => state.order.orderId);
-  const [id, setId] = useState(orderId);
+ 
   const [order, setOrder] = useState({});
   const [orderedItems, setOrderedItems] = useState([]);
   const [cupon,setCoupon]=useState('')
+
+
+  const id=useParams()
   
   useEffect(() => {
     axios

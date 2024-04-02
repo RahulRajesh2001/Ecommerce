@@ -17,6 +17,7 @@ import {
   getCategories,
   getFeaturedProducts,
   getProductDetails,
+  getProductVarientDetails,
   getProducts,
   getReview,
   getWishlistProducts,
@@ -52,6 +53,7 @@ import { getOfferDetails } from '../controllers/userController/offerController.j
 const router = express.Router()
 router.get('/getProducts', verifyToken, getProducts)
 router.get('/getProductDetails/:id', verifyToken, getProductDetails)
+router.get('/productVarientDetails', verifyToken, getProductVarientDetails)
 router.post('/login', login)
 router.post('/register', register)
 router.post('/otp-generation', OTPGeneration)
@@ -81,12 +83,12 @@ router.get('/chooseAddress', chooseShippingAddress)
 router.post('/placeOrder', verifyToken, placeOrder)
 router.get('/orders', verifyToken, getAllOrders)
 router.get('/orderDetails', verifyToken, getOrderDetails)
-router.put('/changeOrderStatus', changeOrderStatus)
 router.get('/addToWishlist', verifyToken, addToWishlist)
 router.get('/getWishlistProducts', wishlistProducts)
 router.get('/getWishlistFullProducts', verifyToken, getWishlistProducts)
 router.get('/getWalletHistory', verifyToken, getWalletHistory)
 router.post('/applyCupon', verifyToken, ApplyCupons)
 router.get('/getOffer', verifyToken, getOfferDetails)
+router.post('/changeOrderStatus', verifyToken, changeOrderStatus)
 
 export default router

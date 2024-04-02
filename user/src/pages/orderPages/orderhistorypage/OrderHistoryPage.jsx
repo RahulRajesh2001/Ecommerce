@@ -4,16 +4,15 @@ import BottomBar from '../../../components/bottombar/BottomBar'
 import SideBar from '../../../components/sidebarDashboard/SideBar.jsx'
 import Footer from '../../../components/footer/Footer'
 import { FaArrowRight } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl.js'
-import { useDispatch } from 'react-redux'
-import { setOrderId } from '../../../../redux/reducers/orderSlice.js'
 
 const OrderHistoryPage = () => {
-  const dispatch=useDispatch()
+  const navigate = useNavigate()
   const [orders, setOrders] = useState([])
 
+  //fetching orders from backend
   const token = localStorage.getItem('userToken')
   useEffect(() => {
     axios
@@ -23,7 +22,6 @@ const OrderHistoryPage = () => {
         },
       })
       .then((res) => {
-        console.log(res.data.orders)
         setOrders(res.data.orders)
       })
       .catch((err) => {
@@ -52,11 +50,11 @@ const OrderHistoryPage = () => {
   }
 
   //handle orderid
-const handleOrderId=(id)=>{
-dispatch(setOrderId(id))
-}
+  const handleOrderId = (id) => {
+    navigate(`/orderDetails/${id}`)
+  }
 
-return (
+  return (
     <div>
       <Navbar />
       <BottomBar />
@@ -73,9 +71,6 @@ return (
           <div className='flex h-[60px] w-[100%] justify-evenly items-center bg-[#F2F4F5]'>
             <div className='text-[15px] font-Playfair font-semibold text-[#475156]'>
               ORDER ID
-            </div>
-            <div className='text-[15px] font-Playfair font-semibold text-[#475156]'>
-              STATUS
             </div>
             <div className='text-[15px] font-Playfair font-semibold text-[#475156]'>
               DATE
@@ -97,10 +92,6 @@ return (
                 <div className='text-[14px] font-Josefin font-semibold'>
                   {order._id}
                 </div>
-                <div className='text-[14px] font-Josefin font-semibold text-[#2DB224]'>
-
-                  {order.orderedItems[0].orderStatus}
-                </div>
                 <div className='text-[14px] font-Josefin font-semibold'>
                   {formatDate(order.orderDate)}
                 </div>
@@ -109,16 +100,13 @@ return (
                   {order.orderedItems.length} Products)
                 </div>
                 <div className='flex '>
-                  <Link
-                    to='/orderDetails'
-                    className='flex gap-3 justify-center items-center'
-                    onClick={()=>handleOrderId(order._id)}
+                  <div
+                    onClick={() => handleOrderId(order._id)}
+                    className='text-[14px] font-Josefin font-semibold text-[#2DA5F3] cursor-pointer'
                   >
-                    <div className='text-[14px] font-Josefin font-semibold text-[#2DA5F3]'>
-                      View Details
-                    </div>
-                    <FaArrowRight  className='text-[#2DA5F3]' />
-                  </Link>
+                    View Details
+                  </div>
+                  <FaArrowRight className='text-[#2DA5F3]' />
                 </div>
               </div>
             ))}
