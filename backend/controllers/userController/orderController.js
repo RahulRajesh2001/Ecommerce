@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken'
 import OrderModel from '../../model/orderSchema.js'
 import ProductVariant from '../../model/productVarientModel.js'
-import Wallet from '../../model/walletModel.js'
-import TransactionModel from '../../model/transactionModel.js'
 
 export const placeOrder = async (req, res) => {
   try {
@@ -27,6 +25,10 @@ export const placeOrder = async (req, res) => {
       coupons,
       totalAmount,
     } = req.body
+
+    if(paymentMethod =='Cash On Delivery' && totalAmount <=1000){
+        return res.status(400).json({message:"Cash on delevery is not allowed under ₹ 1000"})
+    }
 
     let insufficientStock = false
 
@@ -74,9 +76,13 @@ export const placeOrder = async (req, res) => {
       }
     }
 
+    console.log("this is order",savedOrder)
+
     res
       .status(201)
       .json({ message: 'Order placed successfully', order: savedOrder })
+
+      
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Some Error occurred. Please try again!' })
@@ -139,32 +145,31 @@ export const getOrderDetails = async (req, res) => {
 
 export const changeOrderStatus = async (req, res) => {
   try {
-    const { id, orderStatus, OrderedItemId } = req.body;
+    const { id, orderStatus, OrderedItemId } = req.body
     if (!id) {
-      return res.status(400).json({ message: "Missing Parameter: id" });
+      return res.status(400).json({ message: 'Missing Parameter: id' })
     }
     if (!orderStatus) {
-      return res.status(400).json({ message: "Missing Parameter: orderStatus" });
+      return res.status(400).json({ message: 'Missing Parameter: orderStatus' })
     }
-
-    const order = await OrderModel.findOne({ _id: id });
+    const order = await OrderModel.findOne({ _id: id })
     if (!order) {
-      return res.status(404).json({ message: "Order not found!" });
+      return res.status(404).json({ message: 'Order not found!' })
     }
+    const ItemToUpdate = order.orderedItems.find(
+      (item) => item._id.toString() === OrderedItemId
+    )
 
-    const ItemToUpdate=order.orderedItems.find(item=>item._id.toString()===OrderedItemId)
-   
     if (!ItemToUpdate) {
-      return res.status(404).json({ message: "Item not found in the order!" });
+      return res.status(404).json({ message: 'Item not found in the order!' })
     }
 
-    ItemToUpdate.orderStatus = orderStatus;
-    await order.save();
-    res.status(200).json({ message: "Order status updated successfully!" });
-
+    ItemToUpdate.orderStatus = orderStatus
+    await order.save()
+    res.status(200).json({ message: 'Order status updated successfully!' })
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Some Error occurred. Please try again!' });
-    throw err;
+    console.error(err)
+    res.status(500).json({ message: 'Some Error occurred. Please try again!' })
+    throw err
   }
-};
+}

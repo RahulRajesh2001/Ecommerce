@@ -6,10 +6,11 @@ import Footer from '../../../components/footer/Footer'
 import { FaPlus } from 'react-icons/fa6'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl.js'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
 const OrderDetailsPage = () => {
+  const navigate=useNavigate()
   const { id } = useParams()
   //state for updation
   const [update, setUpdate] = useState(true)
@@ -92,6 +93,11 @@ const OrderDetailsPage = () => {
     }
   }
 
+//handle invoice
+const handleInvoice=()=>{
+  navigate(`/invoice/${id}`)
+}
+
   return (
     <div>
       <Navbar />
@@ -110,11 +116,10 @@ const OrderDetailsPage = () => {
                 </div>
                 <FaPlus className='text-[10px] text-[#FA8232] mt-1 font-bold' />
               </div>
-              <Link to={'/invoice'}>
-                <button className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[70px] h-[30px] font-semibold rounded-lg bg-green-500'>
+
+                <button onClick={()=>handleInvoice()} className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[70px] h-[30px] font-semibold rounded-lg bg-green-500'>
                   Invoice
                 </button>
-              </Link>
             </div>
           </div>
           {/*order section one */}

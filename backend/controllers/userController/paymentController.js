@@ -3,8 +3,6 @@ import crypto from 'crypto'
 import PaymentModel from '../../model/paymentModel.js'
 
 export const checkout = async (req, res) => {
-  console.log('checkout body', req.body)
-
   const { amount } = req.body
 
   const options = {

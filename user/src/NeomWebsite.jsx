@@ -42,7 +42,7 @@ const NeomWebsite = () => {
           <Route exact path='/paymentsuccess' element={<PaymentSuccessPage/>} />
           <Route exact path='/wishlist' element={<WishListPage/>} />
           <Route exact path='/wallet' element={<WalletPage/>} />
-          <Route exact path='/invoice' element={<Invoice/>} />
+          <Route exact path='/invoice/:id' element={<Invoice/>} />
           <Route exact path='/dashboard' element={<DashboardPage/>} />
           <Route />
         </Route>

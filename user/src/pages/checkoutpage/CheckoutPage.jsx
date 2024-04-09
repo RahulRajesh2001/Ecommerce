@@ -219,8 +219,7 @@ const CheckoutPage = () => {
             axios
                 .get('http://localhost:3000/api/getkey')
                 .then((keyRes) => {
-                  console.log('this is order id', paymentRes.data.order.id)
-                  console.log('this is order paymnt', orderData.payment)
+                  console.log("payment id",paymentRes.data.order.id)
                   orderData.payment = paymentRes.data.order.id
                   const options = {
                     key: keyRes.data.key,
@@ -274,6 +273,11 @@ const CheckoutPage = () => {
                     icon: 'error',
                   })
                 })
+            }else{
+              Swal.fire({
+                text: "Check Payment and Reorder the item , Thankyou !",
+                icon: 'error',
+              })
             }
           })
           .catch((paymentErr) => {

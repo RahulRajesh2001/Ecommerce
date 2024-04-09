@@ -123,7 +123,6 @@ export const getShippingAddress = async (req, res) => {
     const userId = decoded.id
     
     const shippingAddresses = await ShippingAddressModel.find({userId })
-    console.log('this is shipping address',shippingAddresses)
     if(!shippingAddresses){
       return res.status(404).json({message:"No addresses present ! Add address "})
     }
@@ -206,8 +205,6 @@ export const editShippingAddress = async (req, res) => {
     }else{
       return res.status(400).json({ message: "Shipping address not updated !"})
     }
-    
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
@@ -216,24 +213,18 @@ export const editShippingAddress = async (req, res) => {
 
 
 export const chooseShippingAddress = async (req, res) => {
-
   try {
     const id = req.query.id;
-   
     if (!id) {
       return res.status(400).json({ message: "Invalid address ID provided" });
     }
-
     const address = await ShippingAddressModel.findOne({ _id: id });
-
     if (!address) {
       return res.status(500).json({ message: "There is no id" });
     }
-
    res.status(200).json({ message: "Successfull",address});
-    
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
-};
+}

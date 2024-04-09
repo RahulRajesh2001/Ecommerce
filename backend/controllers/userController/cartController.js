@@ -94,7 +94,6 @@ export const getCartItems = async (req, res) => {
     const userId = decoded.id
 
     const cartItems=await CartModel.findOne({userId})
-    console.log("getitems bodyhehe",cartItems)
     
     const cart=await CartModel.findOne({userId}).populate({
       path:'products.productVarientId',
