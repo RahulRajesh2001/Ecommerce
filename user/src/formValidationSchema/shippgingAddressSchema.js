@@ -1,4 +1,5 @@
-import * as yup from 'yup'
+import * as yup from 'yup';
+
 
 export const shippingAddressSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
