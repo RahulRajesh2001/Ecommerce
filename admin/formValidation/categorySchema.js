@@ -1,7 +1,6 @@
-import * as yup from 'yup';
+import {object,string} from 'yup';
 
-
-export const categorySchema = yup.object().shape({
-    title: yup.string().required('Name is required'),
-    description: yup.string().required('Description is required'),
+export const categorySchema = object().shape({
+    title: string().required('Name is required'),
+    description: string().required('Description is required'),
   });
