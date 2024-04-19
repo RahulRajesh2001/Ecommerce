@@ -18,6 +18,7 @@ import WishListPage from './pages/wishListPage/WishListPage.jsx'
 import WalletPage from '../../user/src/pages/walletPage/WalletPage.jsx'
 import Invoice from './components/invoice/Invoice.jsx'
 import DashboardPage from './pages/dashboardPage/DashboardPage.jsx'
+import ErrorPage from './pages/errorpage/ErrorPage.jsx'
 
 
 
@@ -44,6 +45,7 @@ const NeomWebsite = () => {
           <Route exact path='/wallet' element={<WalletPage/>} />
           <Route exact path='/invoice/:id' element={<Invoice/>} />
           <Route exact path='/dashboard' element={<DashboardPage/>} />
+          <Route exact path='/error' element={<ErrorPage/>} />
           <Route />
         </Route>
         <Route exact path='/' element={<HomePage />} />

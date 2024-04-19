@@ -6,12 +6,12 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const BrudCrumbs = ({ breadcrumbs }) => {
   return (
-    <div className=' h-[50px]  w-[100%]'>
-       <div className='ml-[200px]'>
+    <div className=' h-[30px]  w-[100%]  flex justify-start items-center'>
+       <div className='md:ml-[50px] '>
        <Box m={2}>
-        <Breadcrumbs aria-label='breadcrumb' separator={<NavigateNextIcon fontSize='small'/>}>
+        <Breadcrumbs aria-label='breadcrumb' separator={<NavigateNextIcon fontSize='10px' className='vvsm:mt-[3px] md:mb-[3px]'/>}>
         {breadcrumbs.map((breadcrumb, index) => (
-              <Link key={index} to={breadcrumb.path} className='text-[14px]'>
+              <Link key={index} to={breadcrumb.path} className='vvsm:text-[10px] md:text-[14px]'>
                 {breadcrumb.label}
               </Link>
             ))}

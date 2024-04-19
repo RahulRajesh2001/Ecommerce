@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { MdDelete } from 'react-icons/md'
-import { FaEdit } from 'react-icons/fa'
 import AddShippingAddress from '../addShippingAddresModal/AddShippingAddress.jsx'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,7 +27,7 @@ const ShippingAddressListing = () => {
       .then((res) => {
         if (res.status == 200) {
           console.log(res.data.shippingAddresses)
-          dispatch(setShippingAddress(res.data.shippingAddresses))
+          dispatch(setShippingAddress(res?.data?.shippingAddresses))
         } else {
           alert(res.data.message)
         }
@@ -45,22 +44,20 @@ const ShippingAddressListing = () => {
         if (res.status === 200) {
           Swal.fire({
             text: res.data.message,
-            icon: "success"
-          });
-          dispatch(setShippingAddress(res.data.existingAddresses))
+            icon: 'success',
+          })
+          dispatch(setShippingAddress(res?.data?.existingAddresses))
         } else {
           Swal.fire({
             text: res.data.message,
-            icon: "error"
-          });
+            icon: 'error',
+          })
         }
       })
       .catch((err) => {
         console.log(err)
       })
   }
-
-
 
   return (
     <div className=' w-[100%] h-[300px] flex flex-col justify-center items-center gap-2  mt-[30px]  border-t-2  '>
@@ -70,35 +67,34 @@ const ShippingAddressListing = () => {
           <AddShippingAddress />
         </div>
       </div>
-      <div className='overflow-auto w-[80%] flex flex-col gap-2  ml-[100px]'>
+      <div className=' w-[80%] flex   gap-2 '>
         {/*Address part*/}
         {addresses.length > 0 ? (
           addresses.map((address) => (
             <div
               key={address._id}
-              className='w-[70%] h-[100px]  flex flex-col gap-2 justify-center border p-2'
+              className='w-[50%] h-[200px]  flex flex-col gap-2 justify-center border p-2'
             >
               <div className='flex justify-around'>
-                <div className='font-semibold font-Josefin'>{address.name}</div>
-                <div className='flex gap-5'>
-                  <MdDelete 
-                    onClick={() => handleDelete(address._id)}
+                <div className='font-semibold font-Josefin'>{address?.name}</div>
+                <div className='flex gap-5 justify-center items-center'>
+                  <MdDelete
+                    onClick={() => handleDelete(address?._id)}
                     className='text-[20px] cursor-pointer mt-2'
                   />
-                  <div className='text-[20px] cursor-pointer'  >
-                  <EditShippingAddress  id={address._id}/>
+                  <div className='text-[20px] cursor-pointer'>
+                    <EditShippingAddress id={address?._id} />
                   </div>
-                 
                 </div>
               </div>
-              <div>{address.address}</div>
+              <div>{address?.address}</div>
               <div className='font-semibold font-Josefin'>
-                {address.pincode}
+                {address?.pincode}
               </div>
             </div>
           ))
         ) : (
-          <div>There are no addresses</div>
+          <div className='font-Playfair'>There are no addresses</div>
         )}
       </div>
     </div>

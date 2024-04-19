@@ -5,7 +5,7 @@ import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { baseUrl } from '../../../baseUrl'
+import { baseUrl } from '../../../baseUrl.js'
 import ChooseAddresss from '../../components/chooseAddress/ChooseAddresss'
 import Swal from 'sweetalert2'
 import { CiCircleRemove } from 'react-icons/ci'
@@ -32,24 +32,13 @@ const CheckoutPage = () => {
 
   //shipping addres in checkout page
   const [shippingAddress, setShippingAddress] = useState({})
-
   useEffect(() => {
     axios
       .get(`${baseUrl}/api/v1/chooseAddress`, { params: { id } })
       .then((res) => {
-        setShippingAddress(res.data.address)
-        Swal.fire({
-          text: res.data.message,
-          icon: 'success',
-        })
+        setShippingAddress(res?.data?.address)
       })
-      .catch((err) => {
-        Swal.fire({
-          text:err.data.message,
-          icon: 'error',
-        })
-      })
-  }, [update])
+  }, [id])
 
   //scart items in checkout page
 
@@ -130,7 +119,7 @@ const CheckoutPage = () => {
 
   const orderData = {
     orderedItems: cartItems.map((item) => ({
-      product: item.productVarientId._id,
+      product: item?.productVarientId._id,
       quantity: item.quantity,
       price:
         item.productVarientId.salePrice * item.quantity -
@@ -156,7 +145,6 @@ const CheckoutPage = () => {
     totalAmount: subTotal - (offerAmount + cuponAmount),
   }
 
-
   //apply cupon
   const [cupon, setCupon] = useState('')
   if (orderData.coupons == null) {
@@ -169,8 +157,8 @@ const CheckoutPage = () => {
             total: orderData.totalAmount,
           })
           .then((res) => {
-            setCuponAmount(res.data.CuponAmount)
-            setCouponData(res.data.cupon)
+            setCuponAmount(res?.data?.CuponAmount)
+            setCouponData(res?.data?.cupon)
             Swal.fire({
               text: res.data.message,
               icon: 'success',
@@ -190,8 +178,6 @@ const CheckoutPage = () => {
     setCouponData(null)
     setCuponAmount(0)
   }
-
-  console.log('cupon name', orderData.coupons)
 
   // Setting up Axios interceptor globally
   axios.interceptors.request.use((config) => {
@@ -216,10 +202,10 @@ const CheckoutPage = () => {
             // Handle the response from the checkout API
             if (paymentRes.status === 200) {
               // If payment initiation is successful, get the payment key
-            axios
-                .get('http://localhost:3000/api/getkey')
+              axios
+                .get(`${baseUrl}/api/getkey`)
                 .then((keyRes) => {
-                  console.log("payment id",paymentRes.data.order.id)
+                  console.log('payment id', paymentRes.data.order.id)
                   orderData.payment = paymentRes.data.order.id
                   const options = {
                     key: keyRes.data.key,
@@ -230,8 +216,7 @@ const CheckoutPage = () => {
                     image:
                       'https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg',
                     order_id: paymentRes.data.order.id,
-                    callback_url:
-                      'http://localhost:3000/api/v1/paymentverification',
+                    callback_url: `${baseUrl}/api/v1/paymentverification`,
                     prefill: {
                       name: '',
                       email: '',
@@ -273,9 +258,9 @@ const CheckoutPage = () => {
                     icon: 'error',
                   })
                 })
-            }else{
+            } else {
               Swal.fire({
-                text: "Check Payment and Reorder the item , Thankyou !",
+                text: 'Check Payment and Reorder the item , Thankyou !',
                 icon: 'error',
               })
             }
@@ -286,7 +271,7 @@ const CheckoutPage = () => {
               icon: 'error',
             })
           })
-      } else if(paymentMethod === 'Cash On Delivery') {
+      } else if (paymentMethod === 'Cash On Delivery') {
         axios
           .post(`${baseUrl}/api/v1/placeOrder`, orderData)
           .then((res) => {
@@ -321,7 +306,7 @@ const CheckoutPage = () => {
         <div className=' h-[90%] w-[60%] flex flex-col border rounded-md'>
           {/*address part*/}
           <div className=' h-[60%]'>
-            <form className='w-[100%] h-full flex flex-col justify-center items-center gap-4 '>
+            <div className='w-[100%] h-full flex flex-col justify-center items-center gap-4 '>
               <div className='overflow-auto w-[100%] flex flex-col justify-center items-center'>
                 <div className='font-Playfair font-bold text-[18px] mb-2'>
                   SHIPPING ADDRESS
@@ -330,7 +315,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Full Name</div>
                     <input
-                    readOnly
+                      readOnly
                       id='name'
                       type='text'
                       placeholder='name'
@@ -341,7 +326,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Address</div>
                     <input
-                    readOnly
+                      readOnly
                       id='address'
                       type='text'
                       value={shippingAddress.address}
@@ -356,7 +341,7 @@ const CheckoutPage = () => {
                       Region/State
                     </div>
                     <input
-                    readOnly
+                      readOnly
                       id='state'
                       type='text'
                       value={shippingAddress.region}
@@ -367,7 +352,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>City</div>
                     <input
-                    readOnly
+                      readOnly
                       id='city'
                       type='text'
                       value={shippingAddress.city}
@@ -380,7 +365,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Pincode</div>
                     <input
-                    readOnly
+                      readOnly
                       id='pincode'
                       type='number'
                       placeholder='pincode'
@@ -393,7 +378,7 @@ const CheckoutPage = () => {
                       Phone Number 1
                     </div>
                     <input
-                    readOnly
+                      readOnly
                       id='phone1'
                       type='number'
                       placeholder='phone1'
@@ -408,7 +393,7 @@ const CheckoutPage = () => {
                       Phone Number 2
                     </div>
                     <input
-                    readOnly
+                      readOnly
                       id='phone2'
                       type='number'
                       placeholder='phone2'
@@ -419,7 +404,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Steet</div>
                     <input
-                    readOnly
+                      readOnly
                       id='street'
                       type='text'
                       placeholder='street'
@@ -432,7 +417,7 @@ const CheckoutPage = () => {
                   <div className='flex flex-col gap-2 w-[100%] overflow-auto '>
                     <div className='font-Josefin font-bold ml-5'>Landmark</div>
                     <input
-                    readOnly
+                      readOnly
                       id='landmark'
                       type='text'
                       placeholder='landmark'
@@ -441,13 +426,11 @@ const CheckoutPage = () => {
                     />
                   </div>
                   <div className='w-[100%] flex justify-center items-center'>
-                    <button className='w-[200px] h-[40px] flex justify-center items-center bg-[#FA8232] text-[#ffff] text-[12px] rounded-md mr-5 font-Playfair cursor-pointer mt-4'>
-                      <ChooseAddresss chooseAddress={chooseAddress} />
-                    </button>
+                    <ChooseAddresss chooseAddress={chooseAddress} />
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
           {/*payment part*/}
           <div className=' h-[30%]'>
@@ -495,7 +478,7 @@ const CheckoutPage = () => {
             <div className=' w-[100%] h-[50%] flex flex-col justify-center items-center gap-4 border-b '>
               <div className='w-[100%] flex flex-col  justify-evenly items-center bg-[#FFFFFF] h-[50%] overflow-auto'>
                 {cartItems.map((item) => (
-                  <div key={item._id} className='flex justify-evenly w-[100%]'>
+                  <div key={item?._id} className='flex justify-evenly w-[100%]'>
                     <div className='w-[100%] h-[100px] flex justify-evenly items-center '>
                       <img
                         src={item.productVarientId.images[0]}

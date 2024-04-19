@@ -115,7 +115,10 @@ const getState=(state)=>{
 
   return (
     <div >
-      <Button onClick={handleOpen}>ADD</Button>
+      <button onClick={handleOpen}
+            type='submit'
+            className='mt-5 bg-orange-500 rounded-md w-[200px] h-[30px] text-[15px] font-semibold text-[#ffff]'
+          >ADD MULTIPLE ADDRESS</button>
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'

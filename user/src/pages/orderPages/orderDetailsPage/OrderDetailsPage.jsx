@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../../components/navbar/Navbar'
 import BottomBar from '../../../components/bottombar/BottomBar'
-import SideBar from '../../../components/sidebarDashboard/SideBar.jsx'
 import Footer from '../../../components/footer/Footer'
 import { FaPlus } from 'react-icons/fa6'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl.js'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import Swal from 'sweetalert2'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const OrderDetailsPage = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   const { id } = useParams()
   //state for updation
   const [update, setUpdate] = useState(true)
@@ -29,12 +27,13 @@ const OrderDetailsPage = () => {
         },
       })
       .then((res) => {
-        setOrder(res.data.order)
-        setAddress(res.data.order.shippingAddress)
-        setOrderItems(res.data.order.orderedItems)
+        console.log(res)
+        setOrder(res?.data?.order)
+        setAddress(res?.data?.order?.shippingAddress)
+        setOrderItems(res?.data?.order?.orderedItems)
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err.response)
       })
   }, [update])
 
@@ -79,7 +78,6 @@ const OrderDetailsPage = () => {
           },
         })
         .then((res) => {
-          console.log('response', res)
           if (res.status === 200) {
             alert(res.data.message)
             setUpdate(!update)
@@ -92,19 +90,36 @@ const OrderDetailsPage = () => {
       console.error('Error occurred while changing order status:', err)
     }
   }
+  
 
-//handle invoice
-const handleInvoice=()=>{
-  navigate(`/invoice/${id}`)
+//refunding amount to the walet
+const returnToWallet=(id)=>{
+  const wallet={
+    amount:order.totalAmount,
+    orderId:id
+    
+  }
+  try{
+    axios.post(`${baseUrl}/api/v1/addToWallet`,wallet,{headers:{Authorization:token}}).then((res)=>{
+      console.log(res)
+    })
+
+  }catch(err){
+    console.log(err)
+  }
 }
+
+  //handle invoice
+  const handleInvoice = () => {
+    navigate(`/invoice/${id}`)
+  }
 
   return (
     <div>
       <Navbar />
       <BottomBar />
       <div className='h-[900px] flex items-center justify-evenly'>
-        <SideBar />
-        <div className='h-[850px] w-[70%] rounded-md flex flex-col items-center border gap-4'>
+        <div className='h-[850px] w-[80%] rounded-md flex flex-col items-center border gap-4'>
           <div className='w-[100%] h-[60px] flex items-center justify-around border-b '>
             <div className='text-[16px] font-Playfair font-semibold '>
               ORDER DETAILS
@@ -117,16 +132,19 @@ const handleInvoice=()=>{
                 <FaPlus className='text-[10px] text-[#FA8232] mt-1 font-bold' />
               </div>
 
-                <button onClick={()=>handleInvoice()} className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[70px] h-[30px] font-semibold rounded-lg bg-green-500'>
-                  Invoice
-                </button>
+              <button
+                onClick={() => handleInvoice()}
+                className='flex gap-2 justify-center items-center cursor-pointer text-[#ffff] w-[70px] h-[30px] font-semibold rounded-lg bg-green-500'
+              >
+                Invoice
+              </button>
             </div>
           </div>
           {/*order section one */}
           <div className='w-[95%] h-[100px] bg-[#FDFAE7] border  mt-4 rounded-md flex items-center justify-between p-10'>
             <div className='flex flex-col gap-3'>
               <div className='text-[#191C1F] text-[20px] font-semibold'>
-                # {order._id}
+                # {order?._id}
               </div>
               <div className='flex gap-2'>
                 <div className='text-[#475156] font-semibold'>
@@ -172,24 +190,24 @@ const handleInvoice=()=>{
 
             {orderItems.map((item) =>
               products
-                .filter((product) => item.product === product._id)
+                .filter((product) => item?.product === product?._id)
                 .map((product) => (
                   <div
-                    key={item._id}
+                    key={item?._id}
                     className='w-[100%] flex justify-evenly items-center bg-[#FFFFFF] h-[80px] '
                   >
                     <div className='w-[40%] flex justify-evenly items-center '>
                       <img
-                        src={product.images[0]}
+                        src={product?.images[0]}
                         className='h-[50px] w-[50px]'
                       />
                       <div className='w-[50%] text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                        {product.varientName}
+                        {product?.varientName}
                       </div>
                     </div>
                     <div className='w-[60%]  flex justify-evenly items-center'>
                       <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
-                        {product.salePrice}
+                        {product?.salePrice}
                       </div>
                       <div className='text-[14px] font-Josefin font-semibold flex justify-center items-center text-[#191C1F]'>
                         <div className='text-[15px] font-semibold cursor-pointer mt-1'>
@@ -205,41 +223,26 @@ const handleInvoice=()=>{
                         {item?.orderStatus}
                       </div>
 
-                      {item?.orderStatus === 'Cancelled' ||
-                      item?.orderStatus === 'Returned' ? (
-                        <div
-                          className={`${
-                            item?.orderStatus === 'Cancelled'
-                              ? 'text-red-500 font-bold opacity-60'
-                              : 'text-[#FA8232] font-bold opacity-60'
-                          }`}
+                      {item?.orderStatus === 'Delivered' ? (
+                        <button
+                          onClick={() => {
+                            handleOrderStatus(order?._id, item?._id, 'Returned');
+                            returnToWallet(product._id)
+                          }}
+                          className='text-[#FA8232] font-Playfair'
                         >
-                          {item?.orderStatus}
-                        </div>
-                      ) : (
-                        <div className='flex flex-col gap-2 '>
-                          <button
-                            onClick={() => {
-                              handleOrderStatus(
-                                order._id,
-                                item._id,
-                                'Cancelled'
-                              )
-                            }}
-                            className='text-red-600 font-Playfair'
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleOrderStatus(order._id, item._id, 'Returned')
-                            }}
-                            className='text-[#FA8232] font-Playfair'
-                          >
-                            Return
-                          </button>
-                        </div>
-                      )}
+                          Return
+                        </button>
+                      ) : item?.orderStatus === 'Pending' ? (
+                        <button
+                          onClick={() => {
+                            handleOrderStatus(order._id, item._id, 'Cancelled')
+                          }}
+                          className='text-red-600 font-Playfair'
+                        >
+                          Cancel
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 ))

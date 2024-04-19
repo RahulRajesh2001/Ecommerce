@@ -113,7 +113,6 @@ export const addShippingAddress = async (req, res) => {
 export const getShippingAddress = async (req, res) => {
   try {
     const token = req.headers.authorization
-    
     if (!token) {
       return res
         .status(401)
@@ -126,6 +125,7 @@ export const getShippingAddress = async (req, res) => {
     if(!shippingAddresses){
       return res.status(404).json({message:"No addresses present ! Add address "})
     }
+
 
     res.status(200).json({message:"Successfull",shippingAddresses})
   } catch (err) {

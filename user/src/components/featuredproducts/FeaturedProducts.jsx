@@ -1,40 +1,39 @@
-import React from 'react'
-import featureBanner from '../../assets/featureBanner.png'
+import React, { useEffect, useState } from 'react'
 import ShopCard from '../../components/shopcard/ShopCard'
-import feature_banner1 from '../../assets/feature_banner1.png'
-import feature_banner2 from '../../assets/feature_banner2.png'
-import { useSelector } from 'react-redux'
+import axios from 'axios';
+import { baseUrl } from '../../../baseUrl.js';
 
 
 const FeaturedProducts = () => {
- 
+  const token = localStorage.getItem('userToken')
 
+  //fetching featered products
+  const [featuredProducts,setFeaturedProducts]=useState([])
+  useEffect(() => {
+    axios
+      .get(`${baseUrl}/api/v1/featuredProducts`, {
+        headers: {
+          Authorization:token,
+        },
+      })
+      .then((res) => {
+        setFeaturedProducts(res?.data?.products)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
   return (
-    <div>
-      {/* head section*/}
+   
       <div className='flex gap-3'>
-        {/*left part*/}
-        <div>
-          <img src={featureBanner} alt='' className=' h-[500px]' />
-        </div>
-        {/*right section*/}
-        <div>
-            <div></div>
-        </div>
         {/*body*/}
         <div className='flex flex-col gap-2'>
-          <div className='font-bold'>Featured Products</div>
+          <div className='font-bold'>New Arrivals</div>
           <div className='flex flex-row  w-[800px]'>
-            <ShopCard/>
+            <ShopCard featuredProducts={featuredProducts}/>
           </div>
         </div>
       </div>
-      {/* banner section*/}
-      <div className='flex justify-center items-center mt-5 gap-3'>
-        <img src={feature_banner1} alt="" className='w-[500px] h-[220px]' />
-        <img src={feature_banner2} alt="" className='w-[500px] h-[220px]'/>
-      </div>
-    </div>
   )
 }
 

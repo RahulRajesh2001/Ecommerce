@@ -4,7 +4,7 @@ import BottomBar from '../../../components/bottombar/BottomBar'
 import SideBar from '../../../components/sidebarDashboard/SideBar.jsx'
 import Footer from '../../../components/footer/Footer'
 import { FaArrowRight } from 'react-icons/fa'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { baseUrl } from '../../../../baseUrl.js'
 
@@ -22,7 +22,7 @@ const OrderHistoryPage = () => {
         },
       })
       .then((res) => {
-        setOrders(res.data.orders)
+        setOrders(res?.data?.orders)
       })
       .catch((err) => {
         console.log(err)
@@ -59,8 +59,7 @@ const OrderHistoryPage = () => {
       <Navbar />
       <BottomBar />
       <div className='h-screen flex items-center justify-evenly'>
-        <SideBar />
-        <div className='h-[700px] w-[70%] rounded-md flex flex-col items-center border'>
+        <div className='h-[700px] w-[80%] rounded-md flex flex-col items-center border'>
           {/*order head */}
           <div className='w-[100%] h-[60px] flex items-center'>
             <div className='ml-[100px] text-[16px] font-Playfair font-semibold'>

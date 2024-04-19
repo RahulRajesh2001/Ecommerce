@@ -125,7 +125,10 @@ const EditShippingAddress = ({ id }) => {
 
   return (
     <div>
-      <Button onClick={handleOpen}>EDIT</Button>
+      <button onClick={handleOpen}
+            type='submit'
+            className=' bg-orange-500 rounded-md w-[80px] h-[30px] text-[15px] font-semibold text-[#ffff]'
+          >Edit</button>
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'

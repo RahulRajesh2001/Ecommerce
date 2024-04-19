@@ -5,7 +5,6 @@ import BottomBar from '../../components/bottombar/BottomBar'
 import Footer from '../../components/footer/Footer'
 import { FaStar } from 'react-icons/fa'
 import SelectButton from '../../components/buttons/selecButton/SelectButton'
-import { IoMdHeartEmpty } from 'react-icons/io'
 import ProductDetail from '../../components/productdeatil/ProductDetail'
 import ReactImageMagnify from 'react-image-magnify'
 import BrudCrumbs from '../../components/brudCrumbs/BrudCrumbs'
@@ -13,6 +12,7 @@ import axios from 'axios'
 import { baseUrl } from '../../../baseUrl.js'
 import Swal from 'sweetalert2'
 import { useNavigate, useParams } from 'react-router-dom'
+import { CiHeart } from "react-icons/ci";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate()
@@ -86,6 +86,22 @@ const ProductDetailsPage = () => {
         })
       })
   }
+
+    //adding to wishlist
+    const addToWishlist=(id)=>{
+      console.log(id)
+      try{
+        axios.get(`${baseUrl}/api/v1/addToWishlist`,{params:{id}}).then((res)=>{
+          Swal.fire({
+            text: res.data.message,
+            icon: "success"
+          });
+        })
+  
+      }catch(err){
+        console.log(err)
+      }
+    }
 
   return (
     <div>
@@ -237,7 +253,7 @@ const ProductDetailsPage = () => {
             {/*wishlist section*/}
             <div className='mt-2 flex gap-8'>
               <div className='flex items-center gap-2'>
-                <IoMdHeartEmpty className='text-[#475156] text-[15px]' />
+              <CiHeart onClick={()=>addToWishlist(currentProductVarient?._id)} className='text-[25px] cursor-pointer'/>
                 <div className='text-[#475156] text-[12px]'>
                   Add to Wishlist
                 </div>

@@ -22,6 +22,7 @@ import {
   getReview,
   getWishlistProducts,
   priceSort,
+  removeFromWishlist,
   searchProducts,
   tagSort,
   wishlistProducts,
@@ -49,6 +50,7 @@ import {
 import { getWalletHistory } from '../controllers/adminController/walletController.js'
 import { ApplyCupons } from '../controllers/userController/cuponController.js'
 import { getOfferDetails } from '../controllers/userController/offerController.js'
+import { addToWallet } from '../controllers/userController/walletController.js'
 
 const router = express.Router()
 router.get('/getProducts', verifyToken, getProducts)
@@ -79,14 +81,16 @@ router.get('/price-range', priceSort)
 router.get('/sort-tag', tagSort)
 router.get('/alpha-sort', alphaSort)
 router.get('/search', searchProducts)
-router.get('/chooseAddress', chooseShippingAddress)
+router.get('/chooseAddress',verifyToken, chooseShippingAddress)
 router.post('/placeOrder', verifyToken, placeOrder)
 router.get('/orders', verifyToken, getAllOrders)
 router.get('/orderDetails', verifyToken, getOrderDetails)
 router.get('/addToWishlist', verifyToken, addToWishlist)
-router.get('/getWishlistProducts', wishlistProducts)
+router.get('/getWishlistProducts',verifyToken, wishlistProducts)
 router.get('/getWishlistFullProducts', verifyToken, getWishlistProducts)
+router.delete('/removeFromWishlist', verifyToken, removeFromWishlist)
 router.get('/getWalletHistory', verifyToken, getWalletHistory)
+router.post('/addToWallet', verifyToken, addToWallet)
 router.post('/applyCupon', verifyToken, ApplyCupons)
 router.get('/getOffer', verifyToken, getOfferDetails)
 router.post('/changeOrderStatus', verifyToken, changeOrderStatus)

@@ -325,6 +325,7 @@ export const addToWishlist = async (req, res) => {
       return res.status(200).json({ message: "Product removed from wishlist !" });
     }
     const token = req.headers.authorization;
+
     if (!token) {
       return res.status(401).json({ message: 'You are unauthorized. Please login to continue.' });
     }
@@ -372,36 +373,63 @@ export const getWishlistProducts = async (req, res) => {
       return res.status(401).json({ message: 'You are unauthorized. Please login to continue.' });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userid = decoded.id;
+    const userId = decoded.id;
 
-    const wishlistProducts=await WishListModel.find({userId:userid})
-    if(!wishlistProducts || wishlistProducts.length === 0){
-      return res.status(404).json({message:"Wishlist is empty!"})
+    const wishlistProducts = await WishListModel.find({ userId });
+    if (!wishlistProducts || wishlistProducts.length === 0) {
+      return res.status(404).json({ message: "Wishlist is empty!" });
     }
 
-        // Extract productIds from wishlist
-        const productIds = wishlistProducts.map(wishlistItem => wishlistItem.productId);
+    // Extract productIds from wishlist
+    const productIds = wishlistProducts.map(wishlistItem => wishlistItem.productId);
 
-        // Fetch products matching the productIds from wishlist
-        const products = await Product.aggregate([
-          {
-            $match: {
-              _id: { $in: productIds }
-            }
-          },
-          {
-            $lookup: {
-              from: 'productvariants',
-              localField: '_id',
-              foreignField: 'productId',
-              as: 'variants',
-            },
-          },
-        ]);
-    
-        res.status(200).json({ message: "Successfully fetched wishlist products", products });
+    // Fetch products matching the productIds from wishlist
+    const products = await ProductVariant.aggregate([
+      {
+        $match: {
+          _id: { $in: productIds } 
+        }
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+    ]);
 
+  res.status(200).json({ message: "Successfully fetched wishlist products", products });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Some error occurred. Try again!' });
+  }
+};
+
+
+
+// get
+// api/v1/getWishlistProduct
+// --- user
+//getting full products
+export const removeFromWishlist = async (req, res) => {
+  try {
+    const { id } = req.query;
+    console.log("product id",id)
+    if (!id) {
+      return res.status(400).json({ message: "Missing parameter 'id'!" });
+    }
+    const result = await WishListModel.deleteOne({ productId: id });
+    console.log("Delete product result", result);
     
+    // Check if the item was successfully removed
+    if (result.deletedCount === 1) {
+      return res.status(200).json({ message: "Item removed from wishlist successfully." });
+    } else {
+      return res.status(404).json({ message: "Item not found in the wishlist. It might have already been removed." });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Some error occurred. Try again!' });
